@@ -467,12 +467,7 @@ image::images/mbc3_0504.png["生成熵並編碼為恢復碼"]
 image::images/mbc3_0505.png["從恢復碼到種子"]
 
 
-表格 pass:[<a data-type="xref" href="#bip39_128_no_pass"
-data-xrefstyle="select: labelnumber">#bip39_128_no_pass</a>]、
-pass:[<a data-type="xref" href="#bip39_128_w_pass"
-data-xrefstyle="select: labelnumber">#bip39_128_w_pass</a>] 和
-pass:[<a data-type="xref" href="#bip39_256_no_pass"
-data-xrefstyle="select: labelnumber">#bip39_256_no_pass</a>] 顯示了一些恢復碼及其產生的((("key-stretching functions", startref="key-stretch")))種子範例。
+<<bip39_128_no_pass>>、<<bip39_128_w_pass>> 和 <<bip39_256_no_pass>> 顯示了一些恢復碼及其產生的((("key-stretching functions", startref="key-stretch")))種子範例。
 
 ++++
 <table id="bip39_128_no_pass">

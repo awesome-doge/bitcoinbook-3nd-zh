@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -918,8 +918,7 @@ sections for segwit/bech32 and taproot/bech32m.</p>
 <dd>
 <p>Text from previous versions of Chapter 6, "Transactions," and Chapter 7,
 "Advanced Transactions," has been rearranged and expanded across four
-new chapters:  <a data-type="xref" data-xrefstyle="chap-num-title" href="#c_transactions">#c_transactions</a>  (the structure of transactions), <a data-type="xref" data-xrefstyle="chap-num-title" href="#c_authorization_authentication">#c_authorization_authentication</a>, <a data-type="xref" data-xrefstyle="chap-num-title" href="#c_signatures">#c_signatures</a>, and
- <a data-type="xref" data-xrefstyle="chap-num-title" href="#tx_fees">#tx_fees</a>.</p>
+new chapters: <a href="#c_transactions">交易</a> (the structure of transactions), <a href="#c_authorization_authentication">授權與認證</a>, <a href="#c_signatures">數位簽章</a>, and <a href="#tx_fees">交易手續費</a>.</p>
 </dd>
 <dt class="hdlist1"><a href="#c_transactions">交易</a></dt>
 <dd>
@@ -4020,7 +4019,7 @@ K = 04F028892BAD7ED57D2FB57BF33081D5CFCF6F9ED3D3D7F159C2E2FFF579DC341A\
 <div class="content">
 <div class="paragraph">
 <p>地址：
-  bc1p9nh05ha8wrljf7ru236aw<u><strong>n</strong></u>4t2x0d5ctkkywm<u><strong>v</strong></u>9sclnm4t0av2vgs4k3au7</p>
+  bc1p9nh05ha8wrljf7ru236aw<strong><em>n</em></strong>4t2x0d5ctkkywm<strong><em>v</em></strong>9sclnm4t0av2vgs4k3au7</p>
 </div>
 <div class="paragraph">
 <p>偵測到的錯誤以粗體和底線顯示。使用 <a href="https://oreil.ly/paWIx">bech32 地址解碼器示範</a> 生成。</p>
@@ -5184,12 +5183,7 @@ garbage claim echo media make crunch</pre>
 <div class="title">Figure 26. 從恢復碼到種子。</div>
 </div>
 <div class="paragraph">
-<p>表格 <a data-type="xref" href="#bip39_128_no_pass"
-data-xrefstyle="select: labelnumber">#bip39_128_no_pass</a>、
-<a data-type="xref" href="#bip39_128_w_pass"
-data-xrefstyle="select: labelnumber">#bip39_128_w_pass</a> 和
-<a data-type="xref" href="#bip39_256_no_pass"
-data-xrefstyle="select: labelnumber">#bip39_256_no_pass</a> 顯示了一些恢復碼及其產生的種子範例。</p>
+<p><a href="#bip39_128_no_pass">[bip39_128_no_pass]</a>、<a href="#bip39_128_w_pass">[bip39_128_w_pass]</a> 和 <a href="#bip39_256_no_pass">[bip39_256_no_pass]</a> 顯示了一些恢復碼及其產生的種子範例。</p>
 </div>
 <table id="bip39_128_no_pass">
 <caption>128 位元熵 BIP39 恢復碼，無密碼短語，產生的種子</caption>
@@ -6730,10 +6724,7 @@ OP_PUSHDATA4 0x000000020002
 <p>如果輸入腳本具有來自 Bob 私鑰的有效簽章，該簽章對應於設置為限制條件的公鑰雜湊，則結果將是 TRUE。</p>
 </div>
 <div class="paragraph">
-<p>圖 <a data-type="xref" href="#P2PubKHash1"
-data-xrefstyle="select: labelnumber">#P2PubKHash1</a> 和 <a
-data-type="xref" href="#P2PubKHash2" data-xrefstyle="select:
-labelnumber">#P2PubKHash2</a>（分為兩部分）顯示了組合腳本的逐步執行，這將證明這是一個有效的交易。</p>
+<p><a href="#P2PubKHash1">評估 P2PKH 交易的腳本（第 1 部分，共 2 部分）。</a> 和 <a href="#P2PubKHash2">評估 P2PKH 交易的腳本（第 2 部分，共 2 部分）。</a>（分為兩部分）顯示了組合腳本的逐步執行，這將證明這是一個有效的交易。</p>
 </div>
 <div id="P2PubKHash1" class="imageblock">
 <div class="content">
