@@ -259,6 +259,7 @@ P2SH 的開發旨在解決這些實際困難，並使複雜腳本的使用與支
 在 P2SH 交易中，被雜湊替換的腳本((("redeem scripts")))稱為_贖回腳本_，因為它在贖回時呈現給系統，而不是作為輸出腳本。<<without_p2sh>> 顯示沒有 P2SH 的腳本，<<with_p2sh>> 顯示使用 P2SH 編碼的相同腳本。
 
 ++++
+[[without_p2sh]]
 <table id="without_p2sh">
 <caption>沒有 P2SH 的複雜腳本</caption>
 <tbody>

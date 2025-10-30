@@ -216,6 +216,7 @@ BIP39、Electrum v2、Aezeed 和 SLIP39 方案都可以與可選的密碼短語�
 例如，當 Bob 創建一個新地址作為向 Alice 發送發票的一部分時，他向他生成的地址((("labels, backing up", id="label-backup")))新增一個_標籤（label）_，以便他可以將她的付款與他收到的其他付款區分開來。當 Alice 支付 Bob 的地址時，她出於同樣的原因將交易標記為支付給 Bob。一些錢包還向交易新增其他有用的資訊，例如當前匯率，這在某些司法管轄區計算稅款時可能很有用。這些標籤完全儲存在他們自己的錢包中——不與網路共享——保護他們的隱私並將不必要的個人資料排除在區塊鏈之外。例如，請參見 <<alice_tx_labels>>。
 
 ++++
+[[alice_tx_labels]]
 <table id="alice_tx_labels">
 <caption>Alice 的交易歷史，每筆交易都有標籤</caption>
 <thead>
@@ -261,6 +262,7 @@ BIP39、Electrum v2、Aezeed 和 SLIP39 方案都可以與可選的密碼短語�
 已經採用了兩種解決方案來解決此問題。第一種是使用標準路徑。每次與錢包應用程式可能想要生成的地址相關的變化時，有人創建一個 BIP 來定義要使用的金鑰衍生路徑。例如，BIP44 將 `m/44'/0'/0'` 定義為用於 P2PKH 腳本（傳統地址）中金鑰的路徑。實作此標準的錢包應用程式在首次啟動時和從恢復碼恢復後都使用該路徑中的金鑰。我們稱((("implicit paths", id="implicit-path")))此解決方案為_隱式路徑（implicit paths）_。BIP 定義的幾個流行的隱式路徑如 <<bip_implicit_paths>> 所示
 
 ++++
+[[bip_implicit_paths]]
 <table id="bip_implicit_paths">
 <caption>由各種 BIP 定義的隱式腳本路徑</caption>
 <thead>
@@ -312,6 +314,7 @@ BIP39、Electrum v2、Aezeed 和 SLIP39 方案都可以與可選的密碼短語�
 截至撰寫本文時，幾乎所有使用顯式路徑的錢包應用程式都使用 BIP 380、381、382、383、384、385、386 和 389 中指定的_輸出腳本描述符（output script descriptors）_標準（簡稱_描述符（descriptors）_）。描述符描述腳本以及要與其一起使用的金鑰（或金鑰路徑）。<<sample_descriptors>> 中顯示了一些範例描述符。
 
 ++++
+[[sample_descriptors]]
 <table id="sample_descriptors">
 <caption>來自 Bitcoin Core 文件的範例描述符（有省略）</caption>
 <thead>
@@ -390,6 +393,7 @@ image::images/mbc3_0504.png["生成熵並編碼為恢復碼"]
 <<table_4-5>> 顯示了熵資料的大小與恢復碼長度之間的((("wallets", "recovery codes", "generating", startref="wallet-recovery-bip39-generate")))((("recovery codes", "generating", startref="recovery-code-bip39-generate")))((("BIP39 recovery codes", "generating", primary-sortas="BIP039", startref="bip39-recovery-generate")))((("entropy", "recovery code generation", startref="entropy-recovery-generate")))關係（以單詞為單位）。
 
 ++++
+[[table_4-5]]
 <table id="table_4-5">
 <caption>BIP39：熵和單詞長度</caption>
 <thead>
@@ -470,6 +474,7 @@ image::images/mbc3_0505.png["從恢復碼到種子"]
 <<bip39_128_no_pass>>、<<bip39_128_w_pass>> 和 <<bip39_256_no_pass>> 顯示了一些恢復碼及其產生的((("key-stretching functions", startref="key-stretch")))種子範例。
 
 ++++
+[[bip39_128_no_pass]]
 <table id="bip39_128_no_pass">
 <caption>128 位元熵 BIP39 恢復碼，無密碼短語，產生的種子</caption>
 <tbody>
@@ -744,6 +749,7 @@ HD((("path references in HD wallets")))((("key generation", "HD (hierarchical de
 金鑰的「祖先」從右到左讀取，直到您到達從中衍生它的主金鑰。例如，標識符 m/x/y/z 描述的金鑰是金鑰 m/x/y 的第 z 個子金鑰，金鑰 m/x/y 是金鑰 m/x 的第 y 個子金鑰，金鑰 m/x 是 m 的第 x 個子金鑰。
 
 ++++
+[[table_4-8]]
 <table id="table_4-8" class="pagebreak-before less_space">
 <caption>HD 錢包路徑範例</caption>
 <thead>
@@ -799,6 +805,7 @@ m / purpose' / coin_type' / account' / change / address_index
 在第四層「change」上，HD 錢包有兩個子樹，一個用於創建接收地址，一個用於創建找零地址。請注意，雖然前幾層使用強化衍生，但此層使用正常衍生。這是為了允許樹的此層級匯出擴展公鑰以在非安全環境中使用。可用地址由 HD 錢包作為第四層的子金鑰衍生，使樹的第五層成為「address_index」。例如，主要帳戶中用於付款的第三個接收地址將是 M/44++&#x27;++/0++&#x27;++/0++&#x27;++/0/2。<<table_4-9>> 顯示了更多範例。
 
 ++++
+[[table_4-9]]
 <table id="table_4-9">
 <caption>BIP44 HD 錢包結構範例</caption>
 <thead>

@@ -119,6 +119,7 @@ Alice 不是技術使用者，最近才從她的朋友 Joe 那裡聽說比特幣
 
 大多數((("wallets", "recovery codes", id="wallet-recovery")))((("recovery codes", id="recovery-code")))((("backing up", "recovery codes", see="recovery codes")))現代非託管比特幣錢包將為其使用者提供恢復代碼以進行備份。恢復代碼通常由軟體隨機選擇的數字、字母或單詞組成，並用作錢包生成的金鑰的基礎。有關範例，請參閱 <<recovery_code_sample>>。
 
+[[recovery_code_sample]]
 ++++
 <table id="recovery_code_sample">
 <caption>恢復代碼範例</caption>

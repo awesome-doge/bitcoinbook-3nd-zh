@@ -440,6 +440,7 @@ OP_PUSHDATA4 0x000000020002
 見證程式和見證結構的引入使 Bitcoin 變得複雜，但它遵循了增加抽象的現有趨勢。回想 <<ch04_keys_addresses>> 中原始的 Bitcoin 白皮書描述了一個系統，其中 bitcoin 被接收到公鑰（pubkeys）並用簽章（sigs）花費。公鑰定義了誰被_授權_花費 bitcoin（無論誰控制相應的私鑰），簽章提供了_認證_，證明花費交易來自控制私鑰的某人。為了使該系統更靈活，Bitcoin 的初始版本引入了允許 bitcoin 被接收到輸出腳本並用輸入腳本花費的腳本。後來對合約協議的經驗啟發了允許 bitcoin 被接收到見證程式並用見證結構花費。Bitcoin((("transactions", "witnesses", "segregated witness", startref="transaction-witness-segwit")))((("witnesses", "segregated witness", startref="witness-segwit")))((("segregated witness (segwit)", startref="segregated-witness-segwit")))不同版本中使用的術語和欄位顯示在 <<terms_used_authorization_authentication>> 中。
 
 ++++
+[[terms_used_authorization_authentication]]
 <table id="terms_used_authorization_authentication">
 <caption>Bitcoin 不同部分中用於授權和認證資料的術語</caption>
 <thead>
@@ -540,6 +541,7 @@ coinbase 交易可以具有在正常交易中有效的任何其他輸出。然�
 選擇這些因子以及應用它們的欄位是為了減少花費 UTXO 時使用的權重。這有助於阻止建立 <<uneconomical_outputs>> 中描述的不經濟輸出。
 
 ++++
+[[weight_factors]]
 <table id="weight_factors">
 <caption>Bitcoin 交易中所有欄位的權重因子</caption>
 <thead>

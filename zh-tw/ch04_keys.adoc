@@ -366,6 +366,7 @@ image::images/mbc3_0406.png["Base58checkEncoding"]
 </p>
 ++++
 
+[[base58check_versions]]
 ++++
 <table id="base58check_versions">
 <caption>Base58check 版本前綴和編碼結果範例</caption>
@@ -620,6 +621,7 @@ bc1pqqqsq9txsqqqqqqqqqqqp
 
 Bech32m 地址以人類可讀部分（HRP）開頭。BIP173 中有創建您自己的 HRP 的規則，但對於比特幣，您只需要知道已經選擇的 HRP，如 <<bech32_hrps_for_bitcoin>> 所示。
 
+[[bech32_hrps_for_bitcoin]]
 ++++
 <table id="bech32_hrps_for_bitcoin">
 <caption>比特幣的 Bech32 HRP</caption>
@@ -672,6 +674,7 @@ bech32m 地址的另一部分稱為「資料部分」。此部分有三個元素
 // bc1sqqqqkfw08p
 // O_16 OP_PUSH2 0000
 
+[[scripts_for_diff_segwit_outputs]]
 ++++
 <table id="scripts_for_diff_segwit_outputs">
 <caption>不同類型 segwit 輸出的腳本</caption>
@@ -802,6 +805,7 @@ OP_1 2ceefa5fa770ff24f87c5475d76eab519eda6176b11dbe1618fcf755bfac5311
 
 ****
 
+[[table_4-2]]
 ++++
 <table id="table_4-2">
 <caption>私鑰表示（編碼格式）</caption>
@@ -834,6 +838,7 @@ OP_1 2ceefa5fa770ff24f87c5475d76eab519eda6176b11dbe1618fcf755bfac5311
 
 <<table_4-3>> 顯示了以幾種不同格式生成的私鑰。
 
+[[table_4-3]]
 ++++
 <table id="table_4-3">
 <caption>範例：相同金鑰，不同格式</caption>
@@ -869,6 +874,7 @@ OP_1 2ceefa5fa770ff24f87c5475d76eab519eda6176b11dbe1618fcf755bfac5311
 
 <<table_4-4>> 顯示了以 WIF 和 WIF-compressed 格式編碼的相同金鑰。
 
+[[table_4-4]]
 ++++
 <table id="table_4-4">
 <caption>範例：相同金鑰，不同格式</caption>
@@ -921,6 +927,7 @@ Eugenia 是一位在菲律賓運營的兒童慈善機構董事。假設 Eugenia 
 
 重要的是要認識到，比特幣地址只是一個由 base58 字母表中的符號表示的數字。搜尋像「1Kids」這樣的圖案可以看作是在從 +1Kids11111111111111111111111111111+ 到 +1Kidszzzzzzzzzzzzzzzzzzzzzzzzzzzzz+ 的範圍內搜尋地址。該範圍內大約有 58^29^（大約 1.4 × 10^51^）個地址，全部以「1Kids」開頭。<<table_4-11>> 顯示了具有前綴 1Kids 的地址範圍。
 
+[[table_4-11]]
 ++++
 <table id="table_4-11">
 <caption>以「1Kids」開頭的靚號地址範圍</caption>
@@ -951,6 +958,7 @@ Eugenia 是一位在菲律賓運營的兒童慈善機構董事。假設 Eugenia 
 
 讓我們將圖案「1Kids」視為一個數字，並查看我們在比特幣地址中找到這個圖案的頻率（見 <<table_4-12>>）。一台普通的桌上型電腦 PC，沒有任何專用硬體，每秒可以搜尋大約 100,000 個金鑰。
 
+[[table_4-12]]
 ++++
 <table id="table_4-12">
 <caption>靚號圖案（1KidsCharity）的頻率和桌上型 PC 上的平均搜尋時間</caption>
