@@ -1,0 +1,305 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 只允許一個部署同時進行
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: false
+
+      - name: Install AsciiDoctor
+        run: |
+          gem install asciidoctor
+          gem install asciidoctor-pdf
+          gem install rouge
+          asciidoctor --version
+
+      - name: Create output directory
+        run: |
+          mkdir -p docs
+          mkdir -p docs/images
+          mkdir -p docs/code
+
+      - name: Build Chinese version HTML
+        run: |
+          if [ -f "zh-tw/book.adoc" ]; then
+            echo "Building Chinese version from zh-tw/book.adoc"
+            cd zh-tw
+            asciidoctor \
+              --failure-level=WARN \
+              --backend=html5 \
+              --out-file=../docs/index.html \
+              --attribute=source-highlighter=rouge \
+              --attribute=toc=left \
+              --attribute=toclevels=2 \
+              --attribute=sectnums \
+              --attribute=sectnumlevels=2 \
+              --attribute=icons=font \
+              --attribute=lang=zh-TW \
+              --attribute=imagesdir=.. \
+              book.adoc
+            cd ..
+          else
+            echo "Chinese translation not yet available. Creating placeholder."
+            cat > docs/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="zh-TW">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>精通比特幣（第三版）- 繁體中文翻譯</title>
+              <style>
+                  body {
+                      font-family: "Microsoft JhengHei", "PingFang TC", "Helvetica Neue", Arial, sans-serif;
+                      max-width: 800px;
+                      margin: 50px auto;
+                      padding: 20px;
+                      line-height: 1.8;
+                  }
+                  h1 { color: #f7931a; }
+                  .status {
+                      background: #f0f0f0;
+                      padding: 20px;
+                      border-radius: 5px;
+                      margin: 20px 0;
+                  }
+                  a { color: #f7931a; }
+              </style>
+          </head>
+          <body>
+              <h1>精通比特幣（第三版）</h1>
+              <h2>繁體中文翻譯專案</h2>
+
+              <div class="status">
+                  <h3>🚧 專案進行中</h3>
+                  <p>本專案正在積極翻譯《Mastering Bitcoin》第三版成繁體中文。</p>
+                  <p><strong>原書作者</strong>：Andreas M. Antonopoulos, David A. Harding</p>
+                  <p><strong>授權</strong>：CC-BY-SA 4.0 International</p>
+              </div>
+
+              <h3>專案資訊</h3>
+              <ul>
+                  <li><a href="https://github.com/awesome-doge/bitcoinbook-3nd-zh">GitHub 倉庫</a></li>
+                  <li><a href="https://github.com/awesome-doge/bitcoinbook-3nd-zh/blob/develop/TRANSLATION_PLAN.md">翻譯規劃</a></li>
+                  <li><a href="https://github.com/bitcoinbook/bitcoinbook">原書倉庫</a></li>
+              </ul>
+
+              <h3>如何貢獻</h3>
+              <p>我們歡迎各種形式的貢獻！請查看 <a href="https://github.com/awesome-doge/bitcoinbook-3nd-zh/blob/develop/TRANSLATION_PLAN.md">翻譯規劃</a> 了解如何參與。</p>
+          </body>
+          </html>
+          EOF
+          fi
+
+      - name: Copy images
+        run: |
+          if [ -d "images" ]; then
+            cp -r images/* docs/images/ || true
+          fi
+
+      - name: Copy code examples
+        run: |
+          if [ -d "code" ]; then
+            cp -r code/* docs/code/ || true
+          fi
+
+      - name: Copy theme files
+        run: |
+          if [ -d "theme" ]; then
+            mkdir -p docs/theme
+            cp -r theme/* docs/theme/ || true
+          fi
+
+      - name: Create CNAME file
+        run: |
+          echo "bitcoinbook-3nd-zh.doge.tg" > docs/CNAME
+
+      - name: Create .nojekyll
+        run: |
+          touch docs/.nojekyll
+
+      - name: Build Chinese version PDF
+        run: |
+          if [ -f "zh-tw/book.adoc" ]; then
+            echo "Building Chinese version PDF from zh-tw/book.adoc"
+            cd zh-tw
+            asciidoctor-pdf \
+              --failure-level=WARN \
+              --out-file=../docs/mastering-bitcoin-3rd-zh-tw.pdf \
+              --attribute=source-highlighter=rouge \
+              --attribute=imagesdir=.. \
+              book.adoc || echo "PDF generation failed, continuing..."
+            cd ..
+          fi
+
+      - name: Build Chinese version EPUB
+        run: |
+          if command -v asciidoctor-epub3 &> /dev/null; then
+            if [ -f "zh-tw/book.adoc" ]; then
+              echo "Building Chinese version EPUB from zh-tw/book.adoc"
+              cd zh-tw
+              asciidoctor-epub3 \
+                --failure-level=WARN \
+                --out-file=../docs/mastering-bitcoin-3rd-zh-tw.epub \
+                --attribute=imagesdir=.. \
+                book.adoc || echo "EPUB generation failed, continuing..."
+              cd ..
+            fi
+          else
+            echo "asciidoctor-epub3 not available, skipping EPUB generation"
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && startsWith(github.event.head_commit.message, 'Release')
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Install AsciiDoctor tools
+        run: |
+          gem install asciidoctor
+          gem install asciidoctor-pdf
+          gem install asciidoctor-epub3
+          gem install rouge
+
+      - name: Build PDF
+        run: |
+          cd zh-tw
+          asciidoctor-pdf \
+            --failure-level=WARN \
+            --out-file=../mastering-bitcoin-3rd-zh-tw.pdf \
+            --attribute=source-highlighter=rouge \
+            --attribute=imagesdir=.. \
+            book.adoc
+
+      - name: Build EPUB
+        run: |
+          cd zh-tw
+          asciidoctor-epub3 \
+            --failure-level=WARN \
+            --out-file=../mastering-bitcoin-3rd-zh-tw.epub \
+            --attribute=imagesdir=.. \
+            book.adoc
+
+      - name: Build HTML (single file)
+        run: |
+          cd zh-tw
+          asciidoctor \
+            --backend=html5 \
+            --out-file=../mastering-bitcoin-3rd-zh-tw.html \
+            --attribute=source-highlighter=rouge \
+            --attribute=toc=left \
+            --attribute=toclevels=2 \
+            --attribute=lang=zh-TW \
+            --attribute=imagesdir=.. \
+            book.adoc
+
+      - name: Get version from commit
+        id: version
+        run: |
+          VERSION=$(date +'%Y.%m.%d')
+          echo "version=v$VERSION" >> $GITHUB_OUTPUT
+          echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: 精通比特幣第三版繁體中文 ${{ steps.version.outputs.version }}
+          body: |
+            # 精通比特幣：程式設計開放區塊鏈（第三版）繁體中文翻譯
+
+            **發布日期**：${{ steps.version.outputs.date }}
+            **譯者**：Dr. Awesome Doge
+            **原作者**：Andreas M. Antonopoulos, David A. Harding
+            **授權**：CC-BY-SA 4.0 International
+
+            ## 📥 下載格式
+
+            - **PDF**：適合列印和離線閱讀
+            - **EPUB**：適合電子書閱讀器
+            - **HTML**：單一 HTML 檔案，可在瀏覽器中開啟
+
+            ## 🌐 線上閱讀
+
+            訪問 [https://bitcoinbook-3nd-zh.doge.tg](https://bitcoinbook-3nd-zh.doge.tg) 線上閱讀
+
+            ## 📝 翻譯進度
+
+            - ✅ 前言（100%）
+            - ✅ 第 1-14 章（100%）
+            - ✅ 附錄 A-C（100%）
+            - ✅ 詞彙表（100%）
+
+            **總進度**：19/19 檔案（100%）
+
+            ## 🙏 致謝
+
+            感謝所有為本翻譯專案做出貢獻的譯者、審校者和支持者！
+          draft: false
+          prerelease: false
+          files: |
+            mastering-bitcoin-3rd-zh-tw.pdf
+            mastering-bitcoin-3rd-zh-tw.epub
+            mastering-bitcoin-3rd-zh-tw.html
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

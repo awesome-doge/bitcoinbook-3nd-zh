@@ -1,0 +1,27 @@
+dump.asciidoc
+code/python-env
+*.csv
+*.pdf
+.debris
+_build/
+dist/
+book.html
+
+# Translation project build outputs
+/docs/*
+!/docs/CNAME
+!/docs/.nojekyll
+
+# Ruby
+.bundle/
+vendor/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
