@@ -3,10 +3,10 @@ name: Build and Deploy to GitHub Pages
 on:
   push:
     branches:
-      - develop
+      - main
   pull_request:
     branches:
-      - develop
+      - main
   workflow_dispatch:
 
 permissions:
@@ -108,12 +108,12 @@ jobs:
               <h3>專案資訊</h3>
               <ul>
                   <li><a href="https://github.com/awesome-doge/bitcoinbook-3nd-zh">GitHub 倉庫</a></li>
-                  <li><a href="https://github.com/awesome-doge/bitcoinbook-3nd-zh/blob/develop/TRANSLATION_PLAN.md">翻譯規劃</a></li>
+                  <li><a href="https://github.com/awesome-doge/bitcoinbook-3nd-zh/blob/main/TRANSLATION_PLAN.md">翻譯規劃</a></li>
                   <li><a href="https://github.com/bitcoinbook/bitcoinbook">原書倉庫</a></li>
               </ul>
 
               <h3>如何貢獻</h3>
-              <p>我們歡迎各種形式的貢獻！請查看 <a href="https://github.com/awesome-doge/bitcoinbook-3nd-zh/blob/develop/TRANSLATION_PLAN.md">翻譯規劃</a> 了解如何參與。</p>
+              <p>我們歡迎各種形式的貢獻！請查看 <a href="https://github.com/awesome-doge/bitcoinbook-3nd-zh/blob/main/TRANSLATION_PLAN.md">翻譯規劃</a> 了解如何參與。</p>
           </body>
           </html>
           EOF
@@ -183,7 +183,7 @@ jobs:
           path: docs
 
   deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
 
@@ -197,7 +197,7 @@ jobs:
         uses: actions/deploy-pages@v4
 
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && startsWith(github.event.head_commit.message, 'Release')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, 'Release')
     needs: build
     runs-on: ubuntu-latest
 
