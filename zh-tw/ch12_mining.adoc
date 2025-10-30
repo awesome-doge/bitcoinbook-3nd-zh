@@ -211,8 +211,8 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 
 coinbase 交易具有特殊格式。它沒有指定要花費的先前 UTXO 的交易輸入，而是具有「coinbase」輸入。我們在 <<inputs>> 中檢查了交易輸入。讓我們比較常規交易輸入與 coinbase 交易輸入。<<table_8-1>> 顯示了常規交易的結構，而 <<table_8-2>> 顯示了((("輸入", "coinbase 與常規交易"))) coinbase 交易輸入的結構。
 
-++++
 [[table_8-1]]
+++++
 <table id="table_8-1">
 <caption>「正常」交易輸入的結構</caption>
 <thead>
@@ -250,6 +250,7 @@ coinbase 交易具有特殊格式。它沒有指定要花費的先前 UTXO 的�
 </tr>
 </tbody>
 </table>
+[[table_8-2]]
 <table id="table_8-2">
 <caption>coinbase 交易輸入的結構</caption>
 <thead>
@@ -305,8 +306,8 @@ coinbase 的前幾個位元組曾經是任意的，但現在不再如此。根�
 
 為了構建((("挖礦", "構建區塊標頭", id="mining-blockheader")))((("節點", "礦工節點", "構建區塊標頭", id="nodes-miner-blockheader")))((("區塊標頭", "構建", id="block-header-construct")))區塊標頭，挖礦節點需要填寫六個欄位，如 <<block_header_structure_ch10>> 中所列。
 
-++++
 [[block_header_structure_ch10]]
+++++
 <table id="block_header_structure_ch10">
 <caption>區塊標頭的結構</caption>
 <thead>

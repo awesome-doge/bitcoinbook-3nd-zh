@@ -17,8 +17,8 @@
 
 區塊((("區塊", "結構")))是一個容器資料結構，它聚合交易以包含在區塊鏈中。區塊由標頭組成，包含元資料，後面是組成其大部分大小的一長串交易。區塊標頭為 80 位元組，而區塊中所有交易的總大小最多可達約 4,000,000 位元組。因此，包含所有交易的完整區塊可以比區塊標頭大近 50,000 倍。<<block_structure1>> 描述了 Bitcoin Core 如何儲存區塊的結構。
 
-++++
 [[block_structure1]]
+++++
 <table id="block_structure1">
 <caption>區塊的結構</caption>
 <thead>
@@ -59,8 +59,8 @@
 
 區塊標頭((("區塊", "區塊標頭")))((("區塊標頭")))由區塊元資料組成，如 <<block_header_structure_ch09>> 所示。
 
-++++
 [[block_header_structure_ch09]]
+++++
 <table id="block_header_structure_ch09">
 <caption>區塊標頭的結構</caption>
 <thead>

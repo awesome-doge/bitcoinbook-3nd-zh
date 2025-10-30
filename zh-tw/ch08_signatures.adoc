@@ -57,8 +57,8 @@ Bitcoin 簽章有一種方法可以使用 +SIGHASH+ 標誌來指示交易資料�
 
 有三個 +SIGHASH+ 標誌：+ALL+、+NONE+ 和 +SINGLE+，如 <<sighash_types_and_their>> 所示。
 
-++++
 [[sighash_types_and_their]]
+++++
 <table id="sighash_types_and_their">
 <caption>
 <span class="plain"><code>SIGHASH</code></span> 類型及其含義</caption>
@@ -92,8 +92,8 @@ Bitcoin 簽章有一種方法可以使用 +SIGHASH+ 標誌來指示交易資料�
 此外，還有一個修飾符標誌 +SIGHASH_ANYONECANPAY+，可以與前面的每個標誌組合。當設置 +ANYONECANPAY+ 時，只簽署一個輸入，其餘的（及其序列號）保持開放以供修改。+ANYONECANPAY+ 的值為 +0x80+，並透過按位 OR 應用，產生如 <<sighash_types_with_modifiers>> 所示的組合標誌。
 
 [role="less_space pagebreak-before"]
-++++
 [[sighash_types_with_modifiers]]
+++++
 <table id="sighash_types_with_modifiers">
 <caption>
 <span class="plain"><code>SIGHASH</code></span> 類型及修飾符的含義</caption>
