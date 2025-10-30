@@ -1,0 +1,266 @@
+[[ch02_bitcoin_overview]]
+== 比特幣如何運作
+
+比特幣系統與傳統銀行和支付系統不同，不需要對第三方的信任。在比特幣中，每個使用者都可以使用在自己電腦上執行的軟體來驗證比特幣系統每個方面的正確運作，而不是中央可信權威機構。在本章中，我們將透過追蹤單一交易通過比特幣系統並觀察它如何記錄在區塊鏈（所有交易的分散式日誌）上，從高層次檢查比特幣。後續章節將深入探討交易、網路和((("Bitcoin", "operational overview", id="bitcoin-operational-overview-ch2")))((("blockchain explorers", id="blockchain-explorers")))挖礦背後的技術。
+
+=== 比特幣概述
+
+++++
+<p class="fix_tracking">
+比特幣系統由擁有包含金鑰的錢包的使用者、在網路上傳播的交易，以及透過競爭計算產生共識區塊鏈（所有交易的權威日誌）的礦工組成。
+</p>
+
+<p class="fix_tracking2">
+本章中的每個範例都基於比特幣網路上進行的實際交易，透過將資金從一個錢包傳送到另一個錢包來模擬多個使用者之間的互動。在追蹤比特幣網路到區塊鏈的交易時，我們將使用<em>區塊鏈瀏覽器（blockchain explorer）</em>網站來視覺化每個步驟。區塊鏈瀏覽器是作為比特幣搜尋引擎運作的網頁應用程式，它允許你搜尋地址、交易和區塊，並查看它們之間的關係和流程。
+</p>
+++++
+
+熱門的區塊鏈瀏覽器包括以下內容：
+
+* https://blockstream.info[Blockstream Explorer]
+* https://mempool.space[Mempool.Space]
+* https://live.blockcypher.com[BlockCypher Explorer]
+
+每個瀏覽器都有一個搜尋功能，可以接受比特幣地址、交易雜湊、區塊編號或區塊雜湊，並從比特幣網路檢索相應的資訊。對於每個交易或區塊範例，我們將提供一個 URL，以便你可以自己查詢它並詳細研究它。
+
+[[block-explorer-privacy]]
+.區塊瀏覽器隱私警告
+[WARNING]
+====
+在區塊瀏覽器上搜尋資訊((("privacy", "blockchain explorers")))可能會向其運營者洩露你對該資訊感興趣，允許他們將其與你的 IP 位址、瀏覽器詳細資訊、過去的搜尋或其他可識別資訊相關聯。如果你查詢本書中的交易，區塊瀏覽器的運營者可能會猜測你正在學習比特幣，這應該不是問題。但是，如果你查詢自己的交易，運營者可能能夠猜測你已經收到、花費了多少比特幣，以及((("Bitcoin", "operational overview", startref="bitcoin-operational-overview-ch2")))((("blockchain explorers", startref="blockchain-explorers")))目前擁有多少比特幣。
+====
+
+[[spending_bitcoin]]
+=== 從線上商店購買
+
+Alice((("transactions", "spending bitcoins", id="transaction-spend")))((("bitcoins", "spending", id="bitcoin-spend")))((("spending bitcoins", id="spend-bitcoin")))在上一章中介紹過，是一位剛剛獲得她的第一批比特幣的新使用者。在 <<getting_first_bitcoin>> 中，Alice 與她的朋友 Joe 會面，用一些現金交換比特幣。從那時起，Alice 又購買了額外的比特幣。現在 Alice 將進行她的第一筆支出交易，從 Bob 的線上商店購買高級播客節目的存取權限。
+
+Bob 的網路商店最近開始接受比特幣支付，方法是在其網站上新增比特幣選項。Bob 商店的價格以當地貨幣（美元）列出，但在結帳時，客戶可以選擇以美元或比特幣支付。
+
+Alice 找到她想購買的播客節目並進入結帳頁面。在結帳時，除了常規選項外，還向 Alice 提供了使用比特幣支付的選項。結帳購物車以美元顯示價格，同時也以比特幣（BTC）顯示，按比特幣的當前匯率計算。
+
+Bob 的電子商務系統將自動建立一個包含發票((("invoices")))((("QR codes")))的 QR 碼（<<invoice-QR>>）。
+
+////
+TODO: Replace QR code with test-BTC address
+////
+
+[[invoice-QR]]
+.發票 QR 碼。
+image::images/mbc3_0201.png["payment-request"]
+
+與僅包含目標比特幣地址的 QR 碼不同，此發票是 QR 編碼的 URI，其中包含目標地址、支付金額和描述。這允許比特幣錢包應用程式預填用於傳送付款的資訊，同時向使用者顯示人類可讀的描述。你可以使用比特幣錢包應用程式掃描 QR 碼以查看 Alice 會看到的內容：
+
+
+[[invoice-URI]]
+.發票 QR 碼編碼以下 URI，在 BIP21 中定義：
+----
+bitcoin:bc1qk2g6u8p4qm2s2lh3gts5cpt2mrv5skcuu7u3e4?amount=0.01577764&
+label=Bob%27s%20Store&
+message=Purchase%20at%20Bob%27s%20Store
+
+URI 的組成部分
+
+比特幣地址："bc1qk2g6u8p4qm2s2lh3gts5cpt2mrv5skcuu7u3e4"
+支付金額："0.01577764"
+接收者地址的標籤："Bob's Store"
+付款描述："Purchase at Bob's Store"
+----
+
+[TIP]
+====
+嘗試使用你的錢包掃描此內容以查看地址和金額，但請勿傳送金錢。
+====
+
+Alice 使用她的智慧型手機掃描顯示幕上的條碼。她的智慧型手機顯示向 +Bob's Store+ 支付正確金額的付款，她選擇傳送以授權付款。在幾秒鐘內（大約與信用卡授權相同的時間），Bob 在收銀機上看到交易。
+
+[NOTE]
+====
+比特幣網路((("bitcoins", "fractional values")))((("fractional values of bitcoins")))((("satoshis")))((("millibitcoins")))可以處理分數值，例如，從毫比特幣（1/1000 比特幣）到 1/100,000,000 比特幣，稱為聰（satoshi）。本書在談論大於一個比特幣的金額和使用十進位表示法時使用與美元和其他傳統貨幣相同的複數規則，例如「10 bitcoins」或「0.001 bitcoins」。相同的規則也適用於其他比特幣記帳單位，例如毫比特幣和聰。
+====
+
+你可以使用區塊瀏覽器檢查區塊鏈資料，例如 Alice 向 Bob 支付的((("transactions", "spending bitcoins", startref="transaction-spend")))((("bitcoins", "spending", startref="bitcoin-spend")))((("spending bitcoins", startref="spend-bitcoin"))) https://oreil.ly/hAeyh[交易]。
+
+在以下部分中，我們將更詳細地檢查此交易。我們將看到 Alice 的錢包如何構建它，它如何在網路上傳播，它如何被驗證，以及最終 Bob 如何在後續交易中花費該金額。
+
+=== 比特幣交易
+
+簡單來說，((("transactions", "defined")))((("bitcoins", "transactions", see="transactions")))交易告訴網路某些比特幣的所有者已授權將該價值轉移給另一個所有者。新所有者現在可以透過建立另一筆交易來花費比特幣，該交易授權轉移給另一個所有者，依此類推，形成一條所有權鏈。
+
+==== 交易輸入和輸出
+
+交易((("transactions", "inputs", id="transaction-input-ch2")))((("transactions", "outputs", id="transaction-output-ch2")))((("inputs", id="input")))((("outputs", id="output")))就像複式記帳分類帳中的行。每筆交易包含一個或多個 _輸入_，用於花費資金。在交易的另一側，有一個或多個 _輸出_，用於接收資金。輸入和輸出不一定加起來相同的金額。相反，輸出的總和略少於輸入，差額代表隱含的 _交易手續費_((("transaction fees")))，這是礦工將交易包含在區塊鏈中收取的小額付款。比特幣交易在 <<transaction-double-entry>> 中顯示為記帳分類帳條目。
+
+交易還包含每個要花費的比特幣金額（輸入）的所有權證明，其形式是來自所有者的數位簽章，任何人都可以獨立驗證。在比特幣術語中，花費是簽署一筆交易，該交易將價值從先前的交易轉移到由比特幣地址識別的新所有者。
+
+[[transaction-double-entry]]
+.作為複式記帳的交易。
+image::images/mbc3_0202.png["Transaction Double-Entry"]
+
+==== 交易鏈
+
+Alice((("transaction chains", id="transaction-chains")))向 Bob's Store 的付款使用先前交易的輸出作為其輸入。在上一章中，Alice 從她的朋友 Joe 那裡收到比特幣以換取現金。我們在 <<transaction-chain>> 中將其標記為 _Transaction 1_（Tx1）。
+
+Tx1 將 0.001 比特幣（100,000 聰）傳送到由 Alice 的金鑰鎖定的輸出。她向 Bob's Store 的新交易（Tx2）將先前的輸出引用為輸入。在圖中，我們使用箭頭顯示該引用，並將輸入標記為「Tx1:0」。在實際交易中，引用是 Alice 從 Joe 那裡收到錢的交易的 32 位元組交易識別碼（txid）。「:0」表示 Alice 收到錢的輸出位置；在這種情況下，第一個位置（位置 0）。
+
+如圖所示，實際的比特幣交易不會明確包含其輸入的值。要確定輸入的值，軟體需要使用輸入的引用來查找正在花費的先前交易輸出。
+
+Alice 的 Tx2 包含兩個新輸出，一個支付 75,000 聰用於播客，另一個支付 20,000 聰回到 Alice 以接收找零。
+
+////
+@startditaa
+      Transaction 1             Tx2                   Tx3
+     Inputs  Outputs         In     Out           In      Out
+   +-------+---------+   +-------+--------+    +-------+--------+
+   |       |         |   |       | cDDD   |    |       |        |
+<--+ Tx0꞉0 | 100,000 |<--+ Tx1꞉0 | 20,000 |  +-+ Tx2꞉1 | 67,000 |
+   |       |         |   |       |        |  | |       |        |
+   +-------+---------+   +-------+--------+  | +-------+--------+
+   |       | cDDD    |   |       |        |  | |       |        |
+   |       | 500,000 |   |       | 75,000 |<-+ |       |        |
+   |       |         |   |       |        |    |       |        |
+   +-------+---------+   +-------+--------+    +-------+--------+
+        Fee꞉ (unknown)           Fee꞉ 5,000            Fee꞉ 8,000
+@enddittaa
+////
+
+[[transaction-chain]]
+.交易鏈，其中一筆交易的輸出是下一筆交易的輸入。
+image::images/mbc3_0203.png["Transaction chain"]
+
+[TIP]
+====
+序列化的比特幣交易——軟體用於傳送交易的資料格式——使用最小定義的鏈上價值單位的整數編碼要轉移的價值。當比特幣首次建立時，這個單位沒有名稱，一些開發者簡單地稱它為 _base unit_。後來，許多使用者開始將這個單位稱為 _satoshi_（sat），以紀念比特幣的創造者。在 <<transaction-chain>> 和本書中的一些其他插圖中，我們使用聰值，因為這是協議本身((("satoshis")))使用的。
+====
+
+==== 製造找零
+
+除了((("transactions", "change output", id="transaction-change-output")))((("change output", id="change-output")))((("outputs", "change output", id="output-change")))一個或多個支付比特幣接收者的輸出外，許多交易還將包括一個支付比特幣支出者的輸出，稱為 _找零_ 輸出。這是因為交易輸入，就像貨幣紙幣一樣，不能部分花費。如果你在商店購買 5 美元的商品，但使用 20 美元的鈔票支付商品，你期望收到 15 美元的找零。相同的概念適用於比特幣交易輸入。如果你購買了一個價值 5 比特幣的商品，但只有一個價值 20 比特幣的輸入可以使用，你將傳送一個 5 比特幣的輸出給商店老闆，另一個 15 比特幣的輸出回到你自己作為找零（不計算你的交易手續費）。
+
+在比特幣協議層面，找零輸出（以及它支付的地址，稱為 _找零地址_）與支付輸出之間沒有區別。
+
+重要的是，找零地址不必與輸入的地址相同，並且出於隱私原因，通常是來自所有者錢包的新地址。在理想情況下，輸出的兩種不同用途都使用以前從未見過的地址，否則看起來相同，防止任何第三方確定哪些輸出是找零，哪些是付款。但是，出於說明目的，我們在 <<transaction-chain>> 中為找零輸出新增了陰影。
+
+並非每筆交易都有找零輸出。那些沒有找零輸出的交易((("changeless transactions")))((("transactions", "changeless")))稱為 _無找零交易_，它們只能有一個輸出。只有當要花費的金額與交易輸入中可用的金額減去預期的交易手續費大致相同時，無找零交易才是一個實際的選擇。在 <<transaction-chain>> 中，我們看到 Bob 建立 Tx3 作為無找零交易，花費他在 Tx2 中收到的輸出。
+
+==== 幣選擇
+
+不同的錢包((("transactions", "coin selection")))((("coin selection in transactions")))((("selecting", "coins in transactions")))在選擇在付款中使用哪些輸入時使用不同的策略，稱為 _幣選擇_。
+
+它們可能會彙總許多小輸入，或使用一個等於或大於所需付款的輸入。除非錢包可以以某種方式彙總輸入以完全符合所需付款加上交易手續費，否則錢包將需要生成一些找零。這與人們處理現金的方式非常相似。如果你總是使用口袋裡最大的鈔票，你最終會得到一個裝滿零錢的口袋。如果你只使用零錢，你通常只會有大鈔票。人們下意識地在這兩個極端之間找到平衡，比特幣錢包開發者努力對這種平衡進行程式設計。
+
+==== 常見交易形式
+
+一種非常((("transactions", "common types", id="transaction-common-ch2")))常見的交易形式是簡單付款。這種類型的交易有一個輸入和兩個輸出，如 <<transaction-common>> 所示。
+
+[[transaction-common]]
+.最常見的交易。
+image::images/mbc3_0204.png["Common Transaction"]
+
+另一種常見的交易形式((("consolidation transactions")))是 _合併交易_，它將多個輸入花費到單一輸出（<<transaction-consolidating>>）。這代表了將一堆硬幣和貨幣紙幣交換為單一更大面額紙幣的現實世界等價物。這樣的交易有時由錢包和企業生成，以清理大量較小的金額。
+
+[[transaction-consolidating]]
+.合併交易彙總資金。
+image::images/mbc3_0205.png["Aggregating Transaction"]
+
+最後，另一種在區塊鏈上經常看到的交易形式((("payment batching")))是 _批量付款_，它支付多個代表多個接收者的輸出（<<transaction-distributing>>）。這種類型的交易有時被商業實體用於分配資金，例如在處理向多個員工支付工資時。
+
+[[transaction-distributing]]
+.批次交易分配資金。
+image::images/mbc3_0206.png["Distributing Transaction"]
+
+=== 構建交易
+
+Alice 的錢包((("transactions", "constructing", id="transaction-construct")))應用程式包含所有用於選擇輸入和生成輸出以根據 Alice 的規範建構交易的邏輯。Alice 只需要選擇目的地、金額和交易手續費，其餘的在錢包應用程式中發生，而她看不到詳細資訊。重要的是，如果錢包已經知道它控制哪些輸入，即使完全離線，它也可以構建交易。就像在家裡寫支票並稍後在信封中將其傳送到銀行一樣，交易不需要在連接到比特幣網路時構建和簽署。
+
+==== 獲取正確的輸入
+
+Alice 的錢包應用程式((("inputs", "constructing transactions")))首先必須找到可以支付她想傳送給 Bob 的金額的輸入。大多數錢包會追蹤屬於錢包中地址的所有可用輸出。因此，Alice 的錢包將包含來自 Joe 的交易的交易輸出的副本，該交易是為了交換現金而建立的（請參閱 <<getting_first_bitcoin>>）。在完整節點上執行的比特幣錢包應用程式實際上包含每筆已確認交易的((("UTXOs (unspent transaction outputs)")))未花費輸出的副本，稱為 _未花費交易輸出_（UTXO）。但是，由於完整節點使用更多資源，許多使用者錢包執行輕量級客戶端，僅追蹤使用者自己的 UTXO。
+
+在這種情況下，這個單一的 UTXO 足以支付播客。如果不是這種情況，Alice 的錢包應用程式可能必須組合幾個較小的 UTXO，就像從錢包中挑選硬幣一樣，直到它可以找到足夠的錢來支付播客。在這兩種情況下，可能需要取回一些找零，我們將在下一節中看到，因為錢包應用程式會建立交易輸出（付款）。
+
+
+==== 建立輸出
+
+交易輸出((("outputs", "constructing transactions")))是使用腳本建立的，該腳本說類似於「此輸出支付給任何可以呈現與 Bob 的公開地址相對應的金鑰的簽章的人」。因為只有 Bob 擁有與該地址對應的金鑰的錢包，所以只有 Bob 的錢包可以呈現這樣的簽章以後來花費此輸出。因此，Alice 將使用對 Bob 簽章的要求 _加負擔_ 於輸出值。
+
+此交易還將包括第二個輸出((("change output")))，因為 Alice 的資金包含的錢比播客的成本多。Alice 的找零輸出與支付給 Bob 的付款在同一筆交易中建立。本質上，Alice 的錢包將她的資金分成兩個輸出：一個給 Bob，另一個回到她自己。然後，她可以在後續交易中花費找零輸出。
+
+最後，為了讓交易及時由網路處理((("transaction fees")))，Alice 的錢包應用程式將新增一小筆手續費。手續費不會在交易中明確說明；它是由輸入和輸出之間的價值差異隱含的。此交易手續費由礦工收取，作為將交易包含在記錄在區塊鏈上的區塊中的手續費。
+
+[[transaction-alice-url]]
+[TIP]
+====
+檢視從 Alice 到 Bob's Store 的 https://oreil.ly/GwBq1[交易]。
+====
+
+==== 將交易新增到區塊鏈
+
+由((("transactions", "adding to blockchain", id="transaction-add-blockchain")))((("blockchain", "adding transactions to", id="blockchain-add-transaction")))Alice 的錢包應用程式建立的交易包含確認資金所有權和分配新所有者所需的一切。現在，交易必須傳輸到比特幣網路，它將成為區塊鏈的一部分。在下一部分中，我們將看到交易如何成為新區塊的一部分以及區塊如何被挖掘。最後，我們將看到新區塊一旦新增到區塊鏈中，隨著新增更多區塊，網路如何越來越信任它。
+
+===== 傳輸交易
+
+因為交易包含處理它所需的所有資訊，所以它如何或在何處傳輸到比特幣網路並不重要。比特幣網路是一個點對點網路，每個比特幣對等點透過連接到其他幾個比特幣對等點來參與。比特幣網路的目的是將交易和區塊傳播給所有參與者。
+
+===== 它如何傳播
+
+
+比特幣點對點網路中的對等點((("Bitcoin", "as peer-to-peer network", secondary-sortas="peer-to-peer network")))((("peer-to-peer networks, Bitcoin as")))是同時具有軟體邏輯和完全驗證新交易正確性所需的資料的程式。對等點之間的連接通常在圖形中視覺化為邊（線），對等點本身是節點（點）。因此，比特幣對等點通常被稱為「完全驗證節點」，((("full nodes")))或簡稱 _完整節點_。
+
+Alice 的錢包應用程式可以透過任何類型的連接將新交易傳送到任何比特幣節點：有線、WiFi、行動等。它還可以將交易傳送到另一個程式（例如區塊瀏覽器），該程式將其轉發到節點。她的比特幣錢包不必直接連接到 Bob 的比特幣錢包，她也不必使用 Bob 提供的網際網路連接，儘管這兩種選項也是可能的。任何收到它之前沒有見過的有效交易的比特幣節點都會將其轉發到它連接的所有其他節點，這是一種稱為 _gossiping_((("gossiping")))的傳播技術。因此，交易在點對點網路中迅速傳播，在幾秒鐘內到達大部分節點。
+
+===== Bob 的觀點
+
+如果 Bob 的比特幣錢包應用程式直接連接到 Alice 的錢包應用程式，Bob 的錢包應用程式可能是第一個接收交易的。但是，即使 Alice 的錢包透過其他節點傳送交易，它也會在幾秒鐘內到達 Bob 的錢包。Bob 的錢包將立即將 Alice 的交易識別為傳入付款，因為它包含可由 Bob 的金鑰贖回的輸出。Bob 的錢包應用程式還可以獨立驗證交易格式正確。如果 Bob 使用他自己的完整節點，他的錢包可以進一步驗證 Alice 的交易僅花費((("transactions", "constructing", startref="transaction-construct")))((("transactions", "adding to blockchain", startref="transaction-add-blockchain")))((("blockchain", "adding transactions to", startref="blockchain-add-transaction")))有效的 UTXO。
+
+=== 比特幣挖礦
+
+Alice 的交易((("mining", "operational overview", id="mining-operational-overview")))現在在比特幣網路上傳播。在它被包含在一個稱為 _mining_ 的過程的區塊中並且該區塊已被完整節點驗證之前，它不會成為 _blockchain_ 的一部分。有關詳細說明，請參閱 <<mining>>。
+
+比特幣的防偽保護系統基於計算。交易被捆綁((("transactions", "in blocks", secondary-sortas="blocks")))((("blocks")))成 _blocks_。區塊有一個非常小的標頭，必須以非常特定的方式形成，需要大量的計算才能做對——但只需要少量的計算就可以驗證為正確。挖礦過程在比特幣中有兩個目的：
+
+[role="less_space pagebreak-before"]
+* 礦工只能從建立遵循比特幣所有((("consensus rules"))) _consensus rules_ 的區塊中獲得誠實的收入。因此，礦工通常被激勵僅在其區塊中包含有效交易以及他們建構的區塊。這允許使用者可選地做出基於信任的假設，即區塊中的任何交易都是有效交易。
+
+* 挖礦目前在每個區塊中建立新的比特幣，幾乎就像中央銀行印製新錢一樣。每個區塊建立的比特幣數量是有限的，並且隨著時間的推移而減少，遵循固定的發行時間表。
+
+
+挖礦在成本和獎勵之間取得了微妙的平衡。挖礦使用電力來解決計算問題。成功的礦工將以新比特幣和交易手續費的形式收集 _reward_((("rewards")))。但是，獎勵只會在礦工僅包含有效交易時收集，比特幣協議的 _consensus_ 規則決定什麼是有效的。這種微妙的平衡為比特幣提供了安全性，無需中央權威機構。
+
+挖礦被設計為去中心化彩票。每個礦工都可以透過建立((("candidate blocks")))包含他們想要挖掘的新交易加上一些額外資料欄位的 _candidate block_ 來建立自己的彩票。礦工將其候選者輸入到專門設計的演算法中，該演算法對資料進行加擾（或「雜湊」），產生看起來與輸入資料完全不同的輸出。這個 _hash_ 函數((("hash functions")))對於相同的輸入總是產生相同的輸出——但沒有人可以預測對於新輸入，輸出會是什麼樣子，即使它與先前的輸入只有微小的不同。如果雜湊函數的輸出與比特幣協議確定的模板相符，礦工就贏得了彩票，比特幣使用者將接受帶有其交易的區塊作為有效區塊。如果輸出與模板不符，礦工會對其候選區塊進行小的更改並再次嘗試。截至撰寫本文時，礦工在找到獲勝組合之前需要嘗試的候選區塊數量約為 168 億兆。這也是雜湊函數需要執行的次數。
+
+但是，一旦找到獲勝組合，任何人都可以透過執行一次雜湊函數來驗證區塊是有效的。這使得有效區塊需要難以置信的工作量才能建立，但只需要微不足道的工作量就可以驗證。簡單的驗證過程能夠機率證明工作已完成，因此生成該證明所需的資料——在這種情況下，區塊——稱為 _proof of work (PoW)_((("proof-of-work algorithm")))。
+
+交易被新增到新區塊中，首先按最高手續費率交易和一些其他標準排序。每個礦工在從網路接收到先前的區塊後立即開始挖掘新候選交易區塊的過程，知道其他一些礦工贏得了該輪彩票。他們立即建立一個帶有對先前區塊的承諾的新候選區塊，用交易填充它，並開始計算候選區塊的 PoW。每個礦工在其候選區塊中包含一個特殊交易，該交易將區塊獎勵加上候選區塊中包含的所有交易的交易手續費總和支付給他們自己的比特幣地址。如果他們找到一個使候選者成為有效區塊的解決方案，他們在成功的區塊新增到全局區塊鏈並且他們包含的獎勵交易變得可花費後，將收到此獎勵。參與挖礦池的礦工已設定他們的軟體來建立將獎勵分配給池地址的候選區塊。從那裡，獎勵的一部分按照他們貢獻的工作量的比例分配給池礦工的成員。
+
+Alice 的交易被網路接收，並包含在未驗證交易池中。一旦由完整節點驗證，它就被包含在候選區塊中。在交易首次由 Alice 的錢包傳輸後大約五分鐘，一名礦工為該區塊找到解決方案並將其公佈到網路。在每個其他礦工驗證獲勝區塊後，他們開始新的彩票以生成下一個區塊。
+
+包含 Alice 交易的獲勝區塊成為區塊鏈的一部分。包含 Alice 交易的區塊被計為((("confirmations")))((("clearing transactions")))((("transactions", "clearing")))該交易的一次 _confirmation_。在包含 Alice 交易的區塊在網路中傳播後，建立帶有 Alice 交易的不同版本的替代區塊（例如不支付給 Bob 的交易）將需要執行與所有比特幣礦工建立全新區塊所需的工作量相同的工作量。當有多個替代區塊可供選擇時，比特幣完整節點選擇具有最多總 PoW 的有效區塊鏈，稱為 _best blockchain_。為了讓整個網路接受替代區塊，需要在替代區塊之上挖掘額外的新區塊。
+
+這意味著礦工有選擇。他們可以與 Alice 合作製作她向 Bob 付款的交易的替代方案，也許 Alice 向礦工支付她先前支付給 Bob 的一部分錢。這種不誠實的行為將要求他們花費建立兩個新區塊所需的努力。相反，誠實行為的礦工可以建立單個新區塊，並收到他們包含在其中的交易的所有手續費，加上區塊補貼。通常，不誠實地建立兩個區塊以獲得少量額外付款的高成本遠不如誠實地建立新區塊有利可圖，這使得已確認交易不太可能被故意更改。對於 Bob 來說，這意味著他可以開始相信來自 Alice 的付款是可靠的。
+
+[TIP]
+====
+你可以看到包含 https://oreil.ly/7v_lH[Alice 交易]的區塊。
+====
+
+在包含 Alice 交易的區塊廣播後大約 19 分鐘，另一名礦工挖掘了一個新區塊。因為這個新區塊建立在包含 Alice 交易的區塊之上（給 Alice 的交易兩次確認），Alice 的交易現在只能在兩個替代區塊被挖掘後才能更改——加上在它們之上建立的新區塊——總共需要挖掘三個區塊才能讓 Alice 取回她傳送給 Bob 的錢。在包含 Alice 交易的區塊之上挖掘的每個區塊都算作額外的確認。隨著區塊一個接一個地疊加，逆轉交易變得更加困難，從而為 Bob 提供越來越多的信心，即 Alice 的付款是安全的。
+
+在 <<block-alice1>> 中，我們可以看到包含 Alice 交易的區塊。在它下面是數十萬個區塊，在區塊鏈中相互連結（區塊鏈）一直回到第 0 個區塊，稱為((("genesis block"))) _genesis block_。隨著時間的推移，隨著新區塊的「高度」增加，整個鏈的計算難度也會增加。按照慣例，任何超過六次確認的區塊都被認為很難更改，因為它需要大量的計算來重新計算六個區塊（加上一個新區塊）。我們將在 <<mining>> 中更詳細地檢查挖礦過程以及它如何建立((("mining", "operational overview", startref="mining-operational-overview")))信心。
+
+[[block-alice1]]
+.Alice 的交易包含在區塊中。
+image::images/mbc3_0207.png["Alice's transaction included in a block"]
+
+[role="less_space pagebreak-before"]
+=== 花費交易
+
+現在((("transactions", "spending bitcoins", id="transaction-spend2")))((("bitcoins", "spending", id="bitcoin-spend2")))((("spending bitcoins", id="spend-bitcoin2")))，Alice 的交易已嵌入區塊鏈作為區塊的一部分，所有比特幣應用程式都可以看到它。每個比特幣完整節點都可以獨立驗證交易是有效和可花費的。完整節點驗證從區塊中首次生成比特幣的那一刻起到它們到達 Bob 的地址的每筆交易的資金轉移。輕量級客戶端可以透過確認交易在區塊鏈中並且在它之後挖掘了幾個區塊來部分驗證付款，從而提供保證礦工花費了大量努力承諾它（請參閱 <<spv_nodes>>）。
+
+Bob 現在可以花費來自這筆交易和其他交易的輸出。例如，Bob 可以透過將價值從 Alice 的播客付款轉移到這些新所有者來向承包商或供應商付款。隨著 Bob 花費從 Alice 和其他客戶收到的付款，他擴展了交易鏈。假設 Bob 為新的網站頁面向他的網頁設計師 Gopesh 付款。現在交易鏈將如 <<block-alice2>> 所示。
+
+[[block-alice2]]
+.Alice 的交易作為從 Joe 到 Gopesh 的交易鏈的一部分。
+image::images/mbc3_0208.png["Alice's transaction as part of a transaction chain"]
+
+在本章中，我們看到了交易如何建立一條將價值從所有者轉移到所有者的鏈。我們還從 Alice 的錢包中建立交易的那一刻起追蹤 Alice 的交易，透過比特幣網路，到將其記錄在區塊鏈上的礦工。在本書的其餘部分中，我們將檢查錢包、地址、簽章、交易、網路以及最後挖礦背後的特定技術。

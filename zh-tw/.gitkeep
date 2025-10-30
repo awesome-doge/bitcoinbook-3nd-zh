@@ -1,0 +1,18 @@
+# 繁體中文翻譯文件目錄
+
+本目錄存放《精通比特幣》第三版的繁體中文翻譯文件。
+
+## 文件說明
+
+- `book.adoc` - 主書籍文件（包含所有章節）
+- `preface.adoc` - 前言
+- `ch01_intro.adoc` 至 `ch14_applications.adoc` - 14 個主要章節
+- `appa_whitepaper.adoc`、`appb_errata.adoc`、`appc_bips.adoc` - 附錄
+- `glossary.asciidoc` - 詞彙表
+
+## 翻譯須知
+
+1. 所有文件必須遵循 `translation/style-guide.md` 的風格規範
+2. 術語翻譯請參考 `translation/terminology.md`
+3. 保持 AsciiDoc 格式標記不變
+4. 圖片引用使用相對路徑：`image::../images/xxx.png`

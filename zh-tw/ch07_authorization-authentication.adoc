@@ -1,0 +1,1063 @@
+[[c_authorization_authentication]]
+== 授權與認證
+
+當您接收 bitcoin 時，您必須決定誰將有權花費它們，((("authorization")))((("authentication")))稱為_授權_。您還必須決定完整節點如何將授權花費者與其他所有人區分開來，稱為_認證_。您的授權指令和花費者的認證證明將由數千個獨立的完整節點檢查，它們都需要得出相同的結論，即花費已獲得授權和認證，以使包含它的交易有效。
+
+Bitcoin 的原始描述使用公鑰進行授權。Alice 通過將 Bob 的公鑰放入交易的輸出中來支付給 Bob。認證來自 Bob，形式為承諾花費交易的簽章，例如從 Bob 到 Carol 的交易。
+
+最初發布的 Bitcoin 實際版本為授權和認證提供了更靈活的機制。從那時起的改進只增加了這種靈活性。在本章中，我們將探討這些功能，並了解它們最常見的用法。
+
+[[tx_script]]
+=== 交易腳本和腳本語言
+
+Bitcoin((("transaction scripts", see="scripts")))((("Script programming language")))的原始版本引入了一種稱為 _Script_ 的新程式語言，一種類似 Forth 的基於堆疊的語言。放置在輸出中的腳本和花費交易中使用的傳統輸入腳本都是用這種腳本語言編寫的。
+
+Script 是一種非常簡單的語言。它需要最少的處理，並且不能輕易完成許多現代程式語言可以完成的花哨事情。
+
+當傳統交易是最常用的交易類型時，透過 Bitcoin 網路處理的大多數交易都具有「支付給 Bob 的 Bitcoin 地址」的形式，並使用稱為支付到公鑰雜湊（P2PKH）腳本的腳本。然而，Bitcoin 交易並不僅限於「支付給 Bob 的 Bitcoin 地址」腳本。實際上，腳本可以編寫為表達各種各樣的複雜條件。為了理解這些更複雜的腳本，我們必須首先理解交易腳本和 Script 語言的基礎知識。
+
+在本節中，我們將展示 Bitcoin 交易腳本語言的基本組件，並展示如何使用它來表達花費條件以及如何滿足這些條件。
+
+[TIP]
+====
+Bitcoin 交易((("transactions", "validating")))((("validating", "transactions")))驗證不基於靜態模式，而是透過執行腳本語言來實現。這種語言允許表達幾乎無限種類的條件。
+====
+
+==== 圖靈不完備
+
+Bitcoin((("scripts", "Turing incompleteness")))((("Turing Complete")))交易腳本語言包含許多運算子，但在一個重要方面被刻意限制——除了條件流控制之外，沒有迴圈或複雜的流控制功能。這確保了該語言不是_圖靈完備_的，這意味著腳本具有有限的複雜性和可預測的執行時間。Script 不是一種通用語言。這些限制確保該語言不能用於建立無限迴圈或其他形式的「邏輯炸彈」，這些炸彈可以嵌入交易中，從而對 Bitcoin 網路造成拒絕服務攻擊。請記住，每筆交易都由 Bitcoin 網路上的每個完整節點驗證。有限的語言防止交易驗證機制被用作漏洞。
+
+==== 無狀態驗證
+
+Bitcoin((("scripts", "stateless verification")))((("stateless script verification")))((("verifying", "scripts")))交易腳本語言是無狀態的，即在腳本執行之前沒有狀態，在腳本執行之後也沒有保存狀態。執行腳本所需的所有資訊都包含在腳本和執行腳本的交易中。腳本將在任何系統上以可預測的方式執行。如果您的系統驗證了腳本，您可以確信 Bitcoin 網路中的每個其他系統也將驗證腳本，這意味著有效的交易對每個人都有效，並且每個人都知道這一點。結果的這種可預測性是 Bitcoin 系統的一個基本好處。
+
+[[tx_lock_unlock]]
+==== 腳本構建
+
+Bitcoin((("scripts", "input/output", "constructing", id="script-input-output-construct")))((("input scripts", "constructing", id="input-script-construct")))((("output scripts", "constructing", id="output-script-construct")))的傳統交易驗證引擎依賴於腳本的兩個部分來驗證交易：輸出腳本和輸入腳本。
+
+輸出腳本指定了將來花費輸出必須滿足的條件，例如誰被授權花費輸出以及他們將如何被認證。
+
+輸入腳本是滿足輸出腳本中設置的條件並允許花費輸出的腳本。輸入腳本是每個交易輸入的一部分。在傳統交易中，大多數時候它們包含由使用者的錢包從其私鑰產生的數位簽章，但並非所有輸入腳本都必須包含簽章。
+
+每個 Bitcoin((("transactions", "validating")))((("validating", "transactions")))驗證節點都將透過執行輸出和輸入腳本來驗證交易。正如我們在 <<c_transactions>> 中看到的，每個輸入都包含一個引用先前交易輸出的輸出點。輸入還包含輸入腳本。驗證軟體將複製輸入腳本，擷取輸入引用的 UTXO，並從該 UTXO 複製輸出腳本。然後將輸入和輸出腳本一起執行。如果輸入腳本滿足輸出腳本的條件，則輸入有效（請參見 <<script_exec>>）。所有輸入都作為交易整體驗證的一部分獨立驗證。
+
+請注意，前面的步驟涉及複製所有資料。先前輸出和當前輸入中的原始資料永遠不會更改。特別是，先前的輸出是不變的，不受花費它的失敗嘗試的影響。只有正確滿足輸出腳本條件的有效交易才會導致輸出被視為「已花費」。
+
+<<input_and_output_scripts_legacy>> 是最常見類型的傳統 Bitcoin 交易（支付到公鑰雜湊）的輸出和輸入腳本的範例，顯示了在驗證之前腳本串聯產生的組合腳本。
+
+[[input_and_output_scripts_legacy]]
+.組合輸入和輸出腳本以評估交易腳本。
+image::images/mbc3_0701.png["input_and_output_scripts"]
+
+
+===== 腳本執行堆疊
+
+Bitcoin((("scripts", "stack", id="script-stack")))((("stack", id="stack")))的腳本語言稱為基於堆疊的語言，因為它使用稱為_堆疊_的資料結構。堆疊是一種非常簡單的資料結構，可以視覺化為一疊卡片。堆疊有兩個基本操作：推入和彈出。推入將一個項目添加到堆疊頂部。彈出從堆疊中移除頂部項目。
+
+腳本語言透過從左到右處理每個項目來執行腳本。數字（資料常數）被推入堆疊。運算子從堆疊中推入或彈出一個或多個參數，對它們進行操作，並可能將結果推入堆疊。例如，+OP_ADD+ 將從堆疊中彈出兩個項目，將它們相加，並將結果總和推入堆疊。
+
+條件運算子評估條件，產生 +TRUE+ 或 +FALSE+ 的布林結果。例如，+OP_EQUAL+ 從堆疊中彈出兩個項目，如果它們相等，則推入 +TRUE+（+TRUE+ 由數字 1 表示），如果它們不相等，則推入 +FALSE+（由 0 表示）。Bitcoin 交易腳本通常包含條件運算子，以便它們可以產生表示有效交易((("scripts", "stack", startref="script-stack")))((("stack", startref="stack")))的 +TRUE+ 結果。
+
+===== 簡單腳本
+
+現在讓我們((("scripts", "input/output", "examples of", id="script-input-output-example")))((("input scripts", "examples of", id="input-script-example")))((("output scripts", "examples of", id="output-script-example")))應用我們學到的關於腳本和堆疊的知識到一些簡單的範例。
+
+正如我們將在 <<simplemath_script>> 中看到的，腳本 +2 3 OP_ADD 5 OP_EQUAL+ 展示了算術加法運算子 +OP_ADD+，將兩個數字相加並將結果放在堆疊上，然後是條件運算子 +OP_EQUAL+，它檢查結果總和是否等於 +5+。為簡潔起見，本書中的範例有時可能會省略 +OP_+ 前綴。有關可用腳本運算子和函數的更多詳細資訊，請參見 https://oreil.ly/21vH9[Bitcoin Wiki 的腳本頁面]。
+
+儘管大多數傳統輸出腳本引用公鑰雜湊（本質上是傳統 Bitcoin 地址），從而要求證明所有權才能花費資金，但腳本不必那麼複雜。產生 +TRUE+ 值的輸出和輸入腳本的任何組合都是有效的。我們用作腳本語言範例的簡單算術也是有效的腳本。
+
+使用算術範例腳本的一部分作為輸出腳本：
+
+----
+3 OP_ADD 5 OP_EQUAL
+----
+
+可以由包含具有輸入腳本的輸入的交易滿足：
+
+----
+2
+----
+
+驗證軟體組合腳本：
+
+----
+2 3 OP_ADD 5 OP_EQUAL
+----
+
+正如我們在 <<simplemath_script>> 中看到的，當執行此腳本時，結果是 +OP_TRUE+，使交易有效。儘管這是有效的交易輸出腳本，但請注意，任何具有算術技能知道數字 2 滿足腳本的人都可以花費生成的 UTXO。
+
+
+[[simplemath_script]]
+.Bitcoin 的腳本驗證執行簡單數學運算。
+image::images/mbc3_0702.png["TxScriptSimpleMathExample"]
+
+[TIP]
+====
+如果堆疊頂部的結果是 +TRUE+（即任何非零值），則交易有效。如果堆疊頂部的值是 +FALSE+（零值或空堆疊），則交易無效，腳本執行被運算子（例如 +VERIFY+、+OP_RETURN+）明確停止，或者腳本在語義上無效（例如包含未由 +OP_ENDIF+ 操作碼終止的 +OP_IF+ 語句）。有關詳細資訊，請參見 https://oreil.ly/J2DXt[Bitcoin Wiki 的腳本頁面]。
+====
+
+
+以下是一個稍微複雜一點的腳本，它計算 2 + 7 – 3 + 1。請注意，當腳本連續包含多個運算子時，堆疊允許一個運算子的結果被下一個運算子操作：
+
+----
+2 7 OP_ADD 3 OP_SUB 1 OP_ADD 7 OP_EQUAL
+----
+
+嘗試使用紙筆自己驗證前面的腳本。當腳本執行結束時，您應該在堆疊上((("scripts", "input/output", "examples of", startref="script-input-output-example")))((("input scripts", "examples of", startref="input-script-example")))((("output scripts", "examples of", startref="output-script-example")))剩下一個 +TRUE+ 值。
+
+[[script_exec]]
+===== 輸出和輸入腳本的單獨執行
+
+在((("scripts", "input/output", "separate execution")))((("input scripts", "separate execution from output scripts")))((("output scripts", "separate execution from input scripts")))原始的 Bitcoin 客戶端中，輸出和輸入腳本被串聯並按順序執行。出於安全原因，這在 2010 年因為一個稱為 +1 OP_RETURN+ 錯誤的漏洞而改變。在當前的實作中，腳本單獨執行，堆疊在兩次執行之間傳輸。
+
+首先，使用堆疊執行引擎執行輸入腳本。如果輸入腳本執行沒有錯誤並且沒有剩餘操作，則複製堆疊並執行輸出腳本。如果使用從輸入腳本複製的堆疊資料執行輸出腳本的結果是 +TRUE+，則輸入腳本已成功解決輸出腳本施加的條件，因此輸入是花費 UTXO 的有效授權。如果組合腳本執行後剩餘的結果不是 +TRUE+，則輸入無效，因為它未能滿足放置在輸出上的花費條件。
+
+//SOMEDAY:implications of not being able to use script in input script
+
+[[p2pkh]]
+==== 支付到公鑰雜湊
+
+
+支付到公鑰雜湊((("P2PKH (pay to public key hash)")))((("addresses", "P2PKH (pay to public key hash)")))((("scripts", "P2PKH (pay to public key hash)")))（P2PKH）腳本使用包含承諾公鑰的雜湊的輸出腳本。P2PKH 最著名的是作為傳統 Bitcoin 地址的基礎。P2PKH 輸出可以透過呈現與雜湊承諾相符的公鑰和由相應私鑰建立的數位簽章來花費（請參見 <<c_signatures>>）。讓我們看一個 P2PKH 輸出腳本的範例：
+
+----
+OP_DUP OP_HASH160 <Key Hash> OP_EQUALVERIFY OP_CHECKSIG
+----
+
+[role="less_space pagebreak-before"]
++Key Hash+ 是將被編碼為傳統 base58check 地址的資料。大多數應用程式會使用十六進位編碼顯示腳本中的_公鑰雜湊_，而不是熟悉的以 [.keep-together]#「1」開頭#的 Bitcoin 地址 base58check 格式。
+
+前面的輸出腳本可以用以下形式的輸入腳本滿足：
+
+----
+<Signature> <Public Key>
+----
+
+兩個腳本一起將形成以下組合驗證腳本：
+
+----
+<Sig> <Pubkey> OP_DUP OP_HASH160 <Hash> OP_EQUALVERIFY OP_CHECKSIG
+----
+
+如果輸入腳本具有來自 Bob 私鑰的有效簽章，該簽章對應於設置為限制條件的公鑰雜湊，則結果將是 +TRUE+。
+
+圖 pass:[<a data-type="xref" href="#P2PubKHash1"
+data-xrefstyle="select: labelnumber">#P2PubKHash1</a>] 和 pass:[<a
+data-type="xref" href="#P2PubKHash2" data-xrefstyle="select:
+labelnumber">#P2PubKHash2</a>]（分為兩部分）顯示了組合腳本的逐步執行，這將證明這是一個有效的交易。
+
+[[P2PubKHash1]]
+.評估 P2PKH 交易的腳本（第 1 部分，共 2 部分）。
+image::images/mbc3_0703.png["Tx_Script_P2PubKeyHash_1"]
+
+[[P2PubKHash2]]
+.評估 P2PKH 交易的腳本（第 2 部分，共 2 部分）。
+image::images/mbc3_0704.png["Tx_Script_P2PubKeyHash_2"]
+
+[[multisig]]
+=== 腳本化多重簽章
+
+多重簽章腳本((("scripted multisignatures", id="script-multisignature")))((("multisignature scripts", id="multi-script")))設置一個條件，其中在腳本中記錄了 _k_ 個公鑰，並且至少必須提供其中 _t_ 個來花費資金，稱為 _t_-of-_k_。例如，2-of-3 多重簽章是一個列出三個公鑰作為潛在簽署者的簽章，並且必須使用其中至少兩個來建立簽章，以使交易花費資金有效。
+
+[TIP]
+====
+一些 Bitcoin 文件，包括本書的早期版本，對傳統多重簽章使用術語「m-of-n」。然而，在口語中很難區分「m」和「n」，因此我們使用替代的 _t_-of-_k_。這兩個短語都指同一類型的簽章方案。
+====
+
+設置 _t_-of-_k_ 多重簽章條件的輸出腳本的一般形式是：
+
+----
+t <Public Key 1> <Public Key 2> ... <Public Key k> k OP_CHECKMULTISIG
+----
+
+其中 _k_ 是列出的公鑰總數，_t_ 是花費輸出所需簽章的閾值。
+
+設置 2-of-3 多重簽章條件的輸出腳本如下所示：
+
+----
+2 <Public Key A> <Public Key B> <Public Key C> 3 OP_CHECKMULTISIG
+----
+
+前面的輸出腳本可以用包含 [.keep-together]#簽章的#輸入腳本滿足：
+
+----
+<Signature B> <Signature C>
+----
+
+或來自與三個列出的公鑰相對應的私鑰的兩個簽章的任何組合。
+
+兩個腳本一起將形成組合驗證腳本：
+
+----
+<Sig B> <Sig C> 2 <Pubkey A> <Pubkey B> <Pubkey C> 3 OP_CHECKMULTISIG
+----
+
+執行時，如果輸入腳本具有來自對應於設置為限制條件的三個公鑰中的兩個的私鑰的兩個有效簽章，則此組合腳本將評估為 +TRUE+。
+
+目前，Bitcoin Core 的交易中繼策略將多重簽章輸出腳本限制為最多三個列出的公鑰，這意味著您可以執行從 1-of-1 到 3-of-3 多重簽章或該範圍內的任何組合。您可能想檢查 +IsStandard()+ 函數以查看網路當前接受的內容。請注意，三個金鑰的限制僅適用於標準（也稱為「裸」）多重簽章腳本，不適用於包裝在另一個結構（如 P2SH、P2WSH 或 P2TR）中的腳本。P2SH 多重簽章腳本受策略和共識限制為 15 個金鑰，允許最多 15-of-15 多重簽章。我們將在 <<p2sh>> 中學習 P2SH。所有其他腳本在共識上受限於每個 +OP_CHECKMULTISIG+ 或 +OP_CHECKMULTISIGVERIFY+ 操作碼 20 個金鑰，儘管一個腳本可能包含多個這些操作碼。
+
+[role="less_space pagebreak-before"]
+[[multisig_bug]]
+==== CHECKMULTISIG 執行中的一個怪異之處
+
+++OP_CHECKMULTISIG++((("OP_CHECKMULTISIG execution", id="op-checkmultisig")))的執行中存在一個怪異之處，需要稍微變通一下。當 +OP_CHECKMULTISIG+ 執行時，它應該消耗堆疊上的 _t_ + _k_ + 2 個項目作為參數。然而，由於這個怪異之處，+OP_CHECKMULTISIG+ 將彈出一個額外的值或比預期多一個值。
+
+讓我們使用先前的驗證範例更詳細地看一下這個問題：
+
+----
+<Sig B> <Sig C> 2 <Pubkey A> <Pubkey B> <Pubkey C> 3 OP_CHECKMULTISIG
+----
+
+首先，+OP_CHECKMULTISIG+ 彈出頂部項目，即 _k_（在此範例中為「3」）。然後它彈出 _k_ 個項目，這些是可以簽章的公鑰；在此範例中為公鑰 A、B 和 C。然後，它彈出一個項目，即 _t_，法定人數（需要多少簽章）。這裡 _t_ = 2。此時，+OP_CHECKMULTISIG+ 應該彈出最後 _t_ 個項目，這些是簽章，並查看它們是否有效。然而，不幸的是，實作中的一個怪異之處導致 +OP_CHECKMULTISIG+ 彈出比應該彈出的多一個項目（總共 _t_ + 1 個）。這個額外的項目((("dummy stack element")))稱為_虛擬堆疊元素_，在檢查簽章時會被忽略，因此它對 +OP_CHECKMULTISIG+ 本身沒有直接影響。然而，虛擬元素必須存在，因為如果在 +OP_CHECKMULTISIG+ 嘗試從空堆疊彈出時它不存在，它將導致堆疊錯誤和腳本失敗（將交易標記為無效）。因為虛擬元素被忽略，它可以是任何東西。很早就成為慣例使用 +OP_0+，後來成為中繼策略規則，最終成為共識規則（隨著 BIP147 的執行）。
+
+因為彈出虛擬元素是共識規則的一部分，所以現在必須永遠複製。因此，腳本應該看起來像這樣：
+
+----
+OP_0 <Sig B> <Sig C> 2 <Pubkey A> <Pubkey B> <Pubkey C> 3 OP_CHECKMULTISIG
+----
+
+因此，多重簽章中實際使用的輸入腳本不是：
+
+----
+<Signature B> <Signature C>
+----
+
+而是：
+
+----
+OP_0 <Sig B> <Sig C>
+----
+
+有些人認為這個怪異之處是 Bitcoin 原始程式碼中的一個錯誤，但存在一個合理的替代解釋。驗證 _t_-of-_k_ 簽章可能需要比 _t_ 或 _k_ 多得多的簽章檢查操作。讓我們考慮一個 1-in-5 的簡單範例，具有以下組合腳本：
+
+----
+<dummy> <Sig4> 1 <key0> <key1> <key2> <key3> <key4> 5 OP_CHECKMULTISIG
+----
+
+簽章首先與 +key0+ 檢查，然後與 +key1+ 檢查，然後與其他金鑰檢查，最後才與其對應的 +key4+ 進行比較。這意味著即使只有一個簽章，也需要執行五個簽章檢查操作。消除這種冗餘的一種方法是向 +OP_CHECKMULTISIG+ 提供一個映射，指示提供的簽章對應於哪個公鑰，允許 +OP_CHECKMULTISIG+ 操作僅執行恰好 _t_ 個簽章檢查操作。Bitcoin 的原始開發人員可能在 Bitcoin 的原始版本中添加了額外的元素（我們現在稱之為虛擬堆疊元素），以便他們可以在以後的軟分叉中添加允許傳遞映射的功能。然而，該功能從未實作，2017 年對共識規則的 BIP147 更新使得將來無法添加該功能。
+
+只有 Bitcoin 的原始開發人員才能告訴我們虛擬堆疊元素是錯誤的結果還是未來升級的計畫。在本書中，我們簡單地稱之為怪異之處。
+
+從現在開始，如果您看到多重簽章腳本，您應該期望在開頭看到一個額外的 +OP_0+，其唯一目的是作為對共識規則中怪異之處((("scripted multisignatures", startref="script-multisignature")))((("multisignature scripts", startref="multi-script")))((("OP_CHECKMULTISIG execution", startref="op-checkmultisig")))的變通方法。
+
+[[p2sh]]
+=== 支付到腳本雜湊
+
+支付到腳本雜湊((("scripts", "P2SH (pay to script hash)", id="script-p2sh")))((("addresses", "P2SH (pay to script hash)", id="address-p2sh-ch7")))((("P2SH (pay to script hash)", id="p2sh-ch7")))（P2SH）於 2012 年引入，作為一種強大的新型操作，大大簡化了複雜腳本的使用。為了解釋 P2SH 的需求，讓我們看一個實際範例。
+
+Mohammed 是一位總部位於杜拜的電子產品進口商。Mohammed 的公司在其公司帳戶中廣泛使用 Bitcoin 的多重簽章功能。多重簽章腳本是 Bitcoin 進階腳本功能最常見的用途之一，是一個非常強大的功能。Mohammed 的公司對所有客戶付款使用多重簽章腳本。客戶支付的任何款項都以這樣的方式鎖定，即需要至少兩個簽章才能釋放。Mohammed、他的三位合夥人和他們的律師每人都可以提供一個簽章。這樣的多重簽章方案提供了公司治理控制，並防止盜竊、挪用或損失。
+
+生成的腳本相當長，看起來像這樣：
+
+----
+2 <Mohammed's Public Key> <Partner1 Public Key> <Partner2 Public Key>
+<Partner3 Public Key> <Attorney Public Key> 5 OP_CHECKMULTISIG
+----
+
+儘管多重簽章腳本是一個強大的功能，但使用起來很繁瑣。給定前面的腳本，Mohammed 必須在付款之前將此腳本傳達給每個客戶。每個客戶都必須使用具有建立自訂交易腳本能力的特殊 Bitcoin 錢包軟體。此外，生成的交易將大約是簡單支付交易的五倍大，因為此腳本包含非常長的公鑰。額外資料的負擔將以額外交易手續費的形式由客戶承擔。最後，像這樣的大型交易腳本將在每個完整節點的 UTXO 集中攜帶，直到它被花費。所有這些問題都使得在實踐中難以使用複雜的輸出腳本。
+
+P2SH 的開發旨在解決這些實際困難，並使複雜腳本的使用與支付到單金鑰 Bitcoin 地址一樣容易。使用 P2SH 支付，複雜腳本被承諾（密碼雜湊的摘要）替換。當稍後呈現嘗試花費 UTXO 的交易時，它必須包含與承諾相符的腳本，以及滿足腳本的資料。簡單來說，P2SH 意味著「支付給與此雜湊相符的腳本，該腳本將在稍後花費此輸出時呈現」。
+
+在 P2SH 交易中，被雜湊替換的腳本((("redeem scripts")))稱為_贖回腳本_，因為它在贖回時呈現給系統，而不是作為輸出腳本。<<without_p2sh>> 顯示沒有 P2SH 的腳本，<<with_p2sh>> 顯示使用 P2SH 編碼的相同腳本。
+
+++++
+<table id="without_p2sh">
+<caption>沒有 P2SH 的複雜腳本</caption>
+<tbody>
+<tr>
+<td><p>輸出腳本</p></td>
+<td><p>2 PubKey1 PubKey2 PubKey3 PubKey4 PubKey5 5 OP_CHECKMULTISIG</p></td>
+</tr>
+<tr>
+<td><p>輸入腳本</p></td>
+<td><p>Sig1 Sig2</p></td>
+</tr>
+</tbody>
+</table>
+<table id="with_p2sh">
+<caption>作為 P2SH 的複雜腳本</caption>
+<tbody>
+<tr>
+<td><p>贖回腳本</p></td>
+<td><p>2 PubKey1 PubKey2 PubKey3 PubKey4 PubKey5 5 OP_CHECKMULTISIG</p></td>
+</tr>
+<tr>
+<td><p>輸出腳本</p></td>
+<td><p>OP_HASH160 &lt;20-byte hash of redeem script&gt; OP_EQUAL</p></td>
+</tr>
+<tr>
+<td><p>輸入腳本</p></td>
+<td><p>Sig1 Sig2 &lt;redeem script&gt;</p></td>
+</tr>
+</tbody>
+</table>
+++++
+
+從表中可以看出，使用 P2SH，詳細說明花費輸出條件的複雜腳本（贖回腳本）不會呈現在輸出腳本中。相反，輸出腳本中只有它的雜湊，贖回腳本本身稍後作為輸入腳本的一部分在花費輸出時呈現。這將手續費和複雜性的負擔從支出者轉移到交易的接收者。
+
+讓我們看看 Mohammed 的公司、複雜的多重簽章腳本和生成的 P2SH 腳本。
+
+首先，Mohammed 公司用於所有來自客戶的傳入付款的多重簽章腳本：
+
+----
+2 <Mohammed's Public Key> <Partner1 Public Key> <Partner2 Public Key>
+<Partner3 Public Key> <Attorney Public Key> 5 OP_CHECKMULTISIG
+----
+
+可以透過首先應用 SHA256 雜湊演算法，然後對結果應用 RIPEMD-160 演算法，將整個腳本表示為 20 位元組密碼雜湊。例如，從 Mohammed 的贖回腳本的雜湊開始：
+
+----
+54c557e07dde5bb6cb791c7a540e0a4796f5e97e
+----
+
+P2SH 交易使用特殊的輸出腳本範本將輸出鎖定到此雜湊而不是較長的贖回腳本：
+
+----
+OP_HASH160 54c557e07dde5bb6cb791c7a540e0a4796f5e97e OP_EQUAL
+----
+
+如您所見，這要短得多。P2SH 等效交易不是「支付給這個 5 金鑰多重簽章腳本」，而是「支付給具有此雜湊的腳本」。向 Mohammed 公司付款的客戶只需在其支付中包含此短得多的輸出腳本。當 Mohammed 和他的合夥人想要花費這個 UTXO 時，他們必須呈現原始贖回腳本（其雜湊鎖定了 UTXO）和解鎖它所需的簽章，如下所示：
+
+----
+<Sig1> <Sig2> <2 PK1 PK2 PK3 PK4 PK5 5 OP_CHECKMULTISIG>
+----
+
+兩個腳本分兩個階段組合。首先，檢查贖回腳本是否與輸出腳本相符以確保雜湊匹配：
+
+----
+<2 PK1 PK2 PK3 PK4 PK5 5 OP_CHECKMULTISIG> OP_HASH160 <script hash> OP_EQUAL
+----
+
+如果贖回腳本雜湊匹配，則執行贖回腳本：
+
+----
+<Sig1> <Sig2> 2 <PK1> <PK2> <PK3> <PK4> <PK5> 5 OP_CHECKMULTISIG
+----
+
+==== P2SH 地址
+
+P2SH 功能的另一個重要部分是能夠將腳本雜湊編碼為地址，如 BIP13 中所定義。P2SH 地址是腳本 20 位元組雜湊的 base58check 編碼，就像 Bitcoin 地址是公鑰 20 位元組雜湊的 base58check 編碼一樣。P2SH 地址使用版本前綴「5」，這導致 base58check 編碼的地址以「3」開頭。
+
+例如，Mohammed 的複雜腳本，經過雜湊處理並作為 P2SH 地址進行 base58check 編碼，變為 +39RF6JqABiHdYHkfChV6USGMe6Nsr66Gzw+。
+
+現在，Mohammed 可以將此「地址」提供給他的客戶，他們可以使用幾乎任何 Bitcoin 錢包進行簡單支付，就像任何其他 Bitcoin 地址一樣。前綴 3 給他們一個提示，這是一種特殊類型的地址，對應於腳本而不是公鑰，但除此之外，它的工作方式與支付給任何其他 Bitcoin 地址完全相同。
+
+P2SH 地址隱藏了所有複雜性，因此支付的人看不到腳本。
+
+==== P2SH 的好處
+
+與在輸出中直接使用複雜腳本相比，P2SH 功能提供以下好處：
+
+- 與原始傳統地址的相似性意味著發送者和發送者的錢包不需要複雜的工程來實作 P2SH。
+
+- P2SH 將長腳本的資料儲存負擔從輸出（除了儲存在區塊鏈上之外還在 UTXO 集中）轉移到輸入（僅儲存在區塊鏈上）。
+
+- P2SH 將長腳本的資料儲存負擔從當前時間（支付）轉移到未來時間（當它被花費時）。
+
+- P2SH 將長腳本的交易手續費成本從發送者轉移到接收者，接收者必須包含長贖回腳本才能花費它。
+
+==== 贖回腳本和驗證
+
+您((("redeem scripts", "validating")))((("validating", "redeem scripts")))無法將 P2SH 放入 P2SH 贖回腳本中，因為 P2SH 規範不是遞迴的。此外，雖然在贖回腳本中包含 +OP_RETURN+（請參見 <<op_return>>）在技術上是可能的，因為規則中沒有任何內容阻止您這樣做，但這沒有實際用途，因為在驗證期間執行 +OP_RETURN+ 將導致交易被標記為無效。
+
+請注意，因為贖回腳本直到您嘗試花費 P2SH 輸出時才呈現給網路，所以如果您使用無效贖回腳本的雜湊建立輸出，您將無法花費它。包含贖回腳本的花費交易將不被接受，因為它是無效的腳本。這會產生風險，因為您可以將 bitcoin 發送到以後無法花費的 P2SH 地址。
+
+[WARNING]
+====
+P2SH 輸出腳本包含贖回腳本的雜湊，這不提供有關贖回腳本內容的線索。即使贖回腳本無效，P2SH 輸出也將被視為有效並被接受。您可能會意外地以以後無法((("scripts", "P2SH (pay to script hash)", startref="script-p2sh")))((("P2SH (pay to script hash)", startref="p2sh-ch7")))((("addresses", "P2SH (pay to script hash)", startref="address-p2sh-ch7")))花費的方式接收 bitcoin。
+====
+
+[[op_return]]
+=== 資料記錄輸出（OP_RETURN）
+
+Bitcoin((("scripts", "OP_RETURN", id="script-op-return")))((("OP_RETURN scripts", id="op-return")))((("nonpayment data", id="nonpayment-data")))((("blockchain", "nonpayment data in", id="blockchain-nonpayment")))((("output scripts", "OP_RETURN", id="output-script-op-return")))的分散式和時間戳區塊鏈具有超越支付的潛在用途。許多開發人員嘗試使用交易腳本語言來利用系統的安全性和彈性，用於諸如數位公證服務等應用程式。將 Bitcoin 的腳本語言用於這些目的的早期嘗試涉及建立在區塊鏈上記錄資料的交易輸出；例如，以這樣的方式記錄對文件的承諾，即任何人都可以透過引用該交易在特定日期建立該文件的存在證明。
+
+[role="less_space pagebreak-before"]
+使用 Bitcoin 的區塊鏈儲存與 Bitcoin 支付無關的資料是一個有爭議的話題。許多人認為這種使用是濫用，並希望阻止它。其他人將其視為區塊鏈技術強大功能的展示，並希望鼓勵這種實驗。那些反對包含非支付資料的人認為，它給執行完整 Bitcoin 節點的人帶來了負擔，他們需要承擔儲存區塊鏈本不打算攜帶的資料的磁碟儲存成本。此外，此類交易可能會建立無法花費的 UTXO，使用傳統 Bitcoin 地址作為自由形式的 20 位元組欄位。因為地址用於資料，所以它不對應於私鑰，並且生成的 UTXO 永遠_無法_花費；這是一個假支付。因此，這些永遠無法花費的交易永遠不會從 UTXO 集中移除，並導致 UTXO 資料庫的大小永遠增加或「膨脹」。
+
+達成了一項妥協，允許以 +OP_RETURN+ 開頭的輸出腳本向交易輸出添加非支付資料。然而，與使用「假」UTXO 不同，+OP_RETURN+ 運算子建立一個明確的_可證明不可花費_的輸出，該輸出不需要儲存在 UTXO 集中。+OP_RETURN+ 輸出記錄在區塊鏈上，因此它們消耗磁碟空間並有助於區塊鏈大小的增加，但它們不儲存在 UTXO 集中，因此不會使完整節點承擔更昂貴的資料庫操作成本而膨脹。
+
++OP_RETURN+ 腳本如下所示：
+
+----
+OP_RETURN <data>
+----
+
+資料部分通常表示雜湊，例如來自 SHA256 演算法的輸出（32 位元組）。一些應用程式在資料前面放置一個前綴以幫助識別應用程式。例如，https://proofofexistence.com[Proof of Existence] 數位公證服務使用 8 位元組前綴 +DOCPROOF+，在十六進位中編碼為 ASCII 為 +44 4f 43 50 52 4f 4f 46+。
+
+請記住，沒有與 +OP_RETURN+ 相對應的輸入腳本可以用來「花費」+OP_RETURN+ 輸出。+OP_RETURN+ 輸出的全部意義在於您不能花費鎖定在該輸出中的錢，因此它不需要作為潛在可花費的保存在 UTXO 集中：+OP_RETURN+ 輸出是_可證明不可花費_的。+OP_RETURN+ 輸出通常具有零金額，因為分配給此類輸出的任何 bitcoin 實際上永遠丟失。如果 +OP_RETURN+ 輸出在交易中作為輸入引用，則腳本驗證引擎將停止驗證腳本的執行並將交易標記為無效。執行 +OP_RETURN+ 本質上會導致腳本以 +FALSE+ 「RETURN」並停止。因此，如果您意外地在交易中引用 +OP_RETURN+ 輸出作為輸入，則該交易((("scripts", "OP_RETURN", startref="script-op-return")))((("OP_RETURN scripts", startref="op-return")))((("nonpayment data", startref="nonpayment-data")))((("blockchain", "nonpayment data in", startref="blockchain-nonpayment")))((("output scripts", "OP_RETURN", startref="output-script-op-return")))無效。
+
+[[lock_time_limitations]]
+==== 交易鎖定時間限制
+
+使用((("transactions", "timelocks", "limitations of")))((("timelocks", "limitations of")))((("lock time", "limitations of")))((("scripts", "timelocks", "limitations of")))鎖定時間允許花費者限制交易直到特定區塊高度才能包含在區塊中，但它不會阻止在此之前在另一筆交易中花費資金。讓我們用以下範例解釋一下。
+
+Alice 簽署一筆交易，將她的一個輸出花費到 Bob 的地址，並將交易鎖定時間設置為未來 3 個月。Alice 將該交易發送給 Bob 保留。透過這筆交易，Alice 和 Bob 知道：
+
+* Bob 在經過 3 個月之前無法傳輸交易以贖回資金。
+* Bob 可以在 3 個月後傳輸交易。
+
+然而：
+
+* Alice 可以建立衝突交易，花費相同的輸入而沒有鎖定時間。因此，Alice 可以在經過 3 個月之前花費相同的 UTXO。
+* Bob 無法保證 Alice 不會這樣做。
+
+重要的是要理解交易鎖定時間的限制。唯一的保證是 Bob 在經過 3 個月之前無法贖回預簽交易。無法保證 Bob 會收到資金。保證 Bob 會收到資金但在經過 3 個月之前無法花費它們的一種方法是將時間鎖限制作為腳本的一部分放在 UTXO 本身上，而不是放在交易上。這是透過下一種形式的時間鎖來實現的，稱為檢查鎖定時間驗證。
+
+==== 檢查鎖定時間驗證（OP_CLTV）
+
+2015((("transactions", "timelocks", "verifying", id="transaction-timelock-op-cltv")))((("timelocks", "verifying", id="timelock-op-cltv")))((("lock time", "verifying", id="lock-time-op-cltv")))((("OP_CLTV  script operator", id="op-cltv")))((("verifying", "lock time", id="verify-lock-time")))((("scripts", "timelocks", "verifying", id="script-timelock-verify")))年 12 月，一種新形式的時間鎖作為軟分叉升級引入 Bitcoin。基於 BIP65 中的規範，一個稱為 +OP_CHECKLOCKTIMEVERIFY+（+OP_CLTV+）的新腳本運算子被添加到腳本語言中。+OP_CLTV+ 是每個輸出的時間鎖，而不是像鎖定時間那樣的每個交易的時間鎖。這允許在應用時間鎖的方式上具有額外的靈活性。
+
+簡單來說，透過在輸出中承諾 +OP_CLTV+ 操作碼，該輸出受到限制，只能在經過指定時間後才能花費。
+
++OP_CLTV+ 不會取代鎖定時間，而是限制特定 UTXO，使它們只能在將鎖定時間設置為大於或等於該值的未來交易中花費。
+
+[role="less_space pagebreak-before"]
++OP_CLTV+ 操作碼將一個參數作為輸入，以與鎖定時間相同的格式表示為數字（區塊高度或 Unix 紀元時間）。如 +VERIFY+ 後綴所示，+OP_CLTV+ 是一種操作碼類型，如果結果為 +FALSE+，則會停止腳本的執行。如果結果為 +TRUE+，則繼續執行。
+
+為了使用 +OP_CLTV+，您將其插入到建立輸出的交易的輸出贖回腳本中。例如，如果 Alice 正在支付給 Bob，他通常可能接受對以下 P2SH 腳本的支付：
+
+----
+<Bob's public key> OP_CHECKSIG
+----
+
+要將其鎖定到時間，例如從現在起 3 個月，他的 P2SH 腳本將改為：
+
+----
+<Bob's pubkey> OP_CHECKSIGVERIFY <now + 3 months> OP_CHECKLOCKTIMEVERIFY
+----
+
+其中 +<now {plus} 3 months>+ 是從交易被挖掘時起估計 3 個月的區塊高度或時間值：當前區塊高度 {plus} 12,960（區塊）或當前 Unix 紀元時間 {plus} 7,760,000（秒）。
+
+當 Bob 嘗試花費這個 UTXO 時，他建立一筆引用該 UTXO 作為輸入的交易。他在該輸入的輸入腳本中使用他的簽章和公鑰，並將交易鎖定時間設置為等於或大於 Alice 在 +OP_CHECKLOCKTIMEVERIFY+ 中設置的時間鎖。然後 Bob 在 Bitcoin 網路上廣播交易。
+
+Bob 的交易評估如下。如果 Alice 設置的 +OP_CHECKLOCKTIMEVERIFY+ 參數小於或等於花費交易的鎖定時間，則腳本執行繼續（就像執行了_無操作_或 +OP_NOP+ 操作碼一樣）。否則，腳本執行停止，交易被視為無效。
+
+更準確地說，BIP65 解釋說，如果發生以下情況之一，+OP_CHECKLOCKTIMEVERIFY+ 會失敗並停止執行：
+
+* 堆疊為空。
+* 堆疊頂部項目小於 0。
+* 頂部堆疊項目的鎖定時間類型（高度與時間戳）和鎖定時間欄位不相同。
+* 頂部堆疊項目大於交易的鎖定時間欄位。
+* 輸入的序列欄位為 0xffffffff。
+
+[role="less_space pagebreak-before"]
+[[timelock_conflicts]]
+.時間鎖衝突
+****
++OP_CLTV+ 和((("transactions", "timelocks", "conflicts")))((("timelocks", "conflicts")))((("lock time", "conflicts")))((("scripts", "timelocks", "conflicts")))鎖定時間使用相同的格式來描述時間鎖，即區塊高度或自 Unix 紀元以來經過的秒數。至關重要的是，當一起使用時，鎖定時間的格式必須與輸出中的 +OP_CLTV+ 匹配——它們必須都引用區塊高度或以秒為單位的時間。
+
+這意味著如果腳本必須執行兩個不同的 +OP_CLTV+ 調用，一個使用高度，一個使用時間，則腳本永遠不會有效。在編寫進階腳本時很容易犯這個錯誤，因此請確保在測試網路上徹底測試您的腳本，或使用旨在防止此問題的工具，例如 Miniscript 編譯器。
+
+另一個含義是，在交易的任何腳本中只能使用一種 +OP_CLTV+ 變體。如果一個輸入的腳本使用高度變體，而另一個輸入的不同腳本使用時間變體，則無法建立花費兩個輸入的有效交易。
+****
+
+執行後，如果 +OP_CLTV+ 得到滿足，則前面的參數仍然是堆疊頂部的項目，可能需要使用 +OP_DROP+ 刪除，以便正確執行後續腳本操作碼。因此，您經常會在腳本中看到 +OP_CHECKLOCKTIMEVERIFY+ 後跟 +OP_DROP+。+OP_CLTV+，像 +OP_CSV+（請參見 <<op_csv>>）一樣，與其他 +CHECKVERIFY+ 操作碼不同，會在堆疊上留下項目，因為添加它們的軟分叉重新定義了不刪除堆疊項目的現有操作碼，並且必須保留這些先前無操作（NOP）操作碼的行為。
+
+透過將鎖定時間與 +OP_CLTV+ 結合使用，<<lock_time_limitations>> 中描述的場景會改變。Alice 立即發送她的交易，將資金分配給 Bob 的金鑰。Alice 不能再花費這筆錢，但 Bob 在 3 個月鎖定時間到期之前也不能花費它。
+
+透過將時間鎖功能直接引入腳本語言，+OP_CLTV+ 允許我們開發一些非常有趣的複雜腳本。
+
+該標準((("transactions", "timelocks", "verifying", startref="transaction-timelock-op-cltv")))((("timelocks", "verifying", startref="timelock-op-cltv")))((("lock time", "verifying", startref="lock-time-op-cltv")))((("OP_CLTV  script operator", startref="op-cltv")))((("verifying", "lock time", startref="verify-lock-time")))((("scripts", "timelocks", "verifying", startref="script-timelock-verify")))在 https://oreil.ly/YmJGD[BIP65（OP_CHECKLOCKTIMEVERIFY）]中定義。
+
+[[op_csv]]
+==== 相對時間鎖
+
+鎖定時間((("absolute timelocks")))((("transactions", "timelocks", "relative", id="transaction-timelock-relative")))((("timelocks", "relative", id="timelock-relative")))((("lock time", "relative", id="locktime-relative")))((("scripts", "timelocks", "relative", id="script-timelock-relative")))((("relative timelocks", id="relative-timelock2")))和 +OP_CLTV+ 都是_絕對時間鎖_，因為它們指定絕對時間點。我們將檢查的下兩個時間鎖功能是_相對時間鎖_，因為它們指定，作為花費輸出的條件，從區塊鏈中輸出確認開始經過的時間。
+
+[role="less_space pagebreak-before"]
+相對時間鎖很有用，因為它們允許對一個交易施加時間約束，該約束取決於從先前交易確認開始經過的時間。換句話說，時鐘在 UTXO 記錄在區塊鏈上之前不會開始計數。這個功能在雙向狀態通道和閃電網路（LN）中特別有用，我們將在 <<state_channels>> 中看到。
+
+相對時間鎖，像絕對時間鎖一樣，是透過交易級功能和腳本級操作碼實作的。交易級相對時間鎖作為對 +sequence+ 值的共識規則實作，+sequence+ 是在每個交易輸入中設置的交易欄位。腳本級相對時間鎖使用 +OP_CHECKSEQUENCEVERIFY+（+OP_CSV+）操作碼實作。
+
+相對時間鎖根據 https://oreil.ly/ZuANb[BIP68，使用共識強制執行序列號的相對鎖定時間]和 https://oreil.ly/dLA2r[BIP112，OP_CHECKSEQUENCEVERIFY]中的規範實作。
+
+BIP68 和 BIP112 於 2016 年 5 月作為對共識規則的軟分叉升級啟動。
+
+==== 使用 OP_CSV 的相對時間鎖
+
+就((("OP_CSV script opcode", id="op-csv")))像 +OP_CLTV+ 和鎖定時間一樣，有一個相對時間鎖的腳本操作碼，它利用腳本中的序列值。該操作碼是 +OP_CHECKSEQUENCEVERIFY+，通常簡稱為 +OP_CSV+。
+
+在 UTXO 的腳本中評估 +OP_CSV+ 操作碼時，只允許在輸入序列值大於或等於 +OP_CSV+ 參數的交易中花費。本質上，這限制了 UTXO 的花費，直到相對於 UTXO 被挖掘的時間經過了一定數量的區塊或秒。
+
+與 CLTV 一樣，+OP_CSV+ 中的值必須與相應序列值中的格式匹配。如果 +OP_CSV+ 以區塊指定，那麼序列也必須如此。如果 +OP_CSV+ 以秒指定，那麼序列也必須如此。
+
+[WARNING]
+====
+執行多個 +OP_CSV+ 操作碼的腳本必須僅使用相同的變體，即基於時間或基於高度。混合變體將產生永遠無法花費的無效腳本，與我們在 <<timelock_conflicts>> 中看到的 +OP_CLTV+ 相同的問題。然而，+OP_CSV+ 允許任何兩個有效輸入包含在同一交易中，因此 +OP_CLTV+ 發生的跨輸入交互問題不會影響 +OP_CSV+。
+====
+
+[role="less_space pagebreak-before"]
+具有 +OP_CSV+ 的相對時間鎖在建立和簽署但不傳播幾個（鏈式）交易時特別有用——也就是說，它們保持在區塊鏈之外（_鏈外_）。在父交易被傳播、挖掘並老化到相對時間鎖中指定的時間之前，子交易無法使用。此用例的一個應用在 <<state_channels>> 和 <<lightning_network>> 中顯示。
+
++OP_CSV+ 在((("transactions", "timelocks", "relative", startref="transaction-timelock-relative")))((("timelocks", "relative", startref="timelock-relative")))((("lock time", "relative", startref="locktime-relative")))((("scripts", "timelocks", "relative", startref="script-timelock-relative")))((("OP_CSV script opcode", startref="op-csv")))((("relative timelocks", startref="relative-timelock2"))) https://oreil.ly/z_Obw[BIP112，CHECKSEQUENCEVERIFY]中詳細定義。
+
+=== 帶有流程控制的腳本（條件子句）
+
+Bitcoin((("scripts", "flow control", id="script-flow")))((("flow control in scripts", id="flow-control-script")))((("conditional clauses in scripts", id="conditional-clause-script"))) Script 更強大的功能之一是流程控制，也稱為條件子句。您可能熟悉各種程式語言中使用 +IF...THEN...ELSE+ 結構的流程控制。Bitcoin 條件子句看起來有點不同，但本質上是相同的結構。
+
+在基本層面上，Bitcoin 條件操作碼允許我們建立一個有兩種解鎖方式的腳本，具體取決於評估邏輯條件的 +TRUE+/+FALSE+ 結果。例如，如果 x 為 +TRUE+，則執行的程式碼路徑為 A，+ELSE+ 程式碼路徑為 B。
+
+此外，Bitcoin 條件表達式可以無限期地「嵌套」，這意味著條件子句可以包含另一個子句，而另一個子句又包含另一個子句，依此類推。Bitcoin Script 流程控制可用於建立具有數百種可能執行路徑的非常複雜的腳本。嵌套沒有限制，但共識規則對腳本的最大大小（以位元組為單位）施加了限制。
+
+Bitcoin 使用 +OP_IF+、+OP_ELSE+、+OP_ENDIF+ 和 +OP_NOTIF+ 操作碼實作流程控制。此外，條件表達式可以包含布林運算子，例如 +OP_BOOLAND+、+OP_BOOLOR+ 和 +OP_NOT+。
+
+乍一看，您可能會發現 Bitcoin 的流程控制腳本令人困惑。這是因為 Bitcoin Script 是一種堆疊語言。就像 +1 {plus} 1+ 在表示為 +1 1 OP_ADD+ 時看起來「倒退」一樣，Bitcoin 中的流程控制子句也看起來「倒退」。
+
+在大多數傳統（程序）程式語言中，流程控制如下所示：
+
+.大多數程式語言中流程控制的虛擬碼
+----
+if (condition):
+  code to run when condition is true
+else:
+  code to run when condition is false
+endif
+code to run in either case
+----
+
+在像 Bitcoin Script 這樣的基於堆疊的語言中，邏輯條件在 +IF+ 之前，這使得它看起來「倒退」：
+
+[role="less_space pagebreak-before"]
+.Bitcoin Script 流程控制
+----
+condition
+IF
+  code to run when condition is true
+OP_ELSE
+  code to run when condition is false
+OP_ENDIF
+code to run in either case
+----
+
+在閱讀 Bitcoin Script 時，請記住正在評估的條件在 +IF+ 操作碼_之前_。
+
+==== 使用 VERIFY 操作碼的條件子句
+
+Bitcoin Script((("VERIFY opcodes")))((("guard clauses in scripts")))中條件的另一種形式是以 +VERIFY+ 結尾的任何操作碼。+VERIFY+ 後綴意味著如果評估的條件不是 +TRUE+，腳本的執行立即終止，交易被視為無效。
+
+與提供替代執行路徑的 +IF+ 子句不同，+VERIFY+ 後綴充當_保護子句_，僅在滿足先決條件時繼續。
+
+例如，以下腳本需要 Bob 的簽章和產生特定雜湊的原像（秘密）。兩個條件都必須滿足才能解鎖：
+
+.帶有 +OP_EQUALVERIFY+ 保護子句的腳本。
+----
+OP_HASH160 <expected hash> OP_EQUALVERIFY <Bob's Pubkey> OP_CHECKSIG
+----
+
+要花費這個，Bob 必須提供有效的原像和簽章：
+
+.滿足上述腳本
+----
+<Bob's Sig> <hash pre-image>
+----
+
+如果不提供原像，Bob 無法到達腳本中檢查他簽章的部分。
+
+
+可以使用 +OP_IF+ 編寫此腳本：
+
+.帶有 +IF+ 保護子句的腳本
+----
+OP_HASH160 <expected hash> OP_EQUAL
+OP_IF
+   <Bob's Pubkey> OP_CHECKSIG
+OP_ENDIF
+----
+
+Bob 的認證資料相同：
+
+.滿足上述腳本
+----
+<Bob's Sig> <hash pre-image>
+----
+
+帶有 +OP_IF+ 的腳本與使用帶有 +VERIFY+ 後綴的操作碼執行相同的操作；它們都作為保護子句運作。然而，+VERIFY+ 結構更有效，使用的操作碼少兩個。
+
+那麼，我們什麼時候使用 +VERIFY+，什麼時候使用 +OP_IF+？如果我們要做的就是附加先決條件（保護子句），那麼 +VERIFY+ 更好。但是，如果我們想要多個執行路徑（流程控制），那麼我們需要 +OP_IF...OP_ELSE+ 流程控制子句。
+
+==== 在腳本中使用流程控制
+
+Bitcoin Script 中流程控制的一個非常常見的用途是建立一個提供多個執行路徑的腳本，每個路徑都是贖回 UTXO 的不同方式。
+
+讓我們看一個簡單的範例，其中我們有兩個簽署者，Alice 和 Bob，其中任何一個都能贖回。使用多重簽章，這將表示為 1-of-2 多重簽章腳本。為了演示，我們將使用 +OP_IF+ 子句執行相同的操作：
+
+----
+OP_IF
+ <Alice's Pubkey>
+OP_ELSE
+ <Bob's Pubkey>
+OP_ENDIF
+OP_CHECKSIG
+----
+
+查看此贖回腳本，您可能想知道：「條件在哪裡？+IF+ 子句之前沒有任何內容！」
+
+條件不是腳本的一部分。相反，條件將在花費時提供，允許 Alice 和 Bob「選擇」他們想要的執行路徑：
+
+.Alice 滿足上述腳本：
+----
+<Alice's Sig> OP_TRUE
+----
+
+末尾的 +OP_TRUE+ 用作條件（+TRUE+），它將使 +OP_IF+ 子句執行第一個贖回路徑。此條件將 Alice 擁有簽章的公鑰放在堆疊上。+OP_TRUE+ 操作碼，也稱為 +OP_1+，將數字 1 放在堆疊上。
+
+為了讓 Bob 贖回這個，他必須透過給出 +FALSE+ 值來選擇 +OP_IF+ 中的第二個執行路徑。+OP_FALSE+ 操作碼，也稱為 +OP_0+，將空位元組陣列推送到堆疊：
+
+----
+<Bob's Sig> OP_FALSE
+----
+
+Bob 的輸入腳本導致 +OP_IF+ 子句執行第二個（+OP_ELSE+）腳本，這需要 Bob 的簽章。
+
+由於 +OP_IF+ 子句可以嵌套，我們可以建立執行路徑的「迷宮」。輸入腳本可以提供選擇實際執行哪個執行路徑的「地圖」：
+
+----
+OP_IF
+  subscript A
+OP_ELSE
+  OP_IF
+    subscript B
+  OP_ELSE
+    subscript C
+  OP_ENDIF
+OP_ENDIF
+----
+
+在此場景中，有三個執行路徑（+subscript A+、+subscript B+ 和 +subscript C+）。輸入腳本以 +TRUE+ 或 +FALSE+ 值的序列形式提供路徑。例如，要選擇路徑 +subscript B+，輸入腳本必須以 +OP_1 OP_0+（+TRUE+、+FALSE+）結尾。這些值將被推入堆疊，因此第二個值（+FALSE+）最終位於堆疊頂部。外部 +OP_IF+ 子句彈出 +FALSE+ 值並執行第一個 +OP_ELSE+ 子句。然後 +TRUE+ 值移動到堆疊頂部，並由內部（嵌套）+OP_IF+ 評估，選擇 +B+ 執行路徑。
+
+使用此結構，我們可以建立具有數十或數百個執行路徑的贖回腳本，每個路徑都提供贖回 UTXO 的不同方式。要花費，我們建立一個輸入腳本，透過在每個流程控制((("scripts", "flow control", startref="script-flow")))((("flow control in scripts", startref="flow-control-script")))((("conditional clauses in scripts", startref="conditional-clause-script")))點上將適當的 +TRUE+ 和 +FALSE+ 值放在堆疊上來導航執行路徑。
+
+=== 複雜腳本範例
+
+在本((("scripts", "examples of", id="script-example-complex")))節中，我們將本章中的許多概念組合到一個範例中。
+
+Mohammed 是杜拜的公司老闆，經營進出口業務；他希望建立一個具有靈活規則的公司資本帳戶。他建立的方案根據時間鎖需要不同級別的授權。多重簽章方案的參與者是 Mohammed、他的兩位合夥人 Saeed 和 Zaira，以及他們的公司律師。三位合夥人根據多數規則做出決定，因此三個中的兩個必須同意。但是，如果他們的金鑰出現問題，他們希望他們的律師能夠使用三位合夥人簽章之一來收回資金。最後，如果所有合夥人一段時間都不可用或無行為能力，他們希望律師在獲得資本帳戶交易記錄的存取權限後能夠直接管理帳戶。
+
+<<variable_timelock_multisig>> 是 Mohammed 設計的贖回腳本以實現此目的（已添加行號前綴）。
+
+[[variable_timelock_multisig]]
+.帶有時間鎖的可變多重簽章
+====
+----
+01  OP_IF
+02    OP_IF
+03      2
+04    OP_ELSE
+05      <30 天> OP_CHECKSEQUENCEVERIFY OP_DROP
+06      <律師的公鑰> OP_CHECKSIGVERIFY
+07      1
+08    OP_ENDIF
+09    <Mohammed 的公鑰> <Saeed 的公鑰> <Zaira 的公鑰> 3 OP_CHECKMULTISIG
+10  OP_ELSE
+11    <90 天> OP_CHECKSEQUENCEVERIFY OP_DROP
+12    <律師的公鑰> OP_CHECKSIG
+13  OP_ENDIF
+----
+====
+
+Mohammed 的腳本使用巢狀的 +OP_IF...OP_ELSE+ 流程控制子句實現了三個執行路徑。
+
+在第一個執行路徑中，這個腳本作為一個簡單的 2-of-3 多重簽章運作，由三個合夥人控制。這個執行路徑由第 3 和 9 行組成。第 3 行將多重簽章的法定人數設定為 +2+（2-of-3）。可以透過在輸入腳本的末尾放置 +OP_TRUE OP_TRUE+ 來選擇這個執行路徑：
+
+.第一個執行路徑的支付資料（2-of-3 多重簽章）
+----
+OP_0 <Mohammed 的簽章> <Zaira 的簽章> OP_TRUE OP_TRUE
+----
+
+
+[TIP]
+====
+這個輸入腳本開頭的 +OP_0+ 是因為 +OP_CHECKMULTISIG+ 的一個怪異之處，它會從堆疊中彈出一個額外的值。+OP_CHECKMULTISIG+ 會忽略這個額外的值，但它必須存在，否則腳本會失敗。使用 +OP_0+ 推送一個空位元組陣列是解決這個怪異之處的變通方法，如 <<multisig_bug>> 所述。
+====
+
+第二個執行路徑只能在 UTXO 創建後 30 天後使用。在那時，它需要律師的簽章和三個合夥人中的一個的簽章（1-of-3 多重簽章）。這是透過第 7 行實現的，它將多重簽章的法定人數設定為 +1+。要選擇這個執行路徑，輸入腳本應該以 +OP_FALSE OP_TRUE+ 結尾：
+
+.第二個執行路徑的支付資料（律師 + 1-of-3）
+----
+OP_0 <Saeed 的簽章> <律師的簽章> OP_FALSE OP_TRUE
+----
+
+[TIP]
+====
+為什麼是 +OP_FALSE OP_TRUE+？這不是反過來了嗎？+FALSE+ 被推送到堆疊上，然後 +TRUE+ 被推送到它的頂部。因此，+TRUE+ 會被第一個 +OP_IF+ 操作碼_首先_彈出。
+====
+
+最後，第三個執行路徑允許律師單獨支付資金，但只能在 90 天後。要選擇這個執行路徑，輸入腳本必須以 +OP_FALSE+ 結尾：
+
+.第三個執行路徑的輸入腳本（僅限律師）
+----
+<律師的簽章> OP_FALSE
+----
+
+試著在紙上執行這個腳本，看看它在堆疊上的行為。
+
+==== 隔離見證輸出和交易範例
+
+讓我們來看看((("腳本", "隔離見證", id="script-segwit")))((("隔離見證 (segwit)", "腳本與", id="segwit-script")))一些範例交易，看看它們在隔離見證中會如何變化。我們首先來看看 P2PKH 支付如何作為隔離見證程式實現。然後，我們將看看 P2SH 腳本的隔離見證等價物。最後，我們將看看如何將前面的兩種隔離見證程式嵌入到 P2SH 腳本中。
+
+[[p2wpkh]]
+===== 支付到見證公鑰雜湊 (P2WPKH)
+
+讓我們從((("腳本", "隔離見證", "P2WPKH", id="script-segwit-p2wpkh")))((("隔離見證 (segwit)", "腳本與", "P2WPKH", id="segwit-script-p2wpkh")))((("P2WPKH (支付到見證公鑰雜湊)", id="p2wpkh-ch7")))((("輸出腳本", "P2WPKH (支付到見證公鑰雜湊)", id="output-script-p2wpkh")))((("地址", "P2WPKH (支付到見證公鑰雜湊)", id="address-p2wpkh")))看一個 P2PKH 輸出腳本的範例開始：
+
+.P2PKH 輸出腳本範例
+----
+OP_DUP OP_HASH160 ab68025513c3dbd2f7b92a94e0581f5d50f654e7
+OP_EQUALVERIFY OP_CHECKSIG
+----
+
+使用隔離見證，Alice 會創建一個 P2WPKH 腳本。如果該腳本承諾相同的公鑰，它會是這樣的：
+
+.P2WPKH 輸出腳本範例
+----
+0 ab68025513c3dbd2f7b92a94e0581f5d50f654e7
+----
+
+如您所見，P2WPKH 輸出腳本比 P2PKH 等價物簡單得多。它由推送到腳本評估堆疊的兩個值組成。對於舊的（不支援隔離見證的）Bitcoin 客戶端，這兩個推送看起來像是任何人都可以支付的輸出。對於較新的、支援隔離見證的客戶端，第一個數字（0）被解釋為版本號（_見證版本_），第二部分（20 位元組）是_見證程式_。20 位元組的見證程式就是公鑰的雜湊，就像在 P2PKH 腳本中一樣。
+
+現在，讓我們看看 Bob 用來支付這個輸出的對應交易。對於原始腳本，支付交易需要在交易輸入中包含簽章：
+
+.解碼的交易顯示正在使用簽章支付 P2PKH 輸出
+----
+[...]
+"vin" : [
+  "txid": "abcdef12345...",
+  "vout": 0,
+  "scriptSig": "<Bob 的 scriptSig>",
+]
+[...]
+----
+
+然而，要支付 P2WPKH 輸出，交易在該輸入上沒有簽章。相反，Bob 的交易有一個空的輸入腳本，並包含一個見證結構：
+
+.解碼的交易顯示正在使用見證結構支付 P2WPKH 輸出
+----
+[...]
+"vin" : [
+  "txid": "abcdef12345...",
+  "vout": 0,
+  "scriptSig": "",
+]
+[...]
+"witness": "<Bob 的見證結構>"
+[...]
+----
+
+===== 錢包構建 P2WPKH
+
+非常((("錢包", "P2WPKH (支付到見證公鑰雜湊)")))重要的是要注意，P2WPKH 見證程式應該只由接收者創建，而不應該由支付者從已知的公鑰、P2PKH 腳本或地址轉換而來。支付者無法知道接收者的錢包是否有能力構建隔離見證交易並支付 P2WPKH 輸出。
+
+此外，P2WPKH 輸出必須從_壓縮_公鑰的雜湊構建。未壓縮的公鑰在隔離見證中是非標準的，可能會被未來的軟分叉明確禁用。如果 P2WPKH 中使用的雜湊來自未壓縮的公鑰，它可能是無法支付的，您可能會損失資金。P2WPKH 輸出應該由收款人的錢包透過從其私鑰衍生壓縮公鑰來創建。
+
+[WARNING]
+====
+P2WPKH 應該由接收者透過將壓縮公鑰轉換為 P2WPKH 雜湊來構建。無論是支付者還是其他任何人都不應該將 P2PKH 腳本、Bitcoin 地址或未壓縮的公鑰轉換為 P2WPKH 見證腳本。一般來說，支付者應該只以接收者指示的方式向接收者發送。
+====
+
+[[p2wsh]]
+===== 支付到見證腳本雜湊 (P2WSH)
+
+((("腳本", "隔離見證", "P2WSH", id="script-segwit-p2wsh")))((("隔離見證 (segwit)", "腳本與", "P2WSH", id="segwit-script-p2wsh")))((("P2WSH (支付到見證腳本雜湊)", id="p2wsh-ch7")))((("輸出腳本", "P2WSH (支付到見證腳本雜湊)", id="output-script-p2wsh")))((("地址", "P2WSH (支付到見證腳本雜湊)", id="address-p2wsh")))第二種類型的隔離見證 v0 見證程式對應於 P2SH 腳本。我們在 <<p2sh>> 中看到了這種類型的腳本。在那個範例中，P2SH 被 Mohammed 的公司用來表達多重簽章腳本。支付給 Mohammed 公司的款項使用這樣的腳本編碼：
+
+.P2SH 輸出腳本範例
+----
+OP_HASH160 54c557e07dde5bb6cb791c7a540e0a4796f5e97e OP_EQUAL
+----
+
+這個 P2SH 腳本引用了一個_贖回腳本_的雜湊，該贖回腳本定義了一個 2-of-3 多重簽章要求來支付資金。要支付這個輸出，Mohammed 的公司會在交易輸入中提供贖回腳本（其雜湊與 P2SH 輸出中的腳本雜湊匹配）以及滿足該贖回腳本所需的簽章：
+
+.解碼的交易顯示正在支付 P2SH 輸出
+----
+[...]
+"vin" : [
+  "txid": "abcdef12345...",
+  "vout": 0,
+  "scriptSig": "<SigA> <SigB> <2 PubA PubB PubC PubD PubE 5 OP_CHECKMULTISIG>",
+]
+----
+
+現在，讓我們看看如何將整個範例升級到隔離見證 v0。如果 Mohammed 的客戶使用相容於隔離見證的錢包，他們會進行支付，創建一個 P2WSH 輸出，看起來像這樣：
+
+.P2WSH 輸出腳本範例
+----
+0 a9b7b38d972cabc7961dbfbcb841ad4508d133c47ba87457b4a0e8aae86dbb89
+----
+
+再次，就像 P2WPKH 的範例一樣，您可以看到隔離見證等價腳本簡單得多，並減少了您在 P2SH 腳本中看到的模板開銷。相反，隔離見證輸出腳本由推送到堆疊的兩個值組成：見證版本（0）和 32 位元組的見證腳本的 SHA256 雜湊（見證程式）。
+
+[TIP]
+====
+雖然 P2SH 使用 20 位元組的 +RIPEMD160(SHA256(script))+ 雜湊，但 P2WSH 見證程式使用 32 位元組的 +SHA256(script)+ 雜湊。雜湊演算法選擇的這種差異是刻意的,目的是為 P2WSH 在某些使用情況下提供更強的安全性（P2WSH 中的 128 位元安全性對比 P2SH 中的 80 位元安全性）。詳情請參見 <<p2sh_collision_attacks>>。
+====
+
+Mohammed 的公司可以透過提供正確的見證腳本和足夠的簽章來滿足它，從而支付 P2WSH 輸出。見證腳本和簽章將作為見證結構的一部分包含。由於這是一個原生見證程式，它不使用傳統的輸入腳本欄位，因此輸入腳本中不會放置任何資料：
+
+.解碼的交易顯示正在使用見證結構支付 P2WSH 輸出
+----
+[...]
+"vin" : [
+  "txid": "abcdef12345...",
+  "vout": 0,
+  "scriptSig": "",
+]
+[...]
+"witness": "<SigA> <SigB> <2 PubA PubB PubC PubD PubE 5 OP_CHECKMULTISIG>"
+[...]
+----
+
+===== 區分 P2WPKH 和 P2WSH
+
+在((("腳本", "隔離見證", "P2WPKH", startref="script-segwit-p2wpkh")))((("隔離見證 (segwit)", "腳本與", "P2WPKH", startref="segwit-script-p2wpkh")))((("P2WPKH (支付到見證公鑰雜湊)", startref="p2wpkh-ch7")))((("輸出腳本", "P2WPKH (支付到見證公鑰雜湊)", startref="output-script-p2wpkh")))((("地址", "P2WPKH (支付到見證公鑰雜湊)", startref="address-p2wpkh")))前面的兩節中，我們展示了兩種類型的見證程式：<<p2wpkh>> 和 <<p2wsh>>。這兩種類型的見證程式都由相同的版本號後跟一個資料推送組成。它們看起來非常相似，但被解釋得非常不同：一種被解釋為公鑰雜湊，由簽章滿足；另一種被解釋為腳本雜湊，由見證腳本滿足。它們之間的關鍵區別是見證程式的長度：
+
+- P2WPKH 中的見證程式是 20 位元組。
+- P2WSH 中的見證程式是 32 位元組。
+
+這是允許完整節點區分這兩種類型的見證程式的唯一區別。透過查看雜湊的長度，節點可以確定它是什麼類型的見證程式，P2WPKH ((("P2WSH (支付到見證腳本雜湊)", startref="p2wsh-ch7")))((("輸出腳本", "P2WSH (支付到見證腳本雜湊)", startref="output-script-p2wsh")))((("地址", "P2WSH (支付到見證腳本雜湊)", startref="address-p2wsh")))((("腳本", "隔離見證", "P2WSH", startref="script-segwit-p2wsh")))((("隔離見證 (segwit)", "腳本與", "P2WSH", startref="segwit-script-p2wsh")))還是 P2WSH。
+
+==== 升級到隔離見證
+
+正如我們((("腳本", "隔離見證", "升級到", id="script-segwit-upgrade")))((("隔離見證 (segwit)", "腳本與", "升級到", id="segwit-script-upgrade")))((("升級到隔離見證", id="upgrade-segwit")))從前面的範例中看到的，升級到隔離見證是一個兩步驟的過程。首先，錢包必須創建隔離見證類型的輸出。然後，這些輸出可以由知道如何構建隔離見證交易的錢包支付。在範例中，Alice 的錢包能夠創建支付隔離見證輸出腳本的輸出。Bob 的錢包也支援隔離見證，並且能夠支付這些輸出。
+
+隔離見證被實現為向後相容的升級，_舊客戶端和新客戶端可以共存_。錢包開發者獨立地升級錢包軟體以添加隔離見證功能。傳統的 P2PKH 和 P2SH 繼續適用於[.keep-together]#未升級#的錢包。這留下了兩個重要的場景，將在下一節中討論：
+
+- 不支援隔離見證的支付者錢包向可以處理隔離見證交易的接收者錢包進行支付的能力。
+
+- 支援隔離見證的支付者錢包透過_地址_識別和區分支援隔離見證的接收者和不支援的接收者的能力。
+
+===== 在 P2SH 內嵌入隔離見證
+
+讓我們假設，((("嵌入式隔離見證")))((("P2SH (支付到腳本雜湊)", "嵌入式隔離見證")))例如，Alice 的錢包沒有升級到隔離見證，但 Bob 的錢包已升級並可以處理隔離見證交易。Alice 和 Bob 可以使用傳統的非隔離見證輸出。但 Bob 可能希望使用隔離見證來減少交易手續費，利用見證結構的降低成本。
+
+在這種情況下，Bob 的錢包可以構建一個 P2SH 地址，其中包含一個隔離見證腳本。Alice 的錢包可以在不了解隔離見證的情況下向其支付。Bob 的錢包然後可以使用隔離見證交易支付這筆款項，利用隔離見證並減少交易手續費。
+
+兩種形式的見證腳本，P2WPKH 和 P2WSH，都可以嵌入到 P2SH 地址中。第一種被稱為巢狀 P2WPKH，第二種被稱為巢狀 P2WSH。
+
+===== 巢狀的支付到見證公鑰雜湊
+
+我們將((("P2WPKH (支付到見證公鑰雜湊)", "巢狀", id="p2wpkh-nest")))((("巢狀", "P2WPKH (支付到見證公鑰雜湊)", id="nest-p2wpkh-ch7")))((("地址", "P2WPKH (支付到見證公鑰雜湊)", "巢狀", id="address-p2wpkh-nest")))檢查的第一種形式的輸出腳本是巢狀 P2WPKH。這是一個支付到見證公鑰雜湊見證程式，嵌入到支付到腳本雜湊腳本中，這樣不支援隔離見證的錢包就可以支付輸出腳本。
+
+Bob 的錢包使用 Bob 的公鑰構建一個 P2WPKH 見證程式。然後對這個見證程式進行雜湊，並將結果雜湊編碼為 P2SH 腳本。P2SH 腳本被轉換為 Bitcoin 地址，一個以"3"開頭的地址，如我們在 <<p2sh>> 中看到的。
+
+Bob 的錢包從我們之前看到的 P2WPKH 見證版本和見證程式開始：
+
+.Bob 的 P2WPKH 見證版本和見證程式
+----
+0 ab68025513c3dbd2f7b92a94e0581f5d50f654e7
+----
+
+資料由見證版本和 Bob 的 20 位元組公鑰雜湊組成。
+
+然後 Bob 的錢包對資料進行雜湊，首先使用 SHA256，然後使用 RIPEMD-160，產生另一個 20 位元組雜湊。接下來，贖回腳本雜湊被轉換為 Bitcoin 地址。最後，Alice 的錢包可以向 +37Lx99uaGn5avKBxiW26HjedQE3LrDCZru+ 支付，就像它會向任何其他 Bitcoin 地址支付一樣。
+
+要支付 Bob，Alice 的錢包會使用 P2SH 腳本鎖定輸出：
+----
+OP_HASH160 3e0547268b3b19288b3adef9719ec8659f4b2b0b OP_EQUAL
+----
+
+即使 Alice 的錢包不支援隔離見證，它創建的支付也可以由 Bob 使用隔離見證((("P2WPKH (支付到見證公鑰雜湊)", "巢狀", startref="p2wpkh-nest")))((("巢狀", "P2WPKH (支付到見證公鑰雜湊)", startref="nest-p2wpkh-ch7")))((("地址", "P2WPKH (支付到見證公鑰雜湊)", "巢狀", startref="address-p2wpkh-nest")))交易支付。
+
+===== 巢狀的支付到見證腳本雜湊
+
+類似地，((("P2WSH (支付到見證腳本雜湊)", "巢狀", id="p2wsh-nest")))((("巢狀", "P2WSH (支付到見證腳本雜湊)", id="nest-p2wsh-ch7")))((("地址", "P2WSH (支付到見證腳本雜湊)", "巢狀", id="address-p2wsh-nest")))用於多重簽章腳本或其他複雜腳本的 P2WSH 見證程式可以嵌入到 P2SH 腳本和地址中，使任何錢包都可以進行相容於隔離見證的支付。
+
+正如我們在 <<p2wsh>> 中看到的，Mohammed 的公司正在使用隔離見證支付多重簽章腳本。為了讓任何客戶都可以向他的公司支付，無論他們的錢包是否升級到隔離見證，Mohammed 的錢包可以將 P2WSH 見證程式嵌入到 P2SH 腳本中。
+
+首先，Mohammed 的錢包使用 SHA256（僅一次）對見證腳本進行雜湊，產生雜湊：
+
+----
+9592d601848d04b172905e0ddb0adde59f1590f1e553ffc81ddc4b0ed927dd73
+----
+
+接下來，雜湊的見證腳本被轉換為帶有版本前綴的 P2WSH 見證程式：
+
+----
+0 9592d601848d04b172905e0ddb0adde59f1590f1e553ffc81ddc4b0ed927dd73
+----
+
+然後，見證程式本身使用 SHA256 和 RIPEMD-160 進行雜湊，產生一個新的 20 位元組雜湊：
+
+----
+86762607e8fe87c0c37740cddee880988b9455b2
+----
+
+接下來，錢包從這個雜湊構建一個 P2SH Bitcoin 地址：
+
+.P2SH Bitcoin 地址
+----
+3Dwz1MXhM6EfFoJChHCxh1jWHb8GQqRenG
+----
+
+現在，Mohammed 的客戶可以向這個地址支付，即使他們不支援隔離見證。要向 Mohammed 發送支付，錢包會使用以下 P2SH 腳本鎖定輸出：
+
+.用於鎖定支付給 Mohammed 多重簽章的 P2SH 腳本
+----
+OP_HASH160 86762607e8fe87c0c37740cddee880988b9455b2 OP_EQUAL
+----
+
+Mohammed 的公司然後可以構建隔離見證交易來支付這些款項，利用隔離見證特性，包括((("腳本", "範例", startref="script-example-complex")))((("腳本", "隔離見證", startref="script-segwit")))((("隔離見證 (segwit)", "腳本與", startref="segwit-script")))((("腳本", "隔離見證", "升級到", startref="script-segwit-upgrade")))((("隔離見證 (segwit)", "腳本與", "升級到", startref="segwit-script-upgrade")))((("升級到隔離見證", startref="upgrade-segwit")))((("P2WSH (支付到見證腳本雜湊)", "巢狀", startref="p2wsh-nest")))((("巢狀", "P2WSH (支付到見證腳本雜湊)", startref="nest-p2wsh-ch7")))((("地址", "P2WSH (支付到見證腳本雜湊)", "巢狀", startref="address-p2wsh-nest")))較低的交易手續費。
+
+[[mast]]
+=== 默克爾化替代腳本樹 (MAST)
+
+使用 +OP_IF+，您((("腳本", "MAST", id="script-mast")))((("MAST (默克爾化替代腳本樹)", id="mast-ch7")))((("默克爾樹", "MAST", id="merkle-tree-mast")))可以授權多個不同的支付條件，但這種方法有幾個不理想的方面：
+
+重量（成本）::
+您添加的每個條件都會增加腳本的大小，增加交易的重量以及需要支付的手續費，以便支付受該腳本保護的比特幣。
+
+有限大小::
+即使您願意為額外的條件付費，您可以放入腳本中的最大數量也是有限的。例如，傳統腳本限制為 10,000 位元組，實際上最多只能限制您使用幾百個條件分支。即使您可以創建與整個區塊一樣大的腳本，它也只能包含約 20,000 個有用的分支。對於簡單的支付來說這是很多，但與 Bitcoin 的一些想像用途相比則微不足道。
+
+缺乏隱私::
+您添加到腳本中的每個條件在您支付受該腳本保護的比特幣時都會成為公開知識。例如，每當有人從 <<variable_timelock_multisig>> 中花費時，Mohammed 的律師和業務合夥人將能夠看到整個腳本。這意味著他們的律師，即使不需要他簽署，也將能夠追蹤他們的所有交易。
+
+然而，Bitcoin 已經使用了一種稱為默克爾樹的資料結構，它允許驗證元素是集合的成員，而無需識別集合的每個其他成員。
+
+我們將在 <<merkle_trees>> 中更多地了解默克爾樹，但基本資訊是，我們想要的資料集的成員（例如，任何長度的授權條件）可以傳遞到雜湊函數中以創建一個短的承諾（稱為默克爾樹的_葉子_）。然後將這些葉子中的每一個與另一個葉子配對並再次雜湊，創建對葉子的承諾，稱為_分支_承諾。可以以相同的方式創建對一對分支的承諾。對分支重複此步驟，直到只剩下一個識別符，稱為_默克爾根_。使用我們來自 <<variable_timelock_multisig>> 的範例腳本，我們在 <<diagram_mast1>> 中為三個授權條件中的每一個構建一個默克爾樹。
+
+[[diagram_mast1]]
+.具有三個子腳本的 MAST。
+image::images/mbc3_0705.png["A MAST with three sub-scripts"]
+
+我們現在可以創建一個緊湊的成員資格證明，證明特定的授權條件是默克爾樹的成員，而無需披露默克爾樹的任何其他成員的任何詳細資訊。請參見 <<diagram_mast2>>，並注意陰影節點可以從使用者提供的其他資料計算出來，因此不需要在支付時指定。
+
+[[diagram_mast2]]
+.其中一個子腳本的 MAST 成員資格證明。
+image::images/mbc3_0706.png["A MAST membership proof for one of the sub-scripts"]
+
+[role="less_space pagebreak-before"]
+用於創建承諾的雜湊摘要每個為 32 位元組，因此證明 <<diagram_mast2>> 的支付已獲得授權（使用默克爾樹和特定條件）並經過認證（使用簽章）使用 383 位元組。相比之下，沒有默克爾樹的相同支付（即提供所有可能的授權條件）使用 412 位元組。
+
+在此範例中節省 29 位元組（7%）並不能完全捕捉潛在的節省。默克爾樹的二元樹性質意味著您每次將集合中的成員數量（在這種情況下為授權條件）加倍時，只需要額外的 32 位元組承諾。在這種情況下，有三個條件，我們需要使用三個承諾（其中一個是默克爾根，需要包含在授權資料中）；我們也可以有四個承諾以相同的成本。額外的承諾將給我們最多八個條件。僅使用 16 個承諾（512 位元組的承諾），我們就可以擁有超過 32,000 個授權條件，遠遠超過可以在充滿 +OP_IF+ 語句的整個交易區塊中有效使用的數量。使用 128 個承諾（4,096 位元組），我們理論上可以創建的條件數量遠遠超過世界上所有計算機可以創建的條件數量。
+
+通常情況下，並非每個授權條件都同樣可能被使用。在我們的範例案例中，我們預計 Mohammed 和他的合夥人會經常支付他們的錢；時間延遲條件僅在出現問題時才存在。我們可以使用這些知識重組我們的樹，如 <<diagram_mast3>> 所示。
+
+[[diagram_mast3]]
+.將最可能的腳本放在最佳位置的 MAST。
+image::images/mbc3_0707.png["A MAST with the most-expected script in the best position"]
+
+[role="less_space pagebreak-before"]
+現在我們只需要為常見情況提供兩個承諾（節省 32 位元組），儘管我們對於不太常見的情況仍然需要三個承諾。如果您知道（或可以猜測）使用不同授權條件的機率，您可以使用 Huffman 演算法將它們放入最有效的樹中；詳情請參見 BIP341。
+
+無論樹如何構建，我們都可以在前面的範例中看到，我們只揭示實際使用的授權條件。其他條件保持私密。條件的數量也保持私密：樹可以有一個條件或一萬億個條件——對於僅查看單個交易的鏈上資料的人來說，沒有辦法分辨。
+
+除了略微增加 Bitcoin 的複雜性之外，MAST 對 Bitcoin 沒有顯著的缺點，在發現改進方法（我們將在 <<taproot>> 中看到）之前，有兩個可靠的提案，BIP114 和 BIP116。
+
+.MAST 與 MAST
+****
+我們現在在 Bitcoin 中所知的 _MAST_ 的最早((("抽象語法樹 (AST)")))((("AST (抽象語法樹)")))想法是_默克爾化抽象語法樹_。在抽象語法樹（AST）中，腳本中的每個條件都會創建一個新分支，如 <<ast>> 所示。
+
+[[ast]]
+.腳本的抽象語法樹（AST）。
+image::images/mbc3_0708.png["An Abstract Syntax Tree (AST) for a script"]
+
+AST 被解析和優化其他程式碼的程式廣泛使用，例如編譯器。默克爾化 AST 將承諾程式的每個部分，並啟用 <<mast>> 中描述的功能，但它需要為程式的每個單獨部分揭示至少一個 32 位元組摘要，這對於大多數程式來說在區塊鏈上不是很節省空間。
+
+人們今天在 Bitcoin 中通常所說的 _MAST_ 是_默克爾化替代腳本樹_，這是開發人員 Anthony Towns 創造的逆向縮寫詞。替代腳本樹是一組腳本，每個腳本本身都是完整的，其中只能選擇一個——使它們成為彼此的替代方案，如 <<alt_script>> 所示。
+
+[[alt_script]]
+.替代腳本樹。
+image::images/mbc3_0709.png["An alternative script tree"]
+
+替代腳本樹只需要為支付者選擇的腳本與樹根之間的每個深度級別揭示一個 32 位元組摘要。對於大多數腳本，這是在((("腳本", "MAST", startref="script-mast")))((("MAST (默克爾化替代腳本樹)", startref="mast-ch7")))((("默克爾樹", "MAST", startref="merkle-tree-mast")))區塊鏈中使用空間的更有效方式。
+****
+
+[[pay_to_contract]]
+=== 支付到合約 (P2C)
+
+正如我們((("P2C (支付到合約)", id="p2c")))((("金鑰調整", id="key-tweak")))((("公鑰密碼學", "金鑰調整", id="pub-key-tweak")))在 <<public_child_key_derivation>> 中看到的，橢圓曲線密碼學（ECC）的數學允許 Alice 使用私鑰衍生她給 Bob 的公鑰。他可以將任意值添加到該公鑰以創建衍生公鑰。如果他將該任意值給 Alice，她可以將其添加到她的私鑰以衍生衍生公鑰的私鑰。簡而言之，Bob 可以創建子公鑰，只有 Alice 可以創建相應的私鑰。這對於 BIP32 風格的階層確定性（HD）錢包恢復很有用，但它也可以服務於另一個用途。
+
+讓我們想像 Bob 想從 Alice 那裡購買東西，但他也想能夠在以後證明他支付了什麼，以防有任何爭議。Alice 和 Bob 就正在出售的商品或服務的名稱達成一致（例如，「Alice 的播客劇集 #123」），並透過雜湊並將雜湊摘要解釋為數字來將該描述轉換為數字。Bob 將該數字添加到 Alice 的公鑰並支付它。這個過程稱為_金鑰調整_，該數字稱為_調整_。
+
+Alice 可以透過使用相同的數字（調整）調整她的私鑰來花費資金。
+
+稍後，Bob 可以透過揭示她的基礎金鑰和他們使用的描述來向任何人證明他支付給 Alice 的內容。任何人都可以驗證支付的公鑰是否等於基礎金鑰加上對描述的雜湊承諾。如果 Alice 承認該金鑰是她的，那麼她收到了付款。如果 Alice 花費了資金，這進一步證明她在簽署支付交易時知道描述，因為只有在她知道調整（描述）的情況下，她才能為調整後的公鑰創建有效的簽章。
+
+如果 Alice 和 Bob 都決定不公開揭示他們使用的描述，他們之間的支付看起來就像任何其他支付一樣。沒有隱私損失。
+
+因為 P2C 預設是私密的，我們無法知道它用於其原始目的的頻率——理論上每筆支付都可以使用它，儘管我們認為這不太可能。然而，P2C 今天以稍微不同的形式被廣泛使用，我們將在 <<taproot>> 中((("P2C (支付到合約)", startref="p2c")))((("金鑰調整", startref="key-tweak")))((("公鑰密碼學", "金鑰調整", startref="pub-key-tweak")))看到。
+
+[[scriptless_multisignatures_and_threshold_signatures]]
+=== 無腳本多重簽章和閾值簽章
+
+在 <<multisig>> 中，我們((("無腳本多重簽章", id="scriptless-multi")))((("多重簽章腳本", "無腳本", id="multisignature-scriptless")))((("閾值簽章", id="threshold-signature")))((("公鑰密碼學", "無腳本多重簽章", id="pub-key-scriptless")))查看了需要來自多個金鑰的簽章的腳本。然而，還有另一種方法需要多個金鑰的合作，這也令人困惑地稱為_多重簽章_。為了在本節中區分這兩種類型，我們將涉及 `OP_CHECKSIG` 風格操作碼的版本稱為_腳本多重簽章_，另一個版本稱為_無腳本多重簽章_。
+
+無腳本多重簽章涉及每個參與者以與創建私鑰相同的方式創建自己的秘密。我們將這個((("部分私鑰")))((("私鑰", "部分")))秘密稱為_部分私鑰_，儘管我們應該注意它與常規完整私鑰的長度相同。從部分私鑰，每個參與者使用我們在 <<public_key_derivation>> 中描述的用於常規公鑰的相同演算法衍生部分公鑰。每個參與者與所有其他參與者共享他們的部分公鑰，然後將所有金鑰組合在一起以創建無腳本多重簽章公鑰。
+
+這個組合的公鑰看起來與任何其他 Bitcoin 公鑰相同。第三方無法區分多方公鑰和單個使用者生成的普通金鑰。
+
+要花費受無腳本多重簽章公鑰保護的比特幣，每個參與者生成一個部分簽章。然後將部分簽章組合以創建常規完整簽章。有許多已知的創建和組合部分簽章的方法；我們將在 <<c_signatures>> 中更多地討論這個主題。與無腳本多重簽章的公鑰類似，此過程生成的簽章看起來與任何其他 Bitcoin 簽章相同。第三方無法確定簽章是由一個人創建的還是一百萬人相互合作創建的。
+
+無腳本多重簽章比腳本多重簽章更小且更私密。對於腳本多重簽章，放置在交易中的位元組數會隨著涉及的每個金鑰和簽章而增加。對於無腳本多重簽章，大小是恆定的——一百萬個參與者每個都提供自己的部分金鑰和部分簽章，在交易中放入的資料量與使用單個金鑰和簽章的個人完全相同。隱私的情況也是如此：因為每個新金鑰或簽章都會向交易添加資料，腳本多重簽章會披露有關正在使用多少金鑰和簽章的資料——這可能使得很容易弄清楚哪些交易是由哪組參與者創建的。然而，因為每個無腳本多重簽章看起來都像其他無腳本多重簽章和每個單簽章一樣，所以不會洩漏減少隱私的資料。
+
+++++
+<p class="fix_tracking">
+無腳本多重簽章有兩個缺點。第一個是為 Bitcoin 創建它們的所有已知安全演算法需要比腳本多重簽章更多輪的互動或更仔細的狀態管理。這在簽章由幾乎無狀態的硬體簽署設備生成且金鑰在物理上分散的情況下可能具有挑戰性。例如，如果您將硬體簽署設備保存在銀行保險箱中，您需要訪問該箱子一次來創建腳本多重簽章，但可能需要兩次或三次來創建無腳本多重簽章。
+</p>
+++++
+
+另一個缺點是閾值簽署不會揭示誰簽署了。在腳本閾值簽署中，Alice、Bob 和 Carol 同意（例如）他們中的任何兩個簽署都足以花費資金。如果 Alice 和 Bob 簽署，這需要將他們每個人的簽章放在鏈上，向任何知道他們金鑰的人證明他們簽署了，而 Carol 沒有。在無腳本閾值簽署中，Alice 和 Bob 之間的簽章與 Alice 和 Carol 或 Bob 和 Carol 之間的簽章無法區分。這對隱私有利，但這意味著，即使 Carol 聲稱她沒有簽署，她也無法證明她沒有簽署，這對於問責制和可審計性可能是不利的。
+
+對於許多使用者和用例，多重簽章始終減少的大小和增加的隱私超過了其偶爾創建和審計((("無腳本多重簽章", startref="scriptless-multi")))((("多重簽章腳本", "無腳本", startref="multisignature-scriptless")))((("閾值簽章", startref="threshold-signature")))((("公鑰密碼學", "無腳本多重簽章", startref="pub-key-scriptless")))簽章的挑戰。
+
+[[taproot]]
+=== Taproot
+
+人們((("腳本", "MAST", "taproot", id="script-mast-taproot")))((("MAST (默克爾化替代腳本樹)", "taproot", id="mast-taproot")))((("默克爾樹", "MAST", "taproot", id="merkle-tree-mast-taproot")))((("taproot", id="taproot-ch7")))((("相互滿意合約", "taproot", id="mutual-satisfaction-taproot")))選擇使用 Bitcoin 的一個原因是可以創建具有高度可預測結果的合約。由法院執行的法律合約部分取決於參與案件的法官和陪審員的決定。相比之下，Bitcoin 合約通常需要其參與者採取行動，但否則由數千個運行功能相同的程式碼的完整節點執行。當給予相同的合約和相同的輸入時，每個完整節點將始終產生相同的結果。任何偏差都意味著 Bitcoin 被破壞了。人類法官和陪審員可以比軟體靈活得多，但當不需要或不需要靈活性時，Bitcoin 合約的可預測性是一項重大資產。
+
+如果合約中的所有參與者都認識到其結果已變得完全可預測，則實際上他們不需要繼續使用合約。他們可以做合約強迫他們做的任何事情，然後終止合約。在社會中，這是大多數合約終止的方式：如果相關方感到滿意，他們永遠不會將合約提交給法官或陪審員。在 Bitcoin 中，這意味著任何將使用大量區塊空間來結算的合約也應該提供一個允許透過相互滿意來結算的條款。
+
+在 MAST 中，使用無腳本多重簽章，相互滿意條款很容易設計。我們只需將腳本樹的頂層葉子之一設為所有相關方之間的無腳本多重簽章。我們已經在 <<diagram_mast3>> 中看到了幾方之間具有簡單相互滿意條款的複雜合約。我們可以透過從腳本多重簽章切換到無腳本多重簽章來使其更加優化。
+
+這是相當有效和私密的。如果使用相互滿意條款，我們只需要提供一個默克爾分支，我們揭示的只是涉及簽章（可能來自一個人，也可能來自數千個不同的參與者）。但開發人員在 2018 年意識到，如果我們也使用支付到合約，我們可以做得更好。
+
+在我們之前在 <<pay_to_contract>> 中對支付到合約的描述中，我們調整了公鑰以承諾 Alice 和 Bob 之間協議的文本。我們可以透過承諾 MAST 的根來承諾合約的程式碼。我們調整的公鑰是常規 Bitcoin 公鑰，這意味著它可以需要來自單個人的簽章，或者它可以需要來自多個人的簽章（或者它可以以特殊方式創建以使為其生成簽章變得不可能）。這意味著我們可以透過來自所有相關方的單個簽章或透過揭示我們想要使用的 MAST 分支來滿足合約。涉及公鑰和 MAST 的承諾樹在 <<diagram_taproot1>> 中顯示。
+
+[[diagram_taproot1]]
+.公鑰承諾默克爾根的 taproot。
+image::images/mbc3_0710.png["A taproot with the public key committing to a merkle root"]
+
+這使得使用多重簽章的相互滿意條款非常高效且非常私密。它甚至比看起來更私密，因為單個使用者想要透過單個簽章（或由他們控制的多個不同錢包生成的多重簽章）滿足它而創建的任何交易在鏈上看起來與相互滿意支付相同。在這種情況下，一百萬個使用者參與極其複雜的合約或單個使用者只是花費他們儲存的比特幣之間沒有鏈上差異。
+
+當可以僅使用金鑰進行支付時，例如對於單個簽章或無腳本多重簽章，這被((("金鑰路徑支付")))((("腳本路徑支付")))稱為_金鑰路徑支付_。當使用腳本樹時，這被稱為_腳本路徑支付_。對於金鑰路徑支付，放在鏈上的資料是公鑰（在見證程式中）和簽章（在見證堆疊上）。
+
+對於腳本路徑支付，鏈上資料還包括公鑰，它被放置在見證程式中，在此上下文中稱為 _taproot 輸出金鑰_。見證結構包括以下資訊：
+
+* 版本號。
+
+* 基礎金鑰——在被默克爾根調整以產生 taproot 輸出金鑰之前存在的金鑰。這個基礎金鑰稱為 _taproot 內部金鑰_。
+
+* 要執行的腳本，稱為_葉腳本_。
+
+* 沿著連接葉子與默克爾根的路徑的默克爾樹中每個交叉點的一個 32 位元組雜湊。
+
+* 滿足腳本所需的任何資料（例如簽章或雜湊原像）。
+
+// Source for 33 bytes: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2020-February/017622.html
+
+我們只知道 taproot 的一個重要描述的缺點：想要使用 MAST 但不想要相互滿意條款的合約的參與者必須在區塊鏈上包含 taproot 內部金鑰，增加約 33 位元組的開銷。鑑於幾乎所有合約都預期會從相互滿意條款或其他使用頂層公鑰的多重簽章條款中受益，並且所有使用者都從輸出看起來彼此相似的增加的匿名集中受益，大多數參與 taproot 啟動的使用者並不認為這種罕見的開銷重要。
+
+對 taproot 的支援在 2021 年 11 月啟動的軟分叉中((("腳本", "MAST", "taproot", startref="script-mast-taproot")))((("MAST (默克爾化替代腳本樹)", "taproot", startref="mast-taproot")))((("默克爾樹", "MAST", "taproot", startref="merkle-tree-mast-taproot")))((("taproot", startref="taproot-ch7")))((("相互滿意合約", "taproot", startref="mutual-satisfaction-taproot")))添加到 Bitcoin。
+
+=== Tapscript
+
+//FIXME:mention "control block" (maybe in MAST section)
+
+Taproot ((("tapscript", id="tapscript")))((("相互滿意合約", "tapscript", id="mutual-satisfaction-tapscript")))啟用 MAST，但僅使用與以前使用的 Bitcoin Script 語言略有不同的版本，新版本稱為 _tapscript_。主要區別包括：
+
+[role="less_space pagebreak-before"]
+腳本多重簽章更改::
+舊的 +OP_CHECKMULTISIG+ 和 +OP_CHECKMULTISIGVERIFY+ 操作碼被移除。這些操作碼與 taproot 軟分叉中的另一個更改（能夠使用批次驗證的 schnorr 簽章（請參見 <<schnorr_signatures>>））不能很好地結合。相反提供了一個新的 +OP_CHECKSIGADD+ 操作碼。當它成功驗證簽章時，這個新操作碼將計數器增加一，使得可以方便地計算有多少簽章通過，可以與所需的成功簽章數量進行比較，以重新實作與 +OP_CHECKMULTISIG+ 相同的行為。
+
+對所有簽章的更改::
+tapscript 中的所有簽章操作都使用 BIP340 中定義的 schnorr 簽章演算法。我們將在 <<c_signatures>> 中更多地探索 schnorr 簽章。
++
+此外，任何預期不會成功的簽章檢查操作必須提供值 +OP_FALSE+（也稱為 +OP_0+）而不是實際簽章。向失敗的簽章檢查操作提供任何其他內容將導致整個腳本失敗。這也有助於支援 schnorr 簽章的批次驗證。
+
+++OP_SUCCESSx++ 操作碼::
+在以前版本的 Script 中不可用的操作碼現在被重新定義為在使用時導致整個腳本成功。這允許未來的軟分叉將它們重新定義為在某些情況下不成功，這是一種限制，因此可以在軟分叉中完成。（相反，將不成功的操作定義為成功只能在硬分叉中完成，這是一個更具挑戰性的升級路徑。）
+
+儘管我們在本章中深入探討了授權和認證，但我們跳過了 Bitcoin 如何認證支付者的一個非常重要的部分：其簽章。我們將在 <<c_signatures>> 中((("tapscript", startref="tapscript")))((("相互滿意合約", "tapscript", startref="mutual-satisfaction-tapscript")))看到這一點。
+
+//FIXME:text "I think more information should be added concerning: tapscript in general. I think the MAST section would better serve to be condensed and integrated in the section on taproot. It should also mention how the taproot merle tree is unique (sorting the leaves, tagged hashes, etc, etc)."

@@ -1,0 +1,197 @@
+[preface]
+== 前言
+
+=== 撰寫比特幣這本書
+
+我（Andreas）第一次接觸比特幣是在 2011 年中。我的第一反應基本上是「切！宅宅的錢！」然後我忽略了它六個月，未能理解它的重要性。這是我在許多我認識的最聰明的人身上看到的反應，這讓我感到一些安慰。第二次我在一個郵件列表的討論中遇到比特幣時，我決定閱讀中本聰（Satoshi Nakamoto）撰寫的白皮書，看看它到底是什麼。我仍然記得讀完那九頁時的那一刻，當時我意識到比特幣不僅僅是一種數位貨幣，而是一個信任網路，可以為遠不止貨幣的事物提供基礎。「這不是錢，這是一個去中心化的信任網路」的認知，開啟了我四個月的旅程，瘋狂地吞噬我能找到的每一條關於比特幣的資訊。我變得痴迷和著迷，每天花 12 個小時或更長時間盯著螢幕，閱讀、寫作、編碼，並盡可能多地學習。我從這種出神狀態中走出來時，因為缺乏規律的飲食而瘦了超過 20 磅，決心將自己投入到比特幣的工作中。
+
+兩年後，在創建了許多探索各種比特幣相關服務和產品的小型新創公司後,我決定是時候寫我的第一本書了。比特幣是驅使我進入創作狂熱並佔據我思想的主題；它是我自網際網路以來遇到的最令人興奮的技術。現在是時候與更廣大的受眾分享我對這項驚人技術的熱情了。
+
+=== 目標讀者
+
+本書主要面向程式設計師。如果你會使用程式語言，本書將教你加密貨幣如何運作、如何使用它們，以及如何開發與它們配合運作的軟體。前幾章也適合作為非程式設計師的深入介紹——那些試圖理解比特幣和加密貨幣內部運作的人。
+
+=== 為什麼封面上有蟲子？
+
+切葉蟻（Leafcutter Ant）是一種在群體超級有機體中表現出高度複雜行為的物種，但每隻螞蟻都按照一套由社交互動和化學氣味（費洛蒙）交換驅動的簡單規則運作。根據維基百科：「除了人類之外，切葉蟻形成了地球上最大和最複雜的動物社會。」切葉蟻實際上不吃樹葉，而是用它們來種植真菌，這是蟻群的中心食物來源。明白了嗎？這些螞蟻在種田！
+
+儘管螞蟻形成了基於階級的社會，並有一隻蟻后負責繁殖後代，但在蟻群中沒有中央權威或領導者。由數百萬成員組成的群體所表現出的高度智慧和複雜行為，是社交網路中個體互動的湧現屬性。
+
+大自然展示了去中心化系統可以具有韌性，可以產生湧現的複雜性和令人難以置信的精密性，而無需中央權威、階層或複雜的部件。
+
+比特幣（Bitcoin）是一個高度複雜的去中心化信任網路，可以支援無數的金融流程。然而，比特幣網路中的每個節點都遵循一些簡單的規則。許多節點之間的互動導致了複雜行為的湧現，而不是任何單一節點中的任何固有複雜性或信任。就像蟻群一樣，比特幣網路是一個由遵循簡單規則的簡單節點組成的韌性網路，它們一起可以在沒有任何中央協調的情況下做出驚人的事情。
+
+=== 本書使用的慣例
+
+本書使用以下排版慣例：
+
+_斜體（Italic）_:: 表示新術語、URL、電子郵件地址、檔案名稱和副檔名。
+
++等寬字體（Constant width）+:: 用於程式清單，以及在段落中引用程式元素，例如變數或函數名稱、資料庫、資料類型、環境變數、陳述式和關鍵字。
+
+**`等寬粗體（Constant width bold）`**:: 顯示使用者應該按字面輸入的命令或其他文字。
+
+_++等寬斜體（Constant width italic）++_:: 顯示應該用使用者提供的值或由上下文決定的值替換的文字。
+
+
+[TIP]
+====
+此元素表示提示或建議。
+====
+
+[NOTE]
+====
+此元素表示一般注意事項。
+====
+
+[WARNING]
+====
+此元素表示警告或注意。
+====
+
+=== 程式碼範例
+
+所有程式碼片段都可以在大多數作業系統上使用最少安裝對應語言的編譯器和直譯器進行複製。在必要時，我們提供基本的安裝說明和這些指令輸出的逐步範例。
+
+一些程式碼片段和程式碼輸出已針對印刷進行了重新格式化。在所有此類情況下，行已被反斜線（\）字元分割，後跟換行字元。在轉錄範例時，請移除這兩個字元並再次連接這些行，你應該會看到與範例中顯示的相同結果。
+
+所有程式碼片段在可能的情況下都使用真實的值和計算，因此你可以從一個範例建構到另一個範例，並在你編寫的任何程式碼中看到相同的結果來計算相同的值。
+
+=== 使用程式碼範例
+
+這本書是為了幫助你完成工作。一般來說，如果本書提供了範例程式碼，你可以在你的程式和文件中使用它。除非你重現了程式碼的重要部分，否則你不需要聯絡我們以獲得許可。例如，編寫一個使用本書中幾個程式碼塊的程式不需要許可。銷售或分發 O'Reilly 書籍中的範例需要許可。透過引用本書和引用範例程式碼來回答問題不需要許可。將本書中大量範例程式碼合併到你的產品文件中確實需要許可。
+
+我們感謝但不要求署名。署名通常包括 [.keep-together]#標題、#作者、出版商和 ISBN。例如：「_Mastering Bitcoin_，第 3 版，作者 [.keep-together]#Andreas M.# Antonopoulos 和 David A. Harding（O'Reilly）。Copyright 2024 David Harding，ISBN 978-1-098-15009-9。」
+
+本書的某些版本以開源授權提供，例如 https://oreil.ly/RzUHE[CC-BY-NC]，在這種情況下，該授權的條款適用。
+
+如果你認為你對程式碼範例的使用超出了合理使用或上述許可的範圍，請隨時透過 pass:[<a href="mailto:permissions@oreilly.com">permissions@oreilly.com</a>] 聯絡我們。
+
+=== 與前一版的變更
+
+include::../meta/third_edition_changes.asciidoc[]
+
+=== 本書中的比特幣地址和交易
+
+本書中使用的比特幣地址、交易、金鑰、QR 碼和區塊鏈資料大部分是真實的。這意味著你可以瀏覽區塊鏈，查看作為範例提供的交易，使用你自己的腳本或程式檢索它們等。
+
+然而，請注意，用於構建地址的私鑰要麼已印在本書中，要麼已被「燒毀」。這意味著如果你將錢發送到這些地址中的任何一個，錢將永遠丟失，或者在某些情況下，任何可以閱讀本書的人都可以使用此處印刷的私鑰取走它。
+
+[WARNING]
+====
+請勿將錢發送到本書中的任何地址。你的錢會被其他讀者拿走或永遠丟失。
+====
+
+=== O'Reilly 線上學習
+[role = "ormenabled"]
+[NOTE]
+====
+40 多年來，pass:[<a href="https://oreilly.com" class="orm:hideurl"><em class="hyperlink">O'Reilly Media</em></a>] 一直提供技術和商業培訓、知識和見解，幫助公司取得成功。
+====
+
+我們獨特的專家和創新者網路透過書籍、文章和我們的線上學習平台分享他們的知識和專業知識。O'Reilly 的線上學習平台讓你可以隨選存取現場培訓課程、深入學習路徑、互動式編碼環境，以及來自 O'Reilly 和 200 多家其他出版商的大量文字和影片。有關更多資訊，請造訪 pass:[<a href="https://oreilly.com" class="orm:hideurl"><em>https://oreilly.com</em></a>]。
+
+=== 如何聯絡我們
+
+請將有關本書的評論和問題寄給出版商：
+
+++++
+<ul class="simplelist">
+  <li>O'Reilly Media, Inc.</li>
+  <li>1005 Gravenstein Highway North</li>
+  <li>Sebastopol, CA 95472</li>
+  <li>800-889-8969 (in the United States or Canada)</li>
+  <li>707-829-7019 (international or local)</li>
+  <li>707-829-0104 (fax)</li>
+  <li><a class="email" href="mailto:support@oreilly.com"><em>support@oreilly.com</em></a></li>
+  <li><a href="https://www.oreilly.com/about/contact.html"><em>https://www.oreilly.com/about/contact.html</em></a></li>
+</ul>
+++++
+
+我們為本書設有網頁，列出勘誤表、範例和任何其他資訊。你可以在 link:$$https://oreil.ly/MasteringBitcoin3e$$[] 存取此頁面。
+
+++++
+<!--Don't forget to update the link above.-->
+++++
+
+有關我們的書籍和課程的新聞和資訊，請造訪 link:$$https://oreilly.com$$[]。
+
+在 LinkedIn 上找到我們：link:$$https://linkedin.com/company/oreilly-media$$[]。
+
+在 Twitter 上關注我們：link:$$https://twitter.com/oreillymedia$$[]。
+
+在 YouTube 上觀看我們：link:$$https://youtube.com/oreillymedia$$[]。
+
+
+=== 聯絡作者
+
+++++
+<p class="left-align">
+你可以在 Andreas M. Antonopoulos 的個人網站上聯絡他：
+<span class="keep-together"><a href="https://antonopoulos.com"><em class="hyperlink">https://antonopoulos.com</em></a>。</span></p>
+++++
+
+在 Facebook 上關注 Andreas：
+link:$$https://facebook.com/AndreasMAntonopoulos$$[]。
+
+在 Twitter 上關注 Andreas：
+link:$$https://twitter.com/aantonop$$[]。
+
+在 LinkedIn 上關注 Andreas：
+link:$$https://linkedin.com/company/aantonop$$[]。
+
+非常感謝所有透過每月捐款支持 Andreas 工作的贊助者。你可以在此關注他的 Patreon 頁面：
+link:$$https://patreon.com/aantonop$$[]。
+
+有關 _Mastering Bitcoin_ 以及 Andreas 的開放版和翻譯的資訊，請造訪
+link:$$https://bitcoinbook.info$$[]。
+
+你可以在 David A. Harding 的個人網站上聯絡他：
+link:$$https://dtrt.org$$[]。
+
+=== 第一版和第二版致謝
+
+_作者：Andreas M. Antonopoulos_
+
+這本書代表了許多人的努力和貢獻。我感謝朋友、同事，甚至完全陌生人提供的所有幫助，他們與我一起努力撰寫這本關於加密貨幣和比特幣的權威技術書籍。
+
+不可能區分比特幣技術和比特幣社群，這本書既是該社群的產物，也是一本關於技術的書。從一開始到最後，整個比特幣社群都鼓勵、支持和獎勵了我在這本書上的工作。最重要的是，這本書讓我成為一個美好社群的一部分兩年，我感謝你們接納我進入這個社群。有太多人需要按名字提及——我在會議、活動、研討會、聚會、披薩聚會和小型私人聚會上遇到的人，以及許多透過 Twitter、reddit、bitcointalk.org 和 GitHub 與我交流的人，他們對這本書產生了影響。你在本書中找到的每個想法、類比、問題、答案和解釋，在某個時刻都受到我與社群的互動的啟發、測試或改進。感謝你們所有人的支持；沒有你們，這本書就不會誕生。我永遠感激。
+
+成為作者的旅程當然早在第一本書之前就開始了。我的第一語言（和學校教育）是希臘語，所以我不得不在大學第一年參加補救英語寫作課程。我要感謝 Diana Kordas，我的英語寫作老師，她在那一年幫助我建立了信心和技能。後來，作為一名專業人士，我發展了關於資料中心主題的技術寫作技能，為 _Network World_ 雜誌撰稿。我要感謝 John Dix 和 John Gallant，他們給了我在 _Network World_ 擔任專欄作家的第一份寫作工作，以及我的編輯 Michael Cooney 和我的同事 Johna Till Johnson，他們編輯了我的專欄並使其適合出版。每週寫 500 字，持續四年，給了我足夠的經驗，最終考慮成為一名作家。
+
+還要感謝那些在我向 O'Reilly 提交書籍提案時透過提供推薦信和審查提案來支持我的人。具體來說，感謝 John Gallant、Gregory Ness、Richard Stiennon、Joel Snyder、Adam B. Levine、Sandra Gittlen、John Dix、Johna Till Johnson、Roger Ver 和 Jon Matonis。特別感謝 Richard Kagan 和 Tymon Mattoszko，他們審查了提案的早期版本，以及 Matthew Taylor，他編輯了提案。
+
+感謝 O'Reilly 書籍 _DNS and BIND_ 的作者 Cricket Liu，他將我介紹給 O'Reilly。還要感謝 O'Reilly 的 Michael Loukides 和 Allyson MacDonald，他們花了幾個月的時間幫助實現這本書。Allyson 在錯過截止日期和延遲交付成果時特別有耐心，因為生活干預了我們計劃的時間表。對於第二版，我感謝 Timothy McGovern 指導流程，Kim Cofer 耐心編輯，Rebecca Panzer 繪製了許多新圖表。
+
+前幾章的前幾稿是最困難的，因為比特幣是一個難以解開的主題。每次我拉動比特幣技術的一條線，我都必須拉動整個東西。我反覆陷入困境，有點沮喪，因為我努力使主題易於理解，並圍繞這樣一個密集的技術主題創建敘事。最終，我決定透過使用比特幣的人的故事來講述比特幣的故事，整本書變得更容易寫了。我要感謝我的朋友和導師 Richard Kagan，他幫助我解開故事並度過了寫作障礙的時刻。我感謝 Pamela Morgan，她審查了第一版和第二版中每章的早期草稿，並提出了困難的問題使它們更好。此外，感謝舊金山比特幣開發者聚會小組的開發者以及 Taariq Lewis 和 Denise Terry 幫助測試早期材料。還要感謝 Andrew Naugler 的資訊圖形設計。
+
+在書籍開發期間，我在 GitHub 上提供了早期草稿並邀請公開評論。提交了一百多條評論、建議、更正和貢獻作為回應。這些貢獻在 <<github_contrib>> 中得到明確承認，並表示感謝。最重要的是，我真誠感謝我的志願 GitHub 編輯 Ming T. Nguyen（第 1 版）和 Will Binns（第 2 版），他們不知疲倦地工作以管理、管理和解決 GitHub 上的拉取請求、問題報告並執行錯誤修復。
+
+書籍起草後，經過了幾輪技術審查。感謝 Cricket Liu 和 Lorne Lantz 的徹底審查、評論和支持。
+
+幾位比特幣開發者貢獻了程式碼範例、審查、評論和鼓勵。感謝 Amir Taaki 和 Eric Voskuil 提供的範例程式碼片段和許多精彩評論；Chris Kleeschulte 貢獻了關於 Bitcore 的資訊；Vitalik Buterin 和 Richard Kiss 幫助橢圓曲線數學和程式碼貢獻；Gavin Andresen 的更正、評論和鼓勵；Michalis Kargakis 的評論、貢獻和 btcd 撰寫；以及 Robin Inge 提交的勘誤表改進了第二次印刷。在第二版中，我再次從許多 Bitcoin Core 開發者那裡得到了很多幫助，包括 Eric Lombrozo，他揭開了隔離見證的神秘面紗，Luke Dashjr 幫助改進了交易章節，Johnson Lau 審查了隔離見證和其他章節，還有許多其他人。我要感謝 Joseph Poon、Tadge Dryja 和 Olaoluwa Osuntokun，他們解釋了閃電網路（Lightning Network），審查了我的寫作，並在我遇到困難時回答了問題。
+
+我對文字和書籍的熱愛來自我的母親 Theresa，她在一個每面牆都排列著書籍的房子裡撫養我。儘管自稱是技術恐懼症患者，我的母親還是在 1982 年給我買了第一台電腦。我的父親 Menelaos 是一位土木工程師，剛剛在 80 歲時出版了他的第一本書，他教會了我邏輯和分析思維以及對科學和工程的熱愛。
+
+感謝你們所有人在這段旅程中支持我。
+
+=== 第三版致謝
+
+_作者：David A. Harding_
+
+<<schnorr_signatures>> 中對非互動式 schnorr 簽章協議的介紹，首先描述了互動式 schnorr 身份協議，這受到 Gregory Maxwell 和 Andrew Poelstra 的「Borrommean Ring Signatures」（2015）中對該主題的介紹的重大影響。我對他們每個人在過去十年中免費提供的所有協助深表感激。
+
+Jorge Lesmes、Olaoluwa Osuntokun、René Pickhardt 和 Mark "Murch" Erhardt 對本手稿的草稿提供了寶貴的技術審查。特別是，Murch 令人難以置信的深入和富有洞察力的審查，以及他願意評估同一文本的多次迭代，已將本書的品質提升到超出我最高期望的水平。
+
+我還要感謝 Jimmy Song 建議我參與這個專案，感謝我的合著者 Andreas 允許我更新他的暢銷書，感謝 Angela Rufino 指導我完成 O'Reilly 的作者流程，以及 O'Reilly 的所有其他員工，使第三版的寫作成為一次愉快和富有成效的經歷。
+
+最後，我不知道如何感謝所有幫助我走過這段旅程的比特幣貢獻者——從創建我使用的軟體，到教我它如何運作，再到幫助我傳遞我所獲得的一點知識。你們人數太多，無法列出你們的名字,但我經常想起你們，並知道如果沒有你們為我所做的一切，我對本書的貢獻是不可能的。
+
+[[github_contrib]]
+=== 早期發布草稿（GitHub 貢獻）
+
+許多貢獻者為 GitHub 上的早期發布草稿提供了評論、更正和補充。感謝你們所有人對本書的貢獻。
+
+以下是著名的 GitHub 貢獻者名單，包括他們的 GitHub ID（括號中）：
+
+include::../meta/github_contrib.adoc[]

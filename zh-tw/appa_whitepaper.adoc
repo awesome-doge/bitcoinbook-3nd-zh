@@ -1,0 +1,464 @@
+[[satoshi_whitepaper]]
+[appendix]
+== 比特幣白皮書 [.keep-together]#作者：中本聰#
+
+
+[NOTE]
+====
+這是 ((("Bitcoin whitepaper", "original version", id="bitcoin-whitepaper-original")))((("whitepaper (Bitcoin)", "original version", id="whitepaper-original")))((("Nakamoto, Satoshi")))原始白皮書，完全按照中本聰於 2008 年 10 月發布的原樣全文轉載。
+====
+
+=== 比特幣 - 點對點電子現金系統
+
+中本聰
+
+_satoshin@gmx.com_
+
+pass:[<a href="https://bitcoin.org/en/" class="orm:hideurl"><em>www.bitcoin.org</em></a>]
+
+*摘要。* 純點對點版本的電子現金將允許線上支付直接從一方發送到另一方，而無需通過金融機構。數位簽章提供了部分解決方案，但如果仍然需要可信的第三方來防止雙重支付，則主要優勢將喪失。我們提出了一個使用點對點網路解決雙重支付問題的方案。該網路透過將交易雜湊到持續進行的基於雜湊的工作量證明鏈中來為交易添加時間戳，形成一個記錄，除非重做工作量證明，否則無法更改。最長的鏈不僅可以作為所見證事件序列的證明，而且可以證明它來自最大的 CPU 算力池。只要多數 CPU 算力由不合作攻擊網路的節點控制，它們就會產生最長的鏈並超過攻擊者。該網路本身只需要最小的結構。訊息以盡力而為的方式廣播，節點可以隨意離開和重新加入網路，接受最長的工作量證明鏈作為它們離開時發生的事情的證明。
+
+==== 引言
+網際網路上的商務幾乎完全依賴金融機構作為可信的第三方來處理電子支付。雖然該系統對大多數交易運作得足夠好，但它仍然受到基於信任模型固有弱點的困擾。完全不可逆的交易實際上是不可能的，因為金融機構無法避免調解糾紛。調解的成本增加了交易成本，限制了最小實際交易規模並切斷了小型臨時交易的可能性，並且在為不可逆服務進行不可逆支付的能力喪失方面存在更廣泛的成本。由於存在逆轉的可能性，對信任的需求蔓延開來。商家必須警惕他們的客戶，向他們索取超過必要的更多資訊。一定比例的欺詐被認為是不可避免的。使用實體貨幣可以避免這些成本和支付不確定性，但不存在在沒有可信方的情況下透過通訊通道進行支付的機制。
+
+所需要的是一個基於密碼學證明而非信任的電子支付系統，允許任何兩個願意的方直接相互交易，而無需可信的第三方。在計算上不可能逆轉的交易將保護賣家免受欺詐，並且可以輕鬆實現常規的託管機制來保護買家。在本文中，我們提出了一個使用點對點分散式時間戳伺服器來生成交易時間順序的計算證明來解決雙重支付問題的方案。只要誠實節點集體控制的 CPU 算力多於任何合作的攻擊者節點組，系統就是安全的。
+
+==== 交易
+我們 ((("transactions", "in Bitcoin whitepaper", secondary-sortas="Bitcoin whitepaper", id="transaction-whitepaper")))將電子貨幣定義為數位簽章鏈。每個所有者透過數位簽署前一筆交易的雜湊和下一個所有者的公鑰，並將這些添加到貨幣的末尾，將貨幣轉移給下一個所有者。收款人可以驗證簽章以驗證所有權鏈。
+
+image::images/mbc3_0401.png["交易"]
+
+當然，問題是收款人無法驗證其中一個所有者沒有雙重支付貨幣。一個常見的解決方案是引入一個可信的中央機構或鑄幣廠，檢查每筆交易是否存在雙重支付。在每筆交易之後，必須將貨幣退還給鑄幣廠以發行新貨幣，並且只有直接從鑄幣廠發行的貨幣才被信任為沒有被雙重支付。這個解決方案的問題在於，整個貨幣系統的命運取決於經營鑄幣廠的公司，每筆交易都必須經過它們，就像銀行一樣。
+
+我們需要一種方法讓收款人知道前任所有者沒有簽署任何更早的交易。就我們的目的而言，最早的交易才是有效的，所以我們不關心後來的雙重支付嘗試。確認交易不存在的唯一方法是知道所有交易。在基於鑄幣廠的模型中，鑄幣廠知道所有交易並決定哪個先到達。為了在沒有可信方的情況下完成此操作，交易必須公開宣布 [1]，並且我們需要一個系統讓參與者就它們被接收順序的單一歷史達成一致。收款人需要證明在每筆交易時，大多數節點同意它是第一個 ((("transactions", "in Bitcoin whitepaper", secondary-sortas="Bitcoin whitepaper", startref="transaction-whitepaper")))接收的。
+
+==== 時間戳伺服器
+我們 ((("timestamp servers")))提出的解決方案從時間戳伺服器開始。時間戳伺服器透過對要添加時間戳的項目區塊取雜湊並廣泛發布雜湊來工作，例如在報紙或 Usenet 貼文中 [2-5]。時間戳證明資料在當時必須存在，顯然，為了進入雜湊。每個時間戳在其雜湊中包含前一個時間戳，形成一條鏈，每個額外的時間戳都加強了之前的時間戳。
+
+image::images/mbc3_aain02.png["時間戳伺服器"]
+
+==== 工作量證明
+為了 ((("proof-of-work algorithm", "in Bitcoin whitepaper", secondary-sortas="Bitcoin whitepaper")))在點對點基礎上實作分散式時間戳伺服器，我們需要使用類似於 Adam Back 的 Hashcash [6] 的工作量證明系統，而不是報紙或 Usenet 貼文。工作量證明涉及掃描一個值，當雜湊時，例如使用 SHA-256，雜湊以一定數量的零位元開頭。所需的平均工作量隨所需零位元數量呈指數增長，並可透過執行單個雜湊來驗證。對於我們的時間戳網路，我們透過在區塊中遞增一個 nonce 來實作工作量證明，直到找到一個值使區塊的雜湊獲得所需的零位元。一旦 CPU 努力使其滿足工作量證明，則在不重做工作的情況下無法更改該區塊。由於後續區塊在其後鏈接，更改區塊的工作將包括重做其後的所有區塊。
+
+image::images/mbc3_aain03.png["工作量證明"]
+
+工作量證明還解決了確定多數決策中代表性的問題。如果多數是基於一個 IP 位址一票，則任何能夠分配許多 IP 的人都可以破壞它。工作量證明本質上是一個 CPU 一票。多數決定由最長的鏈代表，該鏈投入了最大的工作量證明努力。如果多數 CPU 算力由誠實節點控制，誠實鏈將增長最快並超過任何競爭鏈。要修改過去的區塊，攻擊者必須重做該區塊和其後所有區塊的工作量證明，然後趕上並超過誠實節點的工作。我們將在稍後展示，隨著後續區塊的添加，較慢的攻擊者趕上的機率呈指數下降。
+
+為了補償硬體速度的提高和隨時間變化的執行節點興趣，工作量證明難度由移動平均值確定，目標是每小時平均區塊數。如果它們產生得太快，難度會增加。
+
+==== 網路
+
+執行 ((("nodes", "in Bitcoin", secondary-sortas="Bitcoin whitepaper")))((("Bitcoin network", "in Bitcoin whitepaper", secondary-sortas="Bitcoin whitepaper")))網路的步驟如下：
+
+1. 新交易廣播到所有節點。
+2. 每個節點將新交易收集到一個區塊中。
+3. 每個節點致力於為其區塊尋找困難的工作量證明。
+4. 當一個節點找到工作量證明時，它將區塊廣播到所有節點。
+5. 節點只有在區塊中的所有交易都有效且尚未被花費時才接受該區塊。
+6. 節點透過使用被接受區塊的雜湊作為前一個雜湊來致力於創建鏈中的下一個區塊，表達它們對該區塊的接受。
+
+節點總是認為最長的鏈是正確的，並將繼續致力於擴展它。如果兩個節點同時廣播下一個區塊的不同版本，某些節點可能首先接收到其中一個。在這種情況下，他們致力於他們首先接收到的那個，但保存另一個分支以防它變得更長。當找到下一個工作量證明並且一個分支變得更長時，平局將被打破；致力於另一個分支的節點然後將切換到更長的分支。
+
+新交易廣播不一定需要到達所有節點。只要它們到達許多節點，它們很快就會進入一個區塊。區塊廣播也能容忍丟失的訊息。如果一個節點沒有接收到一個區塊，它將在接收到下一個區塊並意識到它錯過了一個區塊時請求它。
+
+==== 激勵
+根據 ((("incentives", id="incentive-whitepaper")))慣例，區塊中的第一筆交易是一筆特殊交易，它啟動由區塊創建者擁有的新貨幣。這為節點支援網路增加了激勵，並提供了一種最初將貨幣分配到流通中的方式，因為沒有中央機構來發行它們。穩定添加恆定數量的新貨幣類似於黃金礦工花費資源來增加黃金流通。在我們的情況下，花費的是 CPU 時間和電力。
+
+激勵也可以由交易手續費資助。如果交易的輸出值小於其輸入值，差額就是交易手續費，它被添加到包含該交易的區塊的激勵值中。一旦預定數量的貨幣進入流通，激勵可以完全過渡到交易手續費，並且完全沒有通貨膨脹。
+
+激勵可能有助於鼓勵節點保持誠實。如果一個貪婪的攻擊者能夠組裝比所有誠實節點更多的 CPU 算力，他必須在使用它來透過竊回他的付款來欺詐人們，或使用它來生成新貨幣之間做出選擇。他應該發現遵守規則更有利可圖，這些規則使他獲得比其他所有人加起來更多的新貨幣，而不是破壞系統和他自己財富的 ((("incentives", startref="incentive-whitepaper")))有效性。
+
+==== 回收磁碟空間
+
+++++
+<p>一旦 ((("disk space", "reclaiming")))((("reclaiming", "disk space")))((("blocks", "reclaiming disk space")))貨幣中的最新交易被足夠多的區塊埋在下面，其之前的已花費交易可以被丟棄以節省磁碟空間。為了在不破壞區塊雜湊的情況下促進這一點，交易在 Merkle 樹 <a href="#ref_seven">[7]</a> <a href="#ref_two">[2]</a> <a href="#ref_five">[5]</a> 中被雜湊，只有根包含在區塊的雜湊中。然後可以透過截斷樹的分支來壓縮舊區塊。內部雜湊不需要儲存。</p>
+++++
+
+image::images/mbc3_aain04.png["磁碟"]
+
+沒有交易的區塊標頭大約為 80 位元組。如果我們假設每 10 分鐘生成一次區塊，+80 位元組 * 6 * 24 * 365 = 4.2MB+ 每年。截至 2008 年，電腦系統通常銷售時配備 2GB RAM，摩爾定律預測當前每年增長 1.2GB，即使必須將區塊標頭保存在記憶體中，儲存也不應該是問題。
+
+==== 簡化支付驗證
+可以 ((("payment verification", "in Bitcoin whitepaper", secondary-sortas="Bitcoin whitepaper", id="payment-verify")))((("verifying", "payment", "in Bitcoin whitepaper", tertiary-sortas="Bitcoin whitepaper", id="verify-payment")))在不執行完整網路節點的情況下驗證支付。使用者只需要保留最長工作量證明鏈的區塊標頭副本，他可以透過查詢網路節點來獲得，直到他確信他擁有最長的鏈，並獲得將交易連結到它被添加時間戳的區塊的 Merkle 分支。他無法自己檢查交易，但透過將其連結到鏈中的一個位置，他可以看到網路節點已接受它，並且在其後添加的區塊進一步確認網路已接受它。
+
+image::images/mbc3_aain05.png["簡化支付驗證"]
+
+因此，只要誠實節點控制網路，驗證就是可靠的，但如果網路被攻擊者壓倒，則更容易受到攻擊。雖然網路節點可以自己驗證交易，但只要攻擊者能夠繼續壓倒網路，簡化方法就可能被攻擊者的偽造交易欺騙。一種防禦策略是當網路節點檢測到無效區塊時接受來自它們的警報，提示使用者的軟體下載完整區塊和警報的交易以確認不一致。經常收到付款的企業可能仍然希望執行自己的節點以獲得更獨立的安全性和更快的 ((("payment verification", "in Bitcoin whitepaper", secondary-sortas="Bitcoin whitepaper", startref="payment-verify")))((("verifying", "payment", "in Bitcoin whitepaper", tertiary-sortas="Bitcoin whitepaper", startref="verify-payment")))驗證。
+
+==== 組合與分割價值
+儘管 ((("transactions", "inputs", "in Bitcoin whitepaper", tertiary-sortas="Bitcoin whitepaper")))((("transactions", "outputs", "in Bitcoin whitepaper", tertiary-sortas="Bitcoin whitepaper")))((("inputs", "in Bitcoin whitepaper", secondary-sortas="Bitcoin whitepaper")))((("outputs", "in Bitcoin whitepaper", secondary-sortas="Bitcoin whitepaper")))可以單獨處理貨幣，但為轉帳中的每一分錢單獨進行交易是不便的。為了允許價值被分割和組合，交易包含多個輸入和輸出。通常將有來自較大先前交易的單個輸入或組合較小金額的多個輸入，並且最多兩個輸出：一個用於支付，一個用於將找零（如果有）返還給發送者。
+
+image::images/mbc3_aain06.png["組合分割"]
+
+應該注意的是，扇出，其中一筆交易依賴於幾筆交易，而這些交易又依賴於更多交易，在這裡不是問題。永遠不需要提取交易歷史的完整獨立副本。
+
+==== 隱私
+傳統 ((("privacy", "in Bitcoin whitepaper", secondary-sortas="Bitcoin whitepaper")))銀行模型透過限制對資訊的存取來達到一定程度的隱私，這些資訊僅限於相關方和可信的第三方。公開宣布所有交易的必要性排除了這種方法，但隱私仍然可以透過在另一個地方打破資訊流來維持：透過保持公鑰匿名。公眾可以看到有人正在向其他人發送金額，但沒有將交易連結到任何人的資訊。這類似於證券交易所發布的資訊水平，其中個人交易的時間和規模，即「磁帶」，是公開的，但不會告訴誰是參與方。
+
+image::images/mbc3_aain07.png["隱私"]
+
+作為額外的防火牆，應該為每筆交易使用新的金鑰對，以防止它們被連結到一個共同的所有者。對於多輸入交易，某些連結仍然是不可避免的，這必然揭示它們的輸入由同一所有者擁有。風險在於，如果金鑰的所有者被揭露，連結可能會揭露屬於同一所有者的其他交易。
+
+==== 計算
+我們考慮 ((("calculations", "in Bitcoin whitepaper", secondary-sortas="Bitcoin whitepaper", id="calculate-whitepaper")))攻擊者試圖比誠實鏈更快地生成替代鏈的情境。即使完成了這一點，它也不會使系統對任意更改開放，例如憑空創造價值或拿走從未屬於攻擊者的錢。節點不會接受無效交易作為支付，誠實節點永遠不會接受包含它們的區塊。攻擊者只能嘗試更改他自己的交易之一以收回他最近花費的錢。
+
+誠實鏈和攻擊者鏈之間的競賽可以被描述為 ((("Binomial Random Walk")))二項式隨機漫步。成功事件是誠實鏈延長一個區塊，使其領先增加 +1，失敗事件是攻擊者的鏈延長一個區塊，使差距減少 -1。
+
+++++
+<p>攻擊者從給定赤字中趕上的機率類似於 ((("Gambler&#x27;s Ruin problem")))賭徒破產問題。假設一個擁有無限信用的賭徒從赤字開始，並進行可能無限次數的試驗以嘗試達到盈虧平衡。我們可以計算他達到盈虧平衡的機率，或者攻擊者趕上誠實鏈的機率，如下 <a href="#ref_eight">[8]</a>：</p>
+++++
+
+p = 誠實節點找到下一個區塊的機率
+
+q = 攻擊者找到下一個區塊的機率
+
+q~z~ = 攻擊者從落後 z 個區塊中趕上的機率
+
+
+++++
+<div data-type="equation">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML" >
+  <mstyle mathsize="1.2000em">
+    <msub>
+      <mi>q</mi>
+      <mi>z</mi>
+    </msub>
+    <mo>=</mo>
+    <mrow>
+      <mo fence="true" form="prefix">{</mo>
+      <mtable columnalign="center center">
+        <mtr>
+          <mtd>
+            <mn>1</mn>
+          </mtd>
+          <mtd>
+            <mrow>
+              <mtext>if</mtext>
+              <mspace width="0.2778em"></mspace>
+              <mi>p</mi>
+              <mo>≤</mo>
+              <mi>q</mi>
+            </mrow>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mrow>
+              <mo form="prefix" stretchy="false">(</mo>
+              <mi>q</mi>
+              <mo lspace="0em" rspace="0em">⁄</mo>
+              <mi>p</mi>
+              <msup>
+                <mo form="postfix" stretchy="false">)</mo>
+                <mi>z</mi>
+              </msup>
+            </mrow>
+          </mtd>
+          <mtd>
+            <mrow>
+              <mtext>if</mtext>
+              <mspace width="0.2778em"></mspace>
+              <mi>p</mi>
+              <mo>&gt;</mo>
+              <mi>q</mi>
+            </mrow>
+          </mtd>
+        </mtr>
+      </mtable>
+      <mo fence="true" form="postfix">}</mo>
+    </mrow>
+  </mstyle>
+</math>
+</div>
+++++
+
+鑑於我們假設 p > q，機率隨著攻擊者必須趕上的區塊數量的增加呈指數下降。對他不利的情況下，如果他沒有在早期幸運地向前衝刺，隨著他進一步落後，他的機會變得微乎其微。
+
+我們現在考慮新交易的接收者需要等待多長時間才能充分確定發送者無法更改交易。我們假設發送者是攻擊者，他想讓接收者相信他暫時支付了他，然後在一段時間後將其切換回支付給自己。當發生這種情況時，接收者將收到警報，但發送者希望為時已晚。
+
+接收者生成新的金鑰對，並在簽署前不久將公鑰交給發送者。這防止了發送者透過持續工作來提前準備區塊鏈，直到他足夠幸運地獲得足夠的領先優勢，然後在那個時刻執行交易。一旦交易被發送，不誠實的發送者開始秘密地致力於包含其交易的替代版本的平行鏈。
+
+接收者等待直到交易已被添加到區塊並且 z 個區塊已在其後連結。他不知道攻擊者已經取得的確切進展量，但假設誠實區塊採用每個區塊的平均預期時間，攻擊者的潛在進展將是具有期望值的 Poisson 分佈：
+
+++++
+<div data-type="equation">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML" >
+  <mstyle mathsize="1.2000em">
+    <mi>λ</mi>
+    <mo>=</mo>
+    <mi>z</mi>
+    <mfrac>
+      <mi>q</mi>
+      <mi>p</mi>
+    </mfrac>
+  </mstyle>
+</math>
+</div>
+++++
+
+為了獲得攻擊者現在仍然可以趕上的機率，我們將他可能取得的每個進展量的 Poisson 密度乘以他可以從該點趕上的機率：
+
+++++
+<div data-type="equation">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML" >
+  <mstyle mathsize="1.2000em">
+    <mrow>
+      <munderover>
+        <mo movablelimits="false">∑</mo>
+        <mrow>
+          <mi>k</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+        </mrow>
+        <mi>∞</mi>
+      </munderover>
+    </mrow>
+    <mfrac>
+      <mrow>
+        <msup>
+          <mi>λ</mi>
+          <mi>k</mi>
+        </msup>
+        <msup>
+          <mi>e</mi>
+          <mrow>
+            <mo>−</mo>
+            <mi>λ</mi>
+          </mrow>
+        </msup>
+      </mrow>
+      <mrow>
+        <mi>k</mi>
+        <mo form="postfix" stretchy="false">!</mo>
+      </mrow>
+    </mfrac>
+    <mo>⋅</mo>
+    <mrow>
+      <mo fence="true" form="prefix">{</mo>
+      <mtable columnalign="center center">
+        <mtr>
+          <mtd>
+            <mrow>
+              <mo form="prefix" stretchy="false">(</mo>
+              <mi>q</mi>
+              <mo lspace="0em" rspace="0em">⁄</mo>
+              <mi>p</mi>
+              <msup>
+                <mo form="postfix" stretchy="false">)</mo>
+                <mrow>
+                  <mo form="prefix" stretchy="false">(</mo>
+                  <mi>z</mi>
+                  <mo>−</mo>
+                  <mi>k</mi>
+                  <mo form="postfix" stretchy="false">)</mo>
+                </mrow>
+              </msup>
+            </mrow>
+          </mtd>
+          <mtd>
+            <mrow>
+              <mtext>if</mtext>
+              <mspace width="0.2778em"></mspace>
+              <mi>k</mi>
+              <mo>≤</mo>
+              <mi>z</mi>
+            </mrow>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mn>1</mn>
+          </mtd>
+          <mtd>
+            <mrow>
+              <mtext>if</mtext>
+              <mspace width="0.2778em"></mspace>
+              <mi>k</mi>
+              <mo>&gt;</mo>
+              <mi>z</mi>
+            </mrow>
+          </mtd>
+        </mtr>
+      </mtable>
+      <mo fence="true" form="postfix">}</mo>
+    </mrow>
+  </mstyle>
+</math>
+</div>
+++++
+
+重新排列以避免對分佈的無限尾部求和...
+
+++++
+<div data-type="equation">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML" >
+  <mstyle mathsize="1.2000em">
+    <mn>1</mn>
+    <mo>−</mo>
+    <mrow>
+      <munderover>
+        <mo movablelimits="false">∑</mo>
+        <mrow>
+          <mi>k</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+        </mrow>
+        <mi>z</mi>
+      </munderover>
+    </mrow>
+    <mfrac>
+      <mrow>
+        <msup>
+          <mi>λ</mi>
+          <mi>k</mi>
+        </msup>
+        <msup>
+          <mi>e</mi>
+          <mrow>
+            <mo>−</mo>
+            <mi>λ</mi>
+          </mrow>
+        </msup>
+      </mrow>
+      <mrow>
+        <mi>k</mi>
+        <mo form="postfix" stretchy="false">!</mo>
+      </mrow>
+    </mfrac>
+    <mrow>
+      <mo fence="true" form="prefix">(</mo>
+      <mn>1</mn>
+      <mo>−</mo>
+      <mo form="prefix" stretchy="false">(</mo>
+      <mi>q</mi>
+      <mo lspace="0em" rspace="0em">⁄</mo>
+      <mi>p</mi>
+      <msup>
+        <mo form="postfix" stretchy="false">)</mo>
+        <mrow>
+          <mo form="prefix" stretchy="false">(</mo>
+          <mi>z</mi>
+          <mo>−</mo>
+          <mi>k</mi>
+          <mo form="postfix" stretchy="false">)</mo>
+        </mrow>
+      </msup>
+      <mo fence="true" form="postfix">)</mo>
+    </mrow>
+  </mstyle>
+</math>
+</div>
+++++
+
+轉換為 C 程式碼...
+
+[source,c]
+----
+#include <math.h>
+double AttackerSuccessProbability(double q, int z)
+{
+    double p = 1.0 - q;
+    double lambda = z * (q / p);
+    double sum = 1.0;
+    int i, k;
+    for (k = 0; k <= z; k++)
+    {
+        double poisson = exp(-lambda);
+        for (i = 1; i <= k; i++)
+            poisson *= lambda / i;
+        sum -= poisson * (1 - pow(q / p, z - k));
+    }
+    return sum;
+}
+----
+
+執行一些結果，我們可以看到機率隨 z 呈指數下降。
+----
+q=0.1
+z=0 P=1.0000000
+z=1 P=0.2045873
+z=2 P=0.0509779
+z=3 P=0.0131722
+z=4 P=0.0034552
+z=5 P=0.0009137
+z=6 P=0.0002428
+z=7 P=0.0000647
+z=8 P=0.0000173
+z=9 P=0.0000046
+z=10 P=0.0000012
+----
+----
+q=0.3
+z=0 P=1.0000000
+z=5 P=0.1773523
+z=10 P=0.0416605
+z=15 P=0.0101008
+z=20 P=0.0024804
+z=25 P=0.0006132
+z=30 P=0.0001522
+z=35 P=0.0000379
+z=40 P=0.0000095
+z=45 P=0.0000024
+z=50 P=0.0000006
+----
+求解 P 小於 0.1%...
+----
+P < 0.001
+q=0.10 z=5
+q=0.15 z=8
+q=0.20 z=11
+q=0.25 z=15
+q=0.30 z=24
+q=0.35 z=41
+q=0.40 z=89
+q=0.45 z=340
+----
+
+==== 結論
+我們 ((("calculations", "in Bitcoin whitepaper", secondary-sortas="Bitcoin whitepaper", startref="calculate-whitepaper")))提出了一個不依賴信任的電子交易系統。我們從由數位簽章製成的貨幣的通常框架開始，它提供了強大的所有權控制，但如果沒有防止雙重支付的方法，則是不完整的。為了解決這個問題，我們提出了一個使用工作量證明記錄交易公開歷史的點對點網路，如果誠實節點控制多數 CPU 算力，則攻擊者在計算上改變它很快變得不切實際。網路在其非結構化的簡單性中是穩健的。節點同時工作，幾乎沒有協調。它們不需要被識別，因為訊息不會路由到任何特定位置，只需要以盡力而為的方式傳遞。節點可以隨意離開和重新加入網路，接受工作量證明鏈作為它們離開時發生的事情的證明。它們用 CPU 算力投票，透過致力於擴展有效區塊來表達它們對有效區塊的接受，並透過拒絕致力於它們來拒絕無效區塊。任何需要的規則和激勵都可以透過這種共識機制來執行。
+
+==== 參考文獻
+++++
+<p>
+<span id="ref_one">[1]</span> W. Dai, "b-money," <a href="http://www.weidai.com/bmoney.txt"><em>http://www.weidai.com/bmoney.txt</em></a>, 1998.
+</p>
+<p>
+<span id="ref_two">[2]</span> H. Massias, X.S. Avila, and J.-J. Quisquater, "Design of a secure timestamping service with minimal trust requirements," In 20th Symposium on Information Theory in the Benelux, May 1999.
+</p>
+<p>
+<span id="ref_three">[3]</span> S. Haber, W.S. Stornetta, "How to time-stamp a digital document," In Journal of Cryptology, vol 3, no 2, pages 99-111, 1991.
+</p>
+
+<p>
+<span id="ref_four">[4]</span> D. Bayer, S. Haber, W.S. Stornetta, "Improving the efficiency and reliability of digital time-stamping," In Sequences II: Methods in Communication, Security and Computer Science, pages 329-334, 1993.
+</p>
+
+<p>
+<span id="ref_five">[5]</span> S. Haber, W.S. Stornetta, "Secure names for bit-strings," In Proceedings of the 4th ACM Conference on Computer and Communications Security, pages 28-35, April 1997.
+</p>
+
+<p>
+<span id="ref_six">[6]</span> A. Back, "Hashcash - a denial of service counter-measure," <a href="http://www.hashcash.org/papers/hashcash.pdf"><em>http://www.hashcash.org/papers/hashcash.pdf</em></a>, 2002.
+</p>
+
+<p>
+<span id="ref_seven">[7]</span> R.C. Merkle, "Protocols for public key cryptosystems," In Proc. 1980 Symposium on Security and Privacy, IEEE Computer Society, pages 122-133, April 1980.
+</p>
+
+<p>
+<span id="ref_eight">[8]</span> W. Feller, "An introduction to probability theory and its applications," 1957.
+</p>
+++++
+
+=== 授權
+
+本白皮書由中本聰於 2008 年 10 月發布。它後來（2009 年）作為支援文件添加到比特幣軟體中，並採用相同的 MIT 授權。它已根據 MIT 授權條款在本書中轉載，除格式外沒有修改：
+
+The MIT License (MIT)
+Copyright (c) 2008 Satoshi Nakamoto
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN((("Bitcoin whitepaper", "original version", startref="bitcoin-whitepaper-original")))((("whitepaper (Bitcoin)", "original version", startref="whitepaper-original"))) THE SOFTWARE.
