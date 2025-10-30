@@ -498,6 +498,7 @@ image::images/mbc3_0505.png["從恢復碼到種子"]
 </tbody>
 </table>
 
+[[bip39_128_w_pass]]
 <table id="bip39_128_w_pass" class="pagebreak-before less_space">
 <caption>128 位元熵 BIP39 恢復碼，有密碼短語，產生的種子</caption>
 <tbody>
@@ -521,6 +522,7 @@ image::images/mbc3_0505.png["從恢復碼到種子"]
 </tbody>
 </table>
 
+[[bip39_256_no_pass]]
 <table id="bip39_256_no_pass">
 <caption>256 位元熵 BIP39 恢復碼，無密碼短語，產生的種子</caption>
 <tbody>
