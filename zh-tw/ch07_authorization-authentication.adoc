@@ -273,7 +273,7 @@ P2SH 的開發旨在解決這些實際困難，並使複雜腳本的使用與支
 </tr>
 </tbody>
 </table>
-[[with_p2sh]]
+
 <table id="with_p2sh">
 <caption>作為 P2SH 的複雜腳本</caption>
 <tbody>

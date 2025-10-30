@@ -250,7 +250,7 @@ coinbase 交易具有特殊格式。它沒有指定要花費的先前 UTXO 的�
 </tr>
 </tbody>
 </table>
-[[table_8-2]]
+
 <table id="table_8-2">
 <caption>coinbase 交易輸入的結構</caption>
 <thead>
