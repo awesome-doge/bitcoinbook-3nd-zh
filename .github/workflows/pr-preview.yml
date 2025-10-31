@@ -1,0 +1,94 @@
+name: PR Preview Build
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'zh-tw/**'
+      - 'images/**'
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: false
+
+      - name: Install AsciiDoctor
+        run: |
+          gem install asciidoctor
+          gem install rouge
+
+      - name: Create preview directory
+        run: mkdir -p preview
+
+      - name: Build HTML preview
+        run: |
+          cd zh-tw
+          asciidoctor \
+            --backend=html5 \
+            --out-file=../preview/index.html \
+            --attribute=source-highlighter=rouge \
+            --attribute=toc=left \
+            --attribute=toclevels=2 \
+            --attribute=icons=font \
+            --attribute=sectanchors \
+            --attribute=idprefix= \
+            --attribute=idseparator=- \
+            book.adoc
+
+      - name: Copy images to preview
+        run: |
+          cp -r images preview/images
+
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-html-pr-${{ github.event.pull_request.number }}
+          path: preview/
+          retention-days: 7
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const prNumber = context.issue.number;
+            const runId = context.runId;
+            const repo = context.repo;
+
+            const comment = `## 📚 預覽建置完成
+
+            您的翻譯預覽已經建置完成！
+
+            ### 📥 下載預覽
+
+            [點此下載 HTML 預覽檔案](https://github.com/${repo.owner}/${repo.repo}/actions/runs/${runId})
+
+            請在 Artifacts 區塊下載 \`preview-html-pr-${prNumber}\` 檔案，解壓縮後在瀏覽器開啟 \`index.html\`。
+
+            ### ✅ 建置資訊
+
+            - **PR 編號**: #${prNumber}
+            - **Commit**: ${context.sha.substring(0, 7)}
+            - **建置時間**: ${new Date().toISOString()}
+
+            ---
+
+            🤖 此留言由 GitHub Actions 自動產生`;
+
+            github.rest.issues.createComment({
+              owner: repo.owner,
+              repo: repo.repo,
+              issue_number: prNumber,
+              body: comment
+            });

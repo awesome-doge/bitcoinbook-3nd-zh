@@ -1,0 +1,35 @@
+# Build outputs
+public/
+release/
+*.html
+*.pdf
+*.epub
+*.mobi
+
+# AsciiDoc generated files
+*.xml
+*.fopub
+
+# macOS
+.DS_Store
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.bak
+
+# Node modules (if using any JS tools)
+node_modules/
+
+# Ruby
+.bundle/
+vendor/bundle/
+
+# Logs
+*.log

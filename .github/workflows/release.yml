@@ -1,0 +1,167 @@
+name: Build Release (HTML + PDF + EPUB)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v3.0.0-zh-tw)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: false
+
+      - name: Install AsciiDoctor toolchain
+        run: |
+          gem install asciidoctor
+          gem install asciidoctor-pdf
+          gem install asciidoctor-epub3
+          gem install rouge
+          gem install coderay
+
+      - name: Install CJK fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            fonts-noto-cjk \
+            fonts-noto-cjk-extra \
+            fonts-wqy-microhei \
+            fonts-wqy-zenhei
+
+      - name: Create release directory
+        run: mkdir -p release
+
+      - name: Build HTML (standalone)
+        run: |
+          cd zh-tw
+          asciidoctor \
+            --backend=html5 \
+            --out-file=../release/mastering-bitcoin-3rd-zh-tw.html \
+            --attribute=source-highlighter=rouge \
+            --attribute=toc=left \
+            --attribute=toclevels=3 \
+            --attribute=icons=font \
+            --attribute=sectanchors \
+            --attribute=idprefix= \
+            --attribute=idseparator=- \
+            book.adoc
+
+      - name: Build PDF
+        run: |
+          cd zh-tw
+          asciidoctor-pdf \
+            --out-file=../release/mastering-bitcoin-3rd-zh-tw.pdf \
+            --attribute=source-highlighter=rouge \
+            --attribute=pdf-theme=default-with-fallback-font \
+            --attribute=scripts=cjk \
+            --attribute=allow-uri-read \
+            book.adoc
+
+      - name: Build EPUB
+        run: |
+          cd zh-tw
+          asciidoctor-epub3 \
+            --out-file=../release/mastering-bitcoin-3rd-zh-tw.epub \
+            --attribute=source-highlighter=rouge \
+            --attribute=ebook-format=kf8 \
+            book.adoc
+
+      - name: Package HTML with images
+        run: |
+          mkdir -p release/html-package
+          cp release/mastering-bitcoin-3rd-zh-tw.html release/html-package/
+          cp -r images release/html-package/
+          cd release
+          zip -r mastering-bitcoin-3rd-zh-tw-html.zip html-package/
+
+      - name: Generate checksums
+        run: |
+          cd release
+          sha256sum mastering-bitcoin-3rd-zh-tw.html > checksums.txt
+          sha256sum mastering-bitcoin-3rd-zh-tw.pdf >> checksums.txt
+          sha256sum mastering-bitcoin-3rd-zh-tw.epub >> checksums.txt
+          sha256sum mastering-bitcoin-3rd-zh-tw-html.zip >> checksums.txt
+
+      - name: Get version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "version=${{ inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: 精通比特幣第三版繁體中文 ${{ steps.get_version.outputs.version }}
+          draft: false
+          prerelease: false
+          body: |
+            # 精通比特幣第三版 - 繁體中文版 ${{ steps.get_version.outputs.version }}
+
+            本次發佈包含以下格式：
+
+            ## 📚 下載檔案
+
+            - **HTML 單頁版**: `mastering-bitcoin-3rd-zh-tw.html` - 可在瀏覽器直接開啟
+            - **HTML 完整包**: `mastering-bitcoin-3rd-zh-tw-html.zip` - 包含所有圖片的完整版本
+            - **PDF 版**: `mastering-bitcoin-3rd-zh-tw.pdf` - 適合列印和離線閱讀
+            - **EPUB 版**: `mastering-bitcoin-3rd-zh-tw.epub` - 適合電子書閱讀器
+
+            ## 🌐 線上閱讀
+
+            訪問 [https://bitcoinbook-3nd-zh.doge.tg](https://bitcoinbook-3nd-zh.doge.tg) 線上閱讀最新版本。
+
+            ## ✅ 檔案驗證
+
+            請使用 `checksums.txt` 檔案驗證下載檔案的完整性：
+
+            ```bash
+            sha256sum -c checksums.txt
+            ```
+
+            ## 📖 關於本書
+
+            《精通比特幣：程式設計開放區塊鏈（第三版）》由 Andreas M. Antonopoulos 和 David A. Harding 著作，本版本為繁體中文翻譯。
+
+            - **原作者**: Andreas M. Antonopoulos, David A. Harding
+            - **譯者**: Dr. Awesome Doge
+            - **授權**: CC-BY-SA 4.0 International
+
+            ---
+
+            🤖 此版本由 GitHub Actions 自動建置
+          files: |
+            release/mastering-bitcoin-3rd-zh-tw.html
+            release/mastering-bitcoin-3rd-zh-tw.pdf
+            release/mastering-bitcoin-3rd-zh-tw.epub
+            release/mastering-bitcoin-3rd-zh-tw-html.zip
+            release/checksums.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-files
+          path: release/
+          retention-days: 30
