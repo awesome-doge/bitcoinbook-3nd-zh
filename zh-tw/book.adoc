@@ -1,12 +1,20 @@
 = 精通比特幣：程式設計開放區塊鏈（第三版）
 Andreas M. Antonopoulos; David A. Harding
 :doctype: book
+:author: Andreas M. Antonopoulos; David A. Harding
+:revnumber: 3.0
+:revdate: 2025-10-31
+:revremark: 繁體中文版
+:translator: Dr. Awesome Doge
 :creator: Andreas M. Antonopoulos; David A. Harding
 :producer: Dr. Awesome Doge
 :keywords: Bitcoin, 比特幣, 區塊鏈, 加密貨幣
 :copyright: CC BY-SA 4.0
 :lang: zh-TW
 :description: 深入介紹比特幣技術的權威指南（繁體中文版）
+
+[.text-center]
+_繁體中文翻譯：Dr. Awesome Doge_
 
 include::preface.adoc[]
 
