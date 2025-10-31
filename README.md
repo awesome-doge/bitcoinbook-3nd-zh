@@ -1,13 +1,6 @@
 # Mastering Bitcoin
 
 > 🇹🇼 **繁體中文版本**：本倉庫正在進行《精通比特幣》第三版的繁體中文翻譯工作。
->
-> - 📖 [繁體中文專案說明](README_zh-TW.md)
-> - 🌐 [線上閱讀](https://bitcoinbook-3nd-zh.doge.tg)
-> - 📊 [翻譯進度](translation/progress.md)
-> - 🤝 [如何貢獻](TRANSLATION_PLAN.md)
-
----
 
 Mastering Bitcoin is a technical book that explains what Bitcoin is and how it works.
 
