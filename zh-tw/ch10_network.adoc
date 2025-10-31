@@ -89,7 +89,7 @@ FEC 避免了由於底層網路連接問題而導致緊湊區塊（或其某些�
 
 開發人員 Matt Corallo 於 2015 年創建了原始的 https://oreil.ly/30ZKi[Bitcoin Relay Network]((("Bitcoin Relay Network")))，以實現礦工之間以非常低的延遲快速同步區塊。該網路由託管在世界各地基礎設施上的幾個虛擬私有伺服器（VPS）組成，並用於連接大多數礦工和礦池。
 
-2016 年，隨著((("FIBRE（快速網際網路比特幣中繼引擎）")))((("快速網際網路比特幣中繼引擎（FIBRE）"))_快速網際網路比特幣中繼引擎_或 https://bitcoinfibre.org[_FIBRE_] 的引入，原始的 Bitcoin Relay Network 被取代，該引擎也由開發人員 Matt Corallo 創建。FIBRE 是允許操作基於 UDP 的中繼網路的軟體，該網路在節點網路內中繼區塊。FIBRE 實現了 FEC 和_緊湊區塊_優化，以進一步減少傳輸的資料量和((("比特幣網路", "節點", "私有區塊中繼", startref="bitcoin-network-node-private-relay")))((("節點", "私有區塊中繼", startref="node-private-relay")))((("區塊", "私有區塊中繼", startref="block-private-relay")))((("私有區塊中繼", startref="private-block-relay")))((("挖礦", "區塊", "私有區塊中繼", startref="mining-block-private-relay")))網路延遲。
+2016 年，隨著((("FIBRE（快速網際網路比特幣中繼引擎）")))((("快速網際網路比特幣中繼引擎（FIBRE）"))_快速網際網路比特幣中繼引擎_或 https://bitcoinfibre.org[FIBRE] 的引入，原始的 Bitcoin Relay Network 被取代，該引擎也由開發人員 Matt Corallo 創建。FIBRE 是允許操作基於 UDP 的中繼網路的軟體，該網路在節點網路內中繼區塊。FIBRE 實現了 FEC 和_緊湊區塊_優化，以進一步減少傳輸的資料量和((("比特幣網路", "節點", "私有區塊中繼", startref="bitcoin-network-node-private-relay")))((("節點", "私有區塊中繼", startref="node-private-relay")))((("區塊", "私有區塊中繼", startref="block-private-relay")))((("私有區塊中繼", startref="private-block-relay")))((("挖礦", "區塊", "私有區塊中繼", startref="mining-block-private-relay")))網路延遲。
 
 === 網路發現
 

@@ -142,10 +142,7 @@ OP_DUP OP_HASH160 <Key Hash> OP_EQUALVERIFY OP_CHECKSIG
 
 如果輸入腳本具有來自 Bob 私鑰的有效簽章，該簽章對應於設置為限制條件的公鑰雜湊，則結果將是 +TRUE+。
 
-圖 pass:[<a data-type="xref" href="#P2PubKHash1"
-data-xrefstyle="select: labelnumber">#P2PubKHash1</a>] 和 pass:[<a
-data-type="xref" href="#P2PubKHash2" data-xrefstyle="select:
-labelnumber">#P2PubKHash2</a>]（分為兩部分）顯示了組合腳本的逐步執行，這將證明這是一個有效的交易。
+圖 <<P2PubKHash1>> 和 <<P2PubKHash2>>（分為兩部分）顯示了組合腳本的逐步執行，這將證明這是一個有效的交易。
 
 [[P2PubKHash1]]
 .評估 P2PKH 交易的腳本（第 1 部分，共 2 部分）。

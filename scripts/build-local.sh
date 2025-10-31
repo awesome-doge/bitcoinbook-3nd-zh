@@ -1,6 +1,6 @@
 #!/bin/bash
 # 本地構建腳本
-# 用於測試 HTML、PDF 和 EPUB 生成
+# 用於測試 HTML 和 EPUB 生成
 
 set -e
 
@@ -26,21 +26,22 @@ if ! command -v asciidoctor &> /dev/null; then
 fi
 echo -e "${GREEN}✓ asciidoctor 已安裝 ($(asciidoctor --version | head -1))${NC}"
 
-if ! command -v asciidoctor-pdf &> /dev/null; then
-    echo -e "${YELLOW}⚠️  警告：asciidoctor-pdf 未安裝${NC}"
-    echo -e "${YELLOW}   無法生成 PDF。安裝方法：gem install asciidoctor-pdf${NC}"
-    PDF_AVAILABLE=false
-else
-    echo -e "${GREEN}✓ asciidoctor-pdf 已安裝${NC}"
-    PDF_AVAILABLE=true
+# 尋找 asciidoctor-epub3
+ASCIIDOCTOR_EPUB=$(command -v asciidoctor-epub3 2>/dev/null || true)
+if [ -z "$ASCIIDOCTOR_EPUB" ]; then
+    # 嘗試從 gem environment 找到路徑
+    GEM_BIN_DIR=$(gem environment 2>/dev/null | grep "EXECUTABLE DIRECTORY" | cut -d: -f2 | xargs || true)
+    if [ -n "$GEM_BIN_DIR" ] && [ -f "$GEM_BIN_DIR/asciidoctor-epub3" ]; then
+        ASCIIDOCTOR_EPUB="$GEM_BIN_DIR/asciidoctor-epub3"
+    fi
 fi
 
-if ! command -v asciidoctor-epub3 &> /dev/null; then
+if [ -z "$ASCIIDOCTOR_EPUB" ]; then
     echo -e "${YELLOW}⚠️  警告：asciidoctor-epub3 未安裝${NC}"
     echo -e "${YELLOW}   無法生成 EPUB。安裝方法：gem install asciidoctor-epub3${NC}"
     EPUB_AVAILABLE=false
 else
-    echo -e "${GREEN}✓ asciidoctor-epub3 已安裝${NC}"
+    echo -e "${GREEN}✓ asciidoctor-epub3 已安裝 ($ASCIIDOCTOR_EPUB)${NC}"
     EPUB_AVAILABLE=true
 fi
 
@@ -66,7 +67,7 @@ echo -e "${BLUE}========================================${NC}"
 
 # 構建 HTML
 echo ""
-echo -e "${BLUE}1/3 構建 HTML...${NC}"
+echo -e "${BLUE}1/2 構建 HTML...${NC}"
 cd zh-tw
 asciidoctor \
   --backend=html5 \
@@ -80,35 +81,21 @@ asciidoctor \
 cd ..
 echo -e "${GREEN}✓ HTML 已生成：$OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.html${NC}"
 
-# 構建 PDF
-echo ""
-if [ "$PDF_AVAILABLE" = true ]; then
-    echo -e "${BLUE}2/3 構建 PDF...${NC}"
-    cd zh-tw
-    asciidoctor-pdf \
-      --out-file="../$OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.pdf" \
-      --attribute=source-highlighter=rouge \
-      --attribute=imagesdir=.. \
-      book.adoc
-    cd ..
-    echo -e "${GREEN}✓ PDF 已生成：$OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.pdf${NC}"
-else
-    echo -e "${YELLOW}2/3 跳過 PDF 構建（工具未安裝）${NC}"
-fi
-
 # 構建 EPUB
 echo ""
 if [ "$EPUB_AVAILABLE" = true ]; then
-    echo -e "${BLUE}3/3 構建 EPUB...${NC}"
+    echo -e "${BLUE}2/2 構建 EPUB...${NC}"
     cd zh-tw
-    asciidoctor-epub3 \
+    "$ASCIIDOCTOR_EPUB" \
       --out-file="../$OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.epub" \
-      --attribute=imagesdir=.. \
+      --attribute=lang=zh-TW \
+      --attribute=front-cover-image=images/cover.png \
+      --attribute=producer="繁體中文翻譯：Dr. Awesome Doge" \
       book.adoc
     cd ..
     echo -e "${GREEN}✓ EPUB 已生成：$OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.epub${NC}"
 else
-    echo -e "${YELLOW}3/3 跳過 EPUB 構建（工具未安裝）${NC}"
+    echo -e "${YELLOW}2/2 跳過 EPUB 構建（工具未安裝）${NC}"
 fi
 
 # 顯示結果
@@ -129,9 +116,6 @@ echo ""
 # 提供快速訪問建議
 echo -e "${BLUE}快速訪問：${NC}"
 echo -e "  HTML：open $OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.html"
-if [ "$PDF_AVAILABLE" = true ]; then
-    echo -e "  PDF： open $OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.pdf"
-fi
 if [ "$EPUB_AVAILABLE" = true ]; then
     echo -e "  EPUB：open $OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.epub"
 fi

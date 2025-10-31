@@ -5,6 +5,7 @@ release/
 *.pdf
 *.epub
 *.mobi
+theme/
 
 # AsciiDoc generated files
 *.xml

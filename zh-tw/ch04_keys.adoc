@@ -561,7 +561,7 @@ P2PKH 和 P2SH 是使用 base58check 編碼的僅有的兩個腳本範本。它�
 .Bech32 錯誤偵測
 ====
 地址：
-  bc1p9nh05ha8wrljf7ru236awpass:[<u><strong>n</strong></u>]4t2x0d5ctkkywmpass:[<u><strong>v</strong></u>]9sclnm4t0av2vgs4k3au7
+  bc1p9nh05ha8wrljf7ru236aw[.underline]#**n**#4t2x0d5ctkkywm[.underline]#**v**#9sclnm4t0av2vgs4k3au7
 
 偵測到的錯誤以粗體和底線顯示。使用 https://oreil.ly/paWIx[bech32 地址解碼器示範] 生成。
 ====

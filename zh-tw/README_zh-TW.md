@@ -123,22 +123,28 @@ bitcoinbook-3nd-zh/
 
 # 安裝 AsciiDoctor
 gem install asciidoctor
-gem install asciidoctor-pdf
+gem install asciidoctor-epub3
 gem install rouge
 ```
 
 ### 構建中文版
 
 ```bash
-# 構建 HTML（當 zh-tw/book.adoc 存在時）
+# 使用建置腳本（推薦）
+./scripts/build-local.sh
+
+# 或手動構建 HTML
 cd zh-tw
 asciidoctor \
   --backend=html5 \
-  --out-file=../docs/index.html \
+  --out-file=../build/mastering-bitcoin-3rd-zh-tw.html \
   --attribute=source-highlighter=rouge \
   --attribute=toc=left \
+  --attribute=lang=zh-TW \
   book.adoc
 ```
+
+**注意**：本專案僅支援 HTML 和 EPUB 格式。由於中英文混排的技術限制，已停止 PDF 生成。
 
 ### 本地預覽
 

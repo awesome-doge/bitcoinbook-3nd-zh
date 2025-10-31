@@ -1,4 +1,4 @@
-name: Build Release (HTML + PDF + EPUB)
+name: Build Release (HTML + EPUB)
 
 on:
   push:
@@ -31,19 +31,8 @@ jobs:
       - name: Install AsciiDoctor toolchain
         run: |
           gem install asciidoctor
-          gem install asciidoctor-pdf
           gem install asciidoctor-epub3
           gem install rouge
-          gem install coderay
-
-      - name: Install CJK fonts
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            fonts-noto-cjk \
-            fonts-noto-cjk-extra \
-            fonts-wqy-microhei \
-            fonts-wqy-zenhei
 
       - name: Create release directory
         run: mkdir -p release
@@ -61,17 +50,8 @@ jobs:
             --attribute=sectanchors \
             --attribute=idprefix= \
             --attribute=idseparator=- \
-            book.adoc
-
-      - name: Build PDF
-        run: |
-          cd zh-tw
-          asciidoctor-pdf \
-            --out-file=../release/mastering-bitcoin-3rd-zh-tw.pdf \
-            --attribute=source-highlighter=rouge \
-            --attribute=pdf-theme=default-with-fallback-font \
-            --attribute=scripts=cjk \
-            --attribute=allow-uri-read \
+            --attribute=lang=zh-TW \
+            --attribute=imagesdir=.. \
             book.adoc
 
       - name: Build EPUB
@@ -79,8 +59,9 @@ jobs:
           cd zh-tw
           asciidoctor-epub3 \
             --out-file=../release/mastering-bitcoin-3rd-zh-tw.epub \
-            --attribute=source-highlighter=rouge \
-            --attribute=ebook-format=kf8 \
+            --attribute=lang=zh-TW \
+            --attribute=front-cover-image=images/cover.png \
+            --attribute=producer="繁體中文翻譯：Dr. Awesome Doge" \
             book.adoc
 
       - name: Package HTML with images
@@ -95,7 +76,6 @@ jobs:
         run: |
           cd release
           sha256sum mastering-bitcoin-3rd-zh-tw.html > checksums.txt
-          sha256sum mastering-bitcoin-3rd-zh-tw.pdf >> checksums.txt
           sha256sum mastering-bitcoin-3rd-zh-tw.epub >> checksums.txt
           sha256sum mastering-bitcoin-3rd-zh-tw-html.zip >> checksums.txt
 
@@ -122,10 +102,11 @@ jobs:
 
             ## 📚 下載檔案
 
-            - **HTML 單頁版**: `mastering-bitcoin-3rd-zh-tw.html` - 可在瀏覽器直接開啟
+            - **HTML 單頁版**: `mastering-bitcoin-3rd-zh-tw.html` - 可在瀏覽器直接開啟（不含圖片）
             - **HTML 完整包**: `mastering-bitcoin-3rd-zh-tw-html.zip` - 包含所有圖片的完整版本
-            - **PDF 版**: `mastering-bitcoin-3rd-zh-tw.pdf` - 適合列印和離線閱讀
-            - **EPUB 版**: `mastering-bitcoin-3rd-zh-tw.epub` - 適合電子書閱讀器
+            - **EPUB 版**: `mastering-bitcoin-3rd-zh-tw.epub` - 適合電子書閱讀器，包含封面和所有圖片
+
+            > **注意**: 本專案因中英文混排技術限制，已停止 PDF 版本開發。如需 PDF，建議使用瀏覽器的「列印為 PDF」功能從 HTML 版本轉換。
 
             ## 🌐 線上閱讀
 
@@ -147,12 +128,18 @@ jobs:
             - **譯者**: Dr. Awesome Doge
             - **授權**: CC-BY-SA 4.0 International
 
+            ## 📋 本版本更新
+
+            - ✅ 完整繁體中文翻譯
+            - ✅ HTML 和 EPUB 格式優化
+            - ✅ 修復圖片顯示問題
+            - ✅ 完善元數據和封面
+
             ---
 
             🤖 此版本由 GitHub Actions 自動建置
           files: |
             release/mastering-bitcoin-3rd-zh-tw.html
-            release/mastering-bitcoin-3rd-zh-tw.pdf
             release/mastering-bitcoin-3rd-zh-tw.epub
             release/mastering-bitcoin-3rd-zh-tw-html.zip
             release/checksums.txt
