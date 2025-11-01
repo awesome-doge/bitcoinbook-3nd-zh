@@ -2,6 +2,7 @@
 public/
 release/
 *.html
+!zh-tw/docinfo.html
 *.pdf
 *.epub
 *.mobi
@@ -9,6 +10,7 @@ theme/
 
 # AsciiDoc generated files
 *.xml
+!zh-tw/sitemap.xml
 *.fopub
 
 # macOS

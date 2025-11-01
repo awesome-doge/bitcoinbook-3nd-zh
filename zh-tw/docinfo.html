@@ -1,0 +1,233 @@
+<!-- SEO Meta Tags -->
+<meta name="description" content="《精通比特幣》第三版繁體中文翻譯，深入介紹比特幣技術的權威指南。由 Andreas M. Antonopoulos 和 David A. Harding 著作，涵蓋密鑰、交易、區塊鏈、挖礦等核心概念。">
+<meta name="keywords" content="比特幣,Bitcoin,區塊鏈,加密貨幣,精通比特幣,Mastering Bitcoin,Andreas Antonopoulos,繁體中文,技術指南,去中心化,數位貨幣,密碼學">
+<meta name="author" content="Andreas M. Antonopoulos, David A. Harding">
+<meta name="translator" content="Dr. Awesome Doge">
+<meta name="language" content="zh-TW">
+<meta name="robots" content="index, follow">
+<meta name="googlebot" content="index, follow">
+<link rel="canonical" href="https://bitcoinbook-3nd-zh.doge.tg/">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="book">
+<meta property="og:url" content="https://bitcoinbook-3nd-zh.doge.tg/">
+<meta property="og:title" content="精通比特幣：程式設計開放區塊鏈（第三版）- 繁體中文版">
+<meta property="og:description" content="深入介紹比特幣技術的權威指南。涵蓋密鑰、交易、區塊鏈、挖礦、安全性等核心概念。開源免費閱讀。">
+<meta property="og:image" content="https://bitcoinbook-3nd-zh.doge.tg/images/cover_thumbnail-346x346.png">
+<meta property="og:image:width" content="346">
+<meta property="og:image:height" content="346">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="精通比特幣第三版繁體中文版">
+<meta property="book:author" content="Andreas M. Antonopoulos">
+<meta property="book:author" content="David A. Harding">
+<meta property="book:isbn" content="978-1-098-15009-9">
+<meta property="book:release_date" content="2023-12">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://bitcoinbook-3nd-zh.doge.tg/">
+<meta name="twitter:title" content="精通比特幣：程式設計開放區塊鏈（第三版）- 繁體中文版">
+<meta name="twitter:description" content="深入介紹比特幣技術的權威指南。涵蓋密鑰、交易、區塊鏈、挖礦、安全性等核心概念。">
+<meta name="twitter:image" content="https://bitcoinbook-3nd-zh.doge.tg/images/cover_thumbnail-346x346.png">
+<meta name="twitter:creator" content="@aantonop">
+
+<!-- Schema.org structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Book",
+  "name": "精通比特幣：程式設計開放區塊鏈",
+  "alternateName": "Mastering Bitcoin: Programming the Open Blockchain",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Andreas M. Antonopoulos",
+      "sameAs": "https://twitter.com/aantonop"
+    },
+    {
+      "@type": "Person",
+      "name": "David A. Harding"
+    }
+  ],
+  "translator": {
+    "@type": "Person",
+    "name": "Dr. Awesome Doge"
+  },
+  "bookEdition": "Third Edition",
+  "bookFormat": "https://schema.org/EBook",
+  "inLanguage": "zh-TW",
+  "isbn": "978-1-098-15009-9",
+  "numberOfPages": "400",
+  "publisher": {
+    "@type": "Organization",
+    "name": "O'Reilly Media"
+  },
+  "datePublished": "2023-12",
+  "description": "深入介紹比特幣技術的權威指南，涵蓋密鑰、交易、區塊鏈、挖礦、安全性等核心概念。",
+  "about": [
+    {
+      "@type": "Thing",
+      "name": "Bitcoin"
+    },
+    {
+      "@type": "Thing",
+      "name": "Blockchain"
+    },
+    {
+      "@type": "Thing",
+      "name": "Cryptocurrency"
+    }
+  ],
+  "genre": "Technical",
+  "license": "https://creativecommons.org/licenses/by-sa/4.0/"
+}
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6ZDJ9YC816"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6ZDJ9YC816', {
+    'send_page_view': true
+  });
+
+  // 章節追蹤功能
+  (function() {
+    // 章節映射表
+    const chapterNames = {
+      'preface': '前言',
+      'ch01_intro_what_is_bitcoin': '第一章：比特幣簡介',
+      'ch02_overview': '第二章：比特幣如何運作',
+      'ch03_bitcoin_client': '第三章：Bitcoin Core',
+      'ch04_keys_addresses': '第四章：密鑰與地址',
+      'ch05_wallets': '第五章：錢包',
+      'ch06_transactions': '第六章：交易',
+      'ch07_authorization_authentication': '第七章：授權與認證',
+      'ch08_signatures': '第八章：數位簽章',
+      'ch09_fees': '第九章：交易手續費',
+      'ch10_p2p_network': '第十章：比特幣網路',
+      'ch11_blockchain': '第十一章：區塊鏈',
+      'ch12_mining': '第十二章：挖礦與共識',
+      'ch13_security': '第十三章：安全性',
+      'ch14_applications': '第十四章：第二層應用',
+      'appa_whitepaper': '附錄A：比特幣白皮書',
+      'appb_errata': '附錄B：勘誤表',
+      'appc_bips': '附錄C：Bitcoin Improvement Proposals',
+      'glossary': '術語表'
+    };
+
+    let lastTrackedSection = '';
+
+    // 追蹤章節瀏覽
+    function trackChapterView(sectionId, method) {
+      const chapterName = chapterNames[sectionId] || sectionId;
+
+      // 避免重複追蹤同一章節
+      if (lastTrackedSection === sectionId) {
+        return;
+      }
+
+      lastTrackedSection = sectionId;
+
+      // 發送虛擬頁面瀏覽事件
+      gtag('event', 'page_view', {
+        page_title: chapterName,
+        page_location: window.location.origin + window.location.pathname + '#' + sectionId,
+        page_path: '/#' + sectionId,
+        chapter_name: chapterName,
+        navigation_method: method || 'unknown'
+      });
+
+      // 發送自定義章節瀏覽事件
+      gtag('event', 'chapter_view', {
+        chapter_id: sectionId,
+        chapter_name: chapterName,
+        method: method || 'unknown'
+      });
+
+      console.log('📊 GA追蹤:', chapterName, '(方法:', method + ')');
+    }
+
+    // 監聽 URL hash 變化
+    function onHashChange() {
+      const hash = window.location.hash.substring(1);
+      if (hash && chapterNames[hash]) {
+        trackChapterView(hash, 'hash_change');
+      }
+    }
+
+    // 監聽目錄點擊
+    function setupTocTracking() {
+      // 等待頁面加載完成
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupTocTracking);
+        return;
+      }
+
+      // 監聽所有內部錨點鏈接
+      document.addEventListener('click', function(e) {
+        const link = e.target.closest('a[href^="#"]');
+        if (link) {
+          const hash = link.getAttribute('href').substring(1);
+          if (chapterNames[hash]) {
+            setTimeout(() => trackChapterView(hash, 'toc_click'), 100);
+          }
+        }
+      });
+    }
+
+    // 滾動追蹤 - 檢測用戶當前閱讀的章節
+    let scrollTimeout;
+    function onScroll() {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(function() {
+        const sections = document.querySelectorAll('h1[id], h2[id], section[id]');
+        let currentSection = '';
+
+        for (let i = sections.length - 1; i >= 0; i--) {
+          const section = sections[i];
+          const rect = section.getBoundingClientRect();
+
+          // 檢查章節是否在視窗頂部附近
+          if (rect.top <= 150) {
+            const sectionId = section.getAttribute('id');
+            if (chapterNames[sectionId]) {
+              currentSection = sectionId;
+              break;
+            }
+          }
+        }
+
+        if (currentSection && currentSection !== lastTrackedSection) {
+          trackChapterView(currentSection, 'scroll');
+        }
+      }, 1000); // 1秒後才追蹤，避免滾動時頻繁觸發
+    }
+
+    // 初始化追蹤
+    function init() {
+      // 追蹤初始頁面或章節
+      const initialHash = window.location.hash.substring(1);
+      if (initialHash && chapterNames[initialHash]) {
+        trackChapterView(initialHash, 'initial_load');
+      }
+
+      // 設置事件監聽器
+      window.addEventListener('hashchange', onHashChange);
+      window.addEventListener('scroll', onScroll, { passive: true });
+      setupTocTracking();
+
+      console.log('📊 Google Analytics 章節追蹤已啟用');
+    }
+
+    // 等待頁面加載完成後初始化
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>

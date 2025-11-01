@@ -77,6 +77,7 @@ asciidoctor \
   --attribute=toclevels=2 \
   --attribute=lang=zh-TW \
   --attribute=imagesdir=.. \
+  --attribute=docinfo=shared \
   book.adoc
 cd ..
 echo -e "${GREEN}✓ HTML 已生成：$OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.html${NC}"

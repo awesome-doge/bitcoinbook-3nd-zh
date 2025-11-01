@@ -57,11 +57,17 @@ jobs:
             --attribute=sectanchors \
             --attribute=idprefix= \
             --attribute=idseparator=- \
+            --attribute=docinfo=shared \
             book.adoc
 
       - name: Copy images to output
         run: |
           cp -r images public/images
+
+      - name: Copy SEO files
+        run: |
+          cp zh-tw/robots.txt public/robots.txt
+          cp zh-tw/sitemap.xml public/sitemap.xml
 
       - name: Create CNAME file for custom domain
         run: |

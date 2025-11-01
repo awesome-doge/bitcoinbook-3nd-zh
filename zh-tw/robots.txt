@@ -1,0 +1,29 @@
+# robots.txt for bitcoinbook-3nd-zh.doge.tg
+# 精通比特幣第三版繁體中文版
+
+# Allow all search engines to crawl the entire site
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://bitcoinbook-3nd-zh.doge.tg/sitemap.xml
+
+# Crawl-delay (optional, helps prevent server overload)
+# Most modern crawlers respect this directive
+Crawl-delay: 1
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /

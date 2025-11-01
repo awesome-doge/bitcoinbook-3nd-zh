@@ -52,6 +52,7 @@ jobs:
             --attribute=idseparator=- \
             --attribute=lang=zh-TW \
             --attribute=imagesdir=.. \
+            --attribute=docinfo=shared \
             book.adoc
 
       - name: Build EPUB

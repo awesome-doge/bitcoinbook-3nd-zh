@@ -44,6 +44,7 @@ jobs:
             --attribute=sectanchors \
             --attribute=idprefix= \
             --attribute=idseparator=- \
+            --attribute=docinfo=shared \
             book.adoc
 
       - name: Copy images to preview
