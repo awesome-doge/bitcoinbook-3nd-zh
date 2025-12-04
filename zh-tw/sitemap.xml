@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
   <!-- 首頁 / 完整書籍 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://bitcoinbook-3nd-zh.doge.tg/images/cover_thumbnail-346x346.png</image:loc>
+      <image:title>精通比特幣第三版封面</image:title>
+      <image:caption>Mastering Bitcoin 3rd Edition 繁體中文版書籍封面</image:caption>
+    </image:image>
   </url>
 
   <!-- 前言 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#preface</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -21,7 +27,7 @@
   <!-- 第一章：比特幣簡介 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch01_intro_what_is_bitcoin</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -29,7 +35,7 @@
   <!-- 第二章：比特幣如何運作 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch02_overview</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -37,7 +43,7 @@
   <!-- 第三章：Bitcoin Core -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch03_bitcoin_client</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -45,7 +51,7 @@
   <!-- 第四章：密鑰與地址 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch04_keys_addresses</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -53,7 +59,7 @@
   <!-- 第五章：錢包 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch05_wallets</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -61,7 +67,7 @@
   <!-- 第六章：交易 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch06_transactions</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -69,7 +75,7 @@
   <!-- 第七章：授權與認證 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch07_authorization_authentication</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -77,7 +83,7 @@
   <!-- 第八章：數位簽章 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch08_signatures</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -85,7 +91,7 @@
   <!-- 第九章：交易手續費 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch09_fees</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -93,7 +99,7 @@
   <!-- 第十章：比特幣網路 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch10_p2p_network</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -101,7 +107,7 @@
   <!-- 第十一章：區塊鏈 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch11_blockchain</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -109,7 +115,7 @@
   <!-- 第十二章：挖礦與共識 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch12_mining</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -117,7 +123,7 @@
   <!-- 第十三章：安全性 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch13_security</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -125,7 +131,7 @@
   <!-- 第十四章：第二層應用 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#ch14_applications</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -133,7 +139,7 @@
   <!-- 附錄 A：比特幣白皮書 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#appa_whitepaper</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -141,7 +147,7 @@
   <!-- 附錄 B：勘誤表 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#appb_errata</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -149,7 +155,7 @@
   <!-- 附錄 C：Bitcoin Improvement Proposals -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#appc_bips</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -157,7 +163,7 @@
   <!-- 術語表 -->
   <url>
     <loc>https://bitcoinbook-3nd-zh.doge.tg/#glossary</loc>
-    <lastmod>2025-10-31</lastmod>
+    <lastmod>2025-12-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

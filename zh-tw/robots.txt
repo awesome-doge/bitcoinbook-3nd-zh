@@ -1,20 +1,25 @@
 # robots.txt for bitcoinbook-3nd-zh.doge.tg
 # 精通比特幣第三版繁體中文版
+# Last updated: 2025-12-04
 
-# Allow all search engines to crawl the entire site
+# =====================================================
+# Default: Allow all crawlers
+# =====================================================
 User-agent: *
 Allow: /
+Crawl-delay: 1
 
 # Sitemap location
 Sitemap: https://bitcoinbook-3nd-zh.doge.tg/sitemap.xml
 
-# Crawl-delay (optional, helps prevent server overload)
-# Most modern crawlers respect this directive
-Crawl-delay: 1
-
-# Specific rules for major search engines
+# =====================================================
+# Traditional Search Engines (SEO)
+# =====================================================
 User-agent: Googlebot
 Allow: /
+
+User-agent: Googlebot-Image
+Allow: /images/
 
 User-agent: Bingbot
 Allow: /
@@ -27,3 +32,116 @@ Allow: /
 
 User-agent: Baiduspider
 Allow: /
+
+User-agent: Yandex
+Allow: /
+
+User-agent: Sogou
+Allow: /
+
+# =====================================================
+# AI Crawlers / LLM Training Bots (GEO & AEO)
+# We ALLOW AI crawlers to index our educational content
+# This helps the content appear in AI-generated answers
+# =====================================================
+
+# OpenAI GPT / ChatGPT
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic Claude
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+# Google Gemini / Bard
+User-agent: Google-Extended
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+# Microsoft Copilot
+User-agent: Applebot-Extended
+Allow: /
+
+# Cohere AI
+User-agent: cohere-ai
+Allow: /
+
+# Common Crawl (used for AI training)
+User-agent: CCBot
+Allow: /
+
+# Bytespider (TikTok/ByteDance)
+User-agent: Bytespider
+Allow: /
+
+# You.com AI
+User-agent: YouBot
+Allow: /
+
+# Amazon Alexa
+User-agent: ia_archiver
+Allow: /
+
+# =====================================================
+# Social Media Crawlers (for link previews)
+# =====================================================
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+# =====================================================
+# Archive Crawlers
+# =====================================================
+User-agent: archive.org_bot
+Allow: /
+
+# =====================================================
+# Blocked Crawlers (aggressive or unwanted)
+# =====================================================
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
