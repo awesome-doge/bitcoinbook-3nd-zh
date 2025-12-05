@@ -161,15 +161,21 @@ translation/             # Translation resources
 ### Building the Chinese Version
 
 ```bash
-# Build Chinese HTML (when zh-tw/book.adoc exists)
+# Build HTML and EPUB using the build script
+./scripts/build-local.sh
+
+# Or build manually:
 cd zh-tw
 asciidoctor \
   --backend=html5 \
-  --out-file=../docs/index.html \
+  --out-file=../build/mastering-bitcoin-3rd-zh-tw.html \
   --attribute=source-highlighter=rouge \
   --attribute=toc=left \
+  --attribute=lang=zh-TW \
   book.adoc
 ```
+
+**Note**: This project focuses on HTML and EPUB formats. PDF generation has been discontinued due to technical limitations with Chinese-English mixed text layout.
 
 ### Translation Workflow
 
@@ -190,7 +196,7 @@ asciidoctor \
 
 ## Important Notes
 
-- **Do not create PDFs** or derivatives until verifying license terms allow it
 - The book is technical content requiring domain expertise in Bitcoin/cryptography
 - Many cross-references only work when the full book is rendered together
 - O'Reilly's Atlas system has specific formatting requirements defined in `atlas.json`
+- This translation project outputs HTML and EPUB formats only

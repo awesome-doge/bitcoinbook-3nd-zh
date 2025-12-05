@@ -3,6 +3,7 @@ public/
 release/
 *.html
 !zh-tw/docinfo.html
+!zh-tw/docinfo-footer.html
 *.pdf
 *.epub
 *.mobi
