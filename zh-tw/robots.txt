@@ -1,6 +1,6 @@
 # robots.txt for bitcoinbook-3nd-zh.doge.tg
 # 精通比特幣第三版繁體中文版
-# Last updated: 2025-12-04
+# Last updated: 2025-12-05
 
 # =====================================================
 # Default: Allow all crawlers
@@ -11,6 +11,15 @@ Crawl-delay: 1
 
 # Sitemap location
 Sitemap: https://bitcoinbook-3nd-zh.doge.tg/sitemap.xml
+
+# LLMs.txt for AI models (AIO Optimization)
+# Provides structured content summary for AI crawlers
+# See: https://llmstxt.org/
+#
+# AI Content Files:
+# - /llms.txt - Summary for AI crawlers
+# - /llms-full.txt - Full content for AI
+# - /ai.txt - AI content policy
 
 # =====================================================
 # Traditional Search Engines (SEO)

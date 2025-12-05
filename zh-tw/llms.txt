@@ -1,0 +1,104 @@
+# 精通比特幣：程式設計開放區塊鏈（第三版）繁體中文版
+
+> 深入介紹比特幣與區塊鏈技術的權威教學指南，免費線上閱讀。
+
+## 關於本書
+
+《精通比特幣》（Mastering Bitcoin）第三版是學習比特幣區塊鏈技術的權威指南，由比特幣教育家 Andreas M. Antonopoulos 和 David A. Harding 撰寫。本繁體中文版由 Dr. Awesome Doge 翻譯。
+
+- **作者**: Andreas M. Antonopoulos, David A. Harding
+- **譯者**: Dr. Awesome Doge
+- **出版社**: O'Reilly Media
+- **出版日期**: 2023年12月
+- **ISBN**: 978-1-098-15009-9
+- **授權**: CC BY-SA 4.0
+
+## 主要內容
+
+本書涵蓋比特幣技術的完整知識體系：
+
+### 基礎概念
+- 比特幣是什麼：去中心化的數位貨幣系統
+- 區塊鏈技術：分散式帳本的運作原理
+- 工作量證明（Proof of Work）：共識機制的核心
+
+### 密碼學與安全
+- 公鑰/私鑰密碼學
+- 橢圓曲線數位簽章（ECDSA）
+- Schnorr 簽名
+- HD 錢包與 BIP39 助記詞
+
+### 交易與腳本
+- UTXO 模型
+- 交易結構與腳本語言
+- P2PKH、P2SH、P2WPKH、P2WSH、P2TR 地址類型
+- SegWit 隔離見證
+
+### 網路與共識
+- P2P 網路協議
+- 區塊鏈資料結構
+- 挖礦與難度調整
+- 共識規則
+
+### 進階主題
+- Taproot 升級
+- 閃電網路（Lightning Network）
+- 支付通道
+- 第二層解決方案
+
+## 章節目錄
+
+- [前言](https://bitcoinbook-3nd-zh.doge.tg/#preface)
+- [第一章：比特幣簡介](https://bitcoinbook-3nd-zh.doge.tg/#ch01_intro_what_is_bitcoin)
+- [第二章：比特幣如何運作](https://bitcoinbook-3nd-zh.doge.tg/#ch02_overview)
+- [第三章：Bitcoin Core 參考實作](https://bitcoinbook-3nd-zh.doge.tg/#ch03_bitcoin_client)
+- [第四章：密鑰與地址](https://bitcoinbook-3nd-zh.doge.tg/#ch04_keys_addresses)
+- [第五章：錢包技術](https://bitcoinbook-3nd-zh.doge.tg/#ch05_wallets)
+- [第六章：交易](https://bitcoinbook-3nd-zh.doge.tg/#ch06_transactions)
+- [第七章：授權與認證](https://bitcoinbook-3nd-zh.doge.tg/#ch07_authorization_authentication)
+- [第八章：數位簽章](https://bitcoinbook-3nd-zh.doge.tg/#ch08_signatures)
+- [第九章：交易手續費](https://bitcoinbook-3nd-zh.doge.tg/#ch09_fees)
+- [第十章：比特幣網路](https://bitcoinbook-3nd-zh.doge.tg/#ch10_p2p_network)
+- [第十一章：區塊鏈](https://bitcoinbook-3nd-zh.doge.tg/#ch11_blockchain)
+- [第十二章：挖礦與共識](https://bitcoinbook-3nd-zh.doge.tg/#ch12_mining)
+- [第十三章：安全性](https://bitcoinbook-3nd-zh.doge.tg/#ch13_security)
+- [第十四章：第二層應用](https://bitcoinbook-3nd-zh.doge.tg/#ch14_applications)
+- [附錄A：比特幣白皮書](https://bitcoinbook-3nd-zh.doge.tg/#appa_whitepaper)
+- [附錄B：勘誤表](https://bitcoinbook-3nd-zh.doge.tg/#appb_errata)
+- [附錄C：比特幣改進提案 (BIPs)](https://bitcoinbook-3nd-zh.doge.tg/#appc_bips)
+
+## 適合讀者
+
+- 軟體開發者想要了解比特幣協議
+- 區塊鏈工程師需要深入技術細節
+- 系統架構師評估區塊鏈解決方案
+- 對比特幣技術原理有興趣的研究者
+
+## 常見問題
+
+### 什麼是比特幣？
+比特幣是一種去中心化的數位貨幣，由中本聰於2008年發明。它使用區塊鏈技術記錄所有交易，不需要中央銀行或單一管理員。總供應量上限為2,100萬枚。
+
+### 什麼是區塊鏈？
+區塊鏈是一種分散式資料庫技術，由一系列按時間順序連接的區塊組成。每個區塊包含多筆交易記錄和前一個區塊的雜湊值，確保數據的不可篡改性。
+
+### 什麼是 Taproot？
+Taproot 是2021年啟用的比特幣協議升級，使用 Schnorr 簽名改善隱私性、可擴展性和智能合約功能。
+
+### 什麼是閃電網路？
+閃電網路是建立在比特幣區塊鏈之上的第二層支付協議，允許即時、低成本的微支付，大幅提高交易吞吐量。
+
+### 什麼是 SegWit？
+SegWit（隔離見證）是2017年啟用的協議升級，將交易簽名與交易數據分離，解決交易延展性問題並增加區塊容量。
+
+## 相關資源
+
+- [原版英文書](https://github.com/bitcoinbook/bitcoinbook)
+- [Bitcoin.org](https://bitcoin.org)
+- [比特幣白皮書](https://bitcoin.org/bitcoin.pdf)
+- [Bitcoin Core](https://bitcoincore.org)
+
+## 聯繫方式
+
+- GitHub: https://github.com/awesome-doge/bitcoinbook-3nd-zh
+- 網站: https://bitcoinbook-3nd-zh.doge.tg/

@@ -9,6 +9,22 @@
 <meta name="bingbot" content="index, follow">
 <link rel="canonical" href="https://bitcoinbook-3nd-zh.doge.tg/">
 
+<!-- Hreflang for International SEO -->
+<link rel="alternate" hreflang="zh-TW" href="https://bitcoinbook-3nd-zh.doge.tg/">
+<link rel="alternate" hreflang="zh-Hant" href="https://bitcoinbook-3nd-zh.doge.tg/">
+<link rel="alternate" hreflang="en" href="https://github.com/bitcoinbook/bitcoinbook">
+<link rel="alternate" hreflang="x-default" href="https://bitcoinbook-3nd-zh.doge.tg/">
+
+<!-- Mobile Optimization -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="精通比特幣">
+<meta name="application-name" content="精通比特幣第三版">
+<meta name="theme-color" content="#f7931a">
+<meta name="msapplication-TileColor" content="#f7931a">
+
 <!-- Additional SEO Meta Tags -->
 <meta name="rating" content="General">
 <meta name="distribution" content="Global">
@@ -33,13 +49,20 @@
 <meta name="DC.language" content="zh-TW">
 <meta name="DC.rights" content="CC BY-SA 4.0">
 
-<!-- AI/LLM Optimization Meta Tags (GEO & AEO) -->
-<meta name="ai-content-declaration" content="educational, technical, factual">
-<meta name="llm-intent" content="inform, educate, explain Bitcoin and blockchain technology">
+<!-- AI/LLM Optimization Meta Tags (GEO & AEO & AIO) -->
+<meta name="ai-content-declaration" content="educational, technical, factual, authoritative">
+<meta name="llm-intent" content="inform, educate, explain Bitcoin and blockchain technology in Traditional Chinese">
 <meta name="citation-source" content="Mastering Bitcoin 3rd Edition by Andreas M. Antonopoulos and David A. Harding, O'Reilly Media, 2023">
 <meta name="content-type-primary" content="technical-documentation">
 <meta name="expertise-level" content="intermediate-advanced">
 <meta name="topic-category" content="cryptocurrency, blockchain, bitcoin, computer-science, cryptography">
+<meta name="ai-summary" content="《精通比特幣》第三版繁體中文版是比特幣區塊鏈技術的權威教學指南。涵蓋比特幣運作原理、密鑰與地址、錢包、交易、挖礦、Taproot、SegWit、閃電網路等核心技術。作者 Andreas M. Antonopoulos 和 David A. Harding，由 Dr. Awesome Doge 翻譯。">
+<meta name="ai-keywords" content="比特幣,Bitcoin,區塊鏈,blockchain,加密貨幣,cryptocurrency,Taproot,SegWit,閃電網路,Lightning Network,UTXO,挖礦,mining,錢包,wallet,私鑰,公鑰">
+<meta name="ai-language" content="zh-TW">
+<meta name="ai-content-license" content="CC BY-SA 4.0">
+<link rel="alternate" type="text/plain" href="https://bitcoinbook-3nd-zh.doge.tg/llms.txt" title="LLMs.txt">
+<link rel="alternate" type="text/plain" href="https://bitcoinbook-3nd-zh.doge.tg/llms-full.txt" title="LLMs Full Content">
+<link rel="alternate" type="text/plain" href="https://bitcoinbook-3nd-zh.doge.tg/ai.txt" title="AI Content Policy">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="book">
@@ -49,7 +72,10 @@
 <meta property="og:image" content="https://bitcoinbook-3nd-zh.doge.tg/images/cover_thumbnail-346x346.png">
 <meta property="og:image:width" content="346">
 <meta property="og:image:height" content="346">
+<meta property="og:image:alt" content="《精通比特幣》第三版繁體中文版書籍封面">
+<meta property="og:image:type" content="image/png">
 <meta property="og:locale" content="zh_TW">
+<meta property="og:locale:alternate" content="zh_Hant_TW">
 <meta property="og:site_name" content="精通比特幣第三版繁體中文版">
 <meta property="book:author" content="Andreas M. Antonopoulos">
 <meta property="book:author" content="David A. Harding">
@@ -62,7 +88,9 @@
 <meta name="twitter:title" content="精通比特幣（第三版）繁體中文｜免費線上閱讀｜比特幣區塊鏈技術教學">
 <meta name="twitter:description" content="免費線上閱讀！深入介紹比特幣與區塊鏈技術的權威教學。涵蓋錢包、交易、挖礦、Taproot、SegWit、閃電網路。適合開發者的比特幣入門教材。">
 <meta name="twitter:image" content="https://bitcoinbook-3nd-zh.doge.tg/images/cover_thumbnail-346x346.png">
+<meta name="twitter:image:alt" content="《精通比特幣》第三版繁體中文版書籍封面">
 <meta name="twitter:creator" content="@aantonop">
+<meta name="twitter:site" content="@aantonop">
 
 <!-- Schema.org structured data - Book -->
 <script type="application/ld+json">
@@ -101,7 +129,7 @@
     "sameAs": "https://www.oreilly.com"
   },
   "datePublished": "2023-12",
-  "dateModified": "2025-12-04",
+  "dateModified": "2025-12-05",
   "description": "《精通比特幣》第三版繁體中文版是學習比特幣與區塊鏈技術的權威指南。本書深入淺出地介紹比特幣的運作原理，涵蓋密鑰與地址、錢包、交易、挖礦、Taproot、SegWit、閃電網路等核心技術。適合開發者、工程師及對區塊鏈技術有興趣的讀者。",
   "about": [
     {"@type": "Thing", "name": "Bitcoin", "sameAs": "https://en.wikipedia.org/wiki/Bitcoin"},
@@ -124,20 +152,22 @@
   "learningResourceType": "Technical Book",
   "typicalAgeRange": "18-",
   "hasPart": [
-    {"@type": "Chapter", "name": "第一章：比特幣簡介", "position": 1, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch01_intro_what_is_bitcoin"},
-    {"@type": "Chapter", "name": "第二章：比特幣如何運作", "position": 2, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch02_overview"},
-    {"@type": "Chapter", "name": "第三章：Bitcoin Core", "position": 3, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch03_bitcoin_client"},
-    {"@type": "Chapter", "name": "第四章：密鑰與地址", "position": 4, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch04_keys_addresses"},
-    {"@type": "Chapter", "name": "第五章：錢包", "position": 5, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch05_wallets"},
-    {"@type": "Chapter", "name": "第六章：交易", "position": 6, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch06_transactions"},
-    {"@type": "Chapter", "name": "第七章：授權與認證", "position": 7, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch07_authorization_authentication"},
-    {"@type": "Chapter", "name": "第八章：數位簽章", "position": 8, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch08_signatures"},
-    {"@type": "Chapter", "name": "第九章：交易手續費", "position": 9, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch09_fees"},
-    {"@type": "Chapter", "name": "第十章：比特幣網路", "position": 10, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch10_p2p_network"},
-    {"@type": "Chapter", "name": "第十一章：區塊鏈", "position": 11, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch11_blockchain"},
-    {"@type": "Chapter", "name": "第十二章：挖礦與共識", "position": 12, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch12_mining"},
-    {"@type": "Chapter", "name": "第十三章：安全性", "position": 13, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch13_security"},
-    {"@type": "Chapter", "name": "第十四章：第二層應用", "position": 14, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch14_applications"}
+    {"@type": "Chapter", "name": "第一章：比特幣簡介", "position": 1, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch01_intro_what_is_bitcoin", "description": "比特幣的定義、歷史和基本概念"},
+    {"@type": "Chapter", "name": "第二章：比特幣如何運作", "position": 2, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch02_bitcoin_overview", "description": "比特幣交易的生命週期和運作機制"},
+    {"@type": "Chapter", "name": "第三章：Bitcoin Core", "position": 3, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch03_bitcoin_client", "description": "Bitcoin Core 參考實作的安裝和使用"},
+    {"@type": "Chapter", "name": "第四章：密鑰與地址", "position": 4, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch04_keys_addresses", "description": "公私鑰密碼學和比特幣地址格式"},
+    {"@type": "Chapter", "name": "第五章：錢包", "position": 5, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch05_wallets", "description": "HD 錢包、助記詞和錢包技術"},
+    {"@type": "Chapter", "name": "第六章：交易", "position": 6, "url": "https://bitcoinbook-3nd-zh.doge.tg/#c_transactions", "description": "交易結構、UTXO 模型和 SegWit"},
+    {"@type": "Chapter", "name": "第七章：授權與認證", "position": 7, "url": "https://bitcoinbook-3nd-zh.doge.tg/#c_authorization_authentication", "description": "腳本語言和智能合約基礎"},
+    {"@type": "Chapter", "name": "第八章：數位簽章", "position": 8, "url": "https://bitcoinbook-3nd-zh.doge.tg/#c_signatures", "description": "ECDSA 和 Schnorr 簽名機制"},
+    {"@type": "Chapter", "name": "第九章：交易手續費", "position": 9, "url": "https://bitcoinbook-3nd-zh.doge.tg/#tx_fees", "description": "手續費市場和 RBF/CPFP 策略"},
+    {"@type": "Chapter", "name": "第十章：比特幣網路", "position": 10, "url": "https://bitcoinbook-3nd-zh.doge.tg/#bitcoin_network_ch08", "description": "P2P 網路協議和節點類型"},
+    {"@type": "Chapter", "name": "第十一章：區塊鏈", "position": 11, "url": "https://bitcoinbook-3nd-zh.doge.tg/#blockchain", "description": "區塊結構和 Merkle 樹"},
+    {"@type": "Chapter", "name": "第十二章：挖礦與共識", "position": 12, "url": "https://bitcoinbook-3nd-zh.doge.tg/#mining", "description": "工作量證明和共識機制"},
+    {"@type": "Chapter", "name": "第十三章：安全性", "position": 13, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch11", "description": "安全威脅和最佳實踐"},
+    {"@type": "Chapter", "name": "第十四章：第二層應用", "position": 14, "url": "https://bitcoinbook-3nd-zh.doge.tg/#ch12", "description": "閃電網路和支付通道"},
+    {"@type": "Chapter", "name": "附錄A：比特幣白皮書", "position": 15, "url": "https://bitcoinbook-3nd-zh.doge.tg/#satoshi_whitepaper", "description": "中本聰原始論文"},
+    {"@type": "Chapter", "name": "附錄C：比特幣改進提案", "position": 16, "url": "https://bitcoinbook-3nd-zh.doge.tg/#appdxbitcoinimpproposals", "description": "重要 BIP 摘要"}
   ]
 }
 </script>
@@ -261,6 +291,62 @@
         "@type": "Answer",
         "text": "《精通比特幣》第三版適合軟體開發者、區塊鏈工程師、系統架構師，以及對比特幣技術原理有深入了解興趣的讀者。本書假設讀者具備基本的程式設計知識，但會從基礎概念開始逐步深入到進階主題。"
       }
+    },
+    {
+      "@type": "Question",
+      "name": "什麼是私鑰和公鑰？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "私鑰是一個256位元的隨機數，是控制比特幣的唯一憑證，必須保密。公鑰是從私鑰透過橢圓曲線密碼學（ECC）推導出來的，可以公開分享。比特幣地址則是從公鑰進一步推導而來。私鑰用於簽署交易，公鑰用於驗證簽名。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "什麼是 HD 錢包和助記詞？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "HD 錢包（Hierarchical Deterministic Wallet，分層確定性錢包）是一種可以從單一種子派生出無限數量密鑰對的錢包技術（BIP32/BIP44）。助記詞（BIP39）是由12或24個英文單詞組成的短語，用於備份和恢復錢包。只要保存好助記詞，就能恢復整個錢包的所有密鑰。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "比特幣的區塊獎勵是多少？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "比特幣的區塊獎勵每210,000個區塊（約4年）減半一次。最初為50 BTC，2012年減為25 BTC，2016年減為12.5 BTC，2020年減為6.25 BTC，2024年4月減為3.125 BTC。預計到2140年左右，所有2,100萬枚比特幣將全部發行完畢。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "什麼是比特幣地址格式？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "比特幣有多種地址格式：Legacy 地址（P2PKH）以1開頭；P2SH 地址以3開頭；Bech32 地址（SegWit，P2WPKH/P2WSH）以bc1q開頭；Bech32m 地址（Taproot，P2TR）以bc1p開頭。較新的地址格式通常手續費更低且功能更強大。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "什麼是 Schnorr 簽名？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Schnorr 簽名是 Taproot 升級引入的數位簽名方案（BIP340），取代了原有的 ECDSA 簽名。優點包括：簽名更小、驗證更快、支援簽名聚合（多個簽名可以合併為一個）、提高隱私性。Schnorr 簽名使多重簽名交易看起來與普通交易相同。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "這本書可以免費閱讀嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "是的，《精通比特幣》第三版繁體中文版可以在 bitcoinbook-3nd-zh.doge.tg 免費線上閱讀。本書採用 CC BY-SA 4.0 授權，允許自由分享和修改，只要標註原作者並以相同授權釋出衍生作品。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "比特幣和以太坊有什麼區別？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "比特幣是第一個區塊鏈，專注於成為去中心化的數位貨幣和價值儲存。以太坊則是一個智能合約平台，支援更複雜的可程式化應用（DApps）。比特幣使用 UTXO 模型，以太坊使用帳戶模型。比特幣追求安全性和去中心化，以太坊追求靈活性和功能性。"
+      }
     }
   ]
 }
@@ -360,7 +446,7 @@
     {"@type": "Person", "name": "David A. Harding"}
   ],
   "datePublished": "2023-12-01",
-  "dateModified": "2025-12-04",
+  "dateModified": "2025-12-05",
   "publisher": {
     "@type": "Organization",
     "name": "O'Reilly Media"
@@ -388,6 +474,116 @@
   "sameAs": [
     "https://github.com/awesome-doge/bitcoinbook-3nd-zh"
   ]
+}
+</script>
+
+<!-- Schema.org - Speakable for Voice Search / AI Assistants -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "精通比特幣第三版繁體中文版",
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": [".summary-box", ".faq-section", "h1", "h2", ".definition"]
+  },
+  "url": "https://bitcoinbook-3nd-zh.doge.tg/"
+}
+</script>
+
+<!-- Schema.org - DefinedTermSet for Glossary/Terms (AIO) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "DefinedTermSet",
+  "name": "比特幣技術術語表",
+  "inLanguage": "zh-TW",
+  "hasDefinedTerm": [
+    {
+      "@type": "DefinedTerm",
+      "name": "比特幣",
+      "description": "一種去中心化的數位貨幣，由中本聰於2008年發明，使用區塊鏈技術記錄交易，總供應量上限為2,100萬枚。",
+      "termCode": "Bitcoin"
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "區塊鏈",
+      "description": "一種分散式資料庫技術，由按時間順序連接的區塊組成，每個區塊包含交易記錄和前一區塊的雜湊值。",
+      "termCode": "Blockchain"
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "UTXO",
+      "description": "未花費交易輸出（Unspent Transaction Output），比特幣交易模型的核心，代表可被花費的比特幣單位。",
+      "termCode": "UTXO"
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "Taproot",
+      "description": "2021年啟用的比特幣協議升級，使用 Schnorr 簽名改善隱私性、可擴展性和智能合約功能。",
+      "termCode": "Taproot"
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "閃電網路",
+      "description": "建立在比特幣區塊鏈之上的第二層支付協議，允許即時、低成本的微支付。",
+      "termCode": "Lightning Network"
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "SegWit",
+      "description": "隔離見證（Segregated Witness），2017年啟用的協議升級，將簽名數據從交易主體分離，解決延展性問題。",
+      "termCode": "SegWit"
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "工作量證明",
+      "description": "比特幣的共識機制，礦工透過解決複雜數學問題來競爭創建新區塊的權利。",
+      "termCode": "Proof of Work"
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "私鑰",
+      "description": "256位元的隨機數，用於簽署比特幣交易並證明所有權，必須安全保管。",
+      "termCode": "Private Key"
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "HD 錢包",
+      "description": "分層確定性錢包（Hierarchical Deterministic Wallet），從單一種子派生無限數量的密鑰對。",
+      "termCode": "HD Wallet"
+    },
+    {
+      "@type": "DefinedTerm",
+      "name": "助記詞",
+      "description": "BIP39 定義的12或24個英文單詞，用於備份和恢復加密貨幣錢包的種子。",
+      "termCode": "Mnemonic Phrase"
+    }
+  ]
+}
+</script>
+
+<!-- Schema.org - Course for Learning Path (AIO) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "精通比特幣：從入門到精通",
+  "description": "透過《精通比特幣》第三版學習比特幣區塊鏈技術的完整課程",
+  "provider": {
+    "@type": "Organization",
+    "name": "精通比特幣繁體中文翻譯團隊"
+  },
+  "educationalLevel": "Intermediate to Advanced",
+  "inLanguage": "zh-TW",
+  "isAccessibleForFree": true,
+  "coursePrerequisites": "基本程式設計知識",
+  "teaches": ["比特幣協議", "區塊鏈技術", "密碼學基礎", "智能合約", "閃電網路"],
+  "hasCourseInstance": {
+    "@type": "CourseInstance",
+    "courseMode": "online",
+    "courseWorkload": "PT40H"
+  }
 }
 </script>
 

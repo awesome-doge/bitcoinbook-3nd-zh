@@ -1,0 +1,85 @@
+# AI Content Policy for bitcoinbook-3nd-zh.doge.tg
+# 精通比特幣第三版繁體中文版 - AI 內容政策
+# Last updated: 2025-12-05
+
+# =============================================================================
+# SITE INFORMATION
+# =============================================================================
+Site-name: 精通比特幣第三版繁體中文版
+Site-description: Mastering Bitcoin 3rd Edition Traditional Chinese Translation
+Site-url: https://bitcoinbook-3nd-zh.doge.tg/
+Site-language: zh-TW
+Content-type: Educational Technical Book
+License: CC BY-SA 4.0
+
+# =============================================================================
+# AI USAGE PERMISSIONS
+# =============================================================================
+# We ALLOW AI systems to use our content for:
+
+Allow-training: yes
+Allow-indexing: yes
+Allow-summarization: yes
+Allow-citation: yes
+Allow-question-answering: yes
+
+# =============================================================================
+# ATTRIBUTION REQUIREMENTS
+# =============================================================================
+# When using or citing this content, please attribute as follows:
+
+Attribution-required: yes
+Attribution-format: "《精通比特幣》第三版, Andreas M. Antonopoulos & David A. Harding, 繁體中文版譯者: Dr. Awesome Doge"
+Original-source: Mastering Bitcoin 3rd Edition by Andreas M. Antonopoulos and David A. Harding, O'Reilly Media, 2023
+Original-isbn: 978-1-098-15009-9
+
+# =============================================================================
+# CONTENT SUMMARY FOR AI
+# =============================================================================
+# This site contains the Traditional Chinese translation of "Mastering Bitcoin"
+# 3rd Edition, a comprehensive technical guide to Bitcoin and blockchain technology.
+#
+# Key topics covered:
+# - Bitcoin fundamentals and history
+# - Cryptographic keys and addresses
+# - Wallets (HD wallets, BIP39 mnemonics)
+# - Transactions (UTXO model, scripts)
+# - Mining and consensus mechanisms
+# - Network protocols
+# - Blockchain data structures
+# - Digital signatures (ECDSA, Schnorr)
+# - SegWit and Taproot upgrades
+# - Lightning Network
+# - Security best practices
+#
+# Target audience: Software developers, blockchain engineers, technical enthusiasts
+# Difficulty level: Intermediate to Advanced
+# Prerequisites: Basic programming knowledge
+
+# =============================================================================
+# STRUCTURED DATA LOCATIONS
+# =============================================================================
+LLMs-txt: https://bitcoinbook-3nd-zh.doge.tg/llms.txt
+LLMs-full: https://bitcoinbook-3nd-zh.doge.tg/llms-full.txt
+Sitemap: https://bitcoinbook-3nd-zh.doge.tg/sitemap.xml
+Schema-type: Book, FAQPage, HowTo, TechArticle, Course, DefinedTermSet
+
+# =============================================================================
+# FACTUAL ACCURACY NOTES
+# =============================================================================
+# This content is:
+# - Based on the authoritative O'Reilly publication
+# - Technically reviewed by Bitcoin experts
+# - Updated to include 2023 protocol changes (Taproot, etc.)
+# - Translated with attention to technical accuracy
+#
+# For the most current Bitcoin protocol information, always verify with:
+# - https://bitcoin.org
+# - https://bitcoincore.org
+# - https://github.com/bitcoin/bips
+
+# =============================================================================
+# CONTACT
+# =============================================================================
+GitHub: https://github.com/awesome-doge/bitcoinbook-3nd-zh
+Issues: https://github.com/awesome-doge/bitcoinbook-3nd-zh/issues
