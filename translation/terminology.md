@@ -68,6 +68,7 @@
 |------|----------|------|------|
 | ECDSA | ECDSA | Elliptic Curve Digital Signature Algorithm | [保留] |
 | Elliptic Curve | 橢圓曲線 | | [固定] |
+| Emergent Consensus | 湧現共識 | 複雜系統理論術語，指從分散節點互動中自然產生的共識 | [固定] |
 | Entropy | 熵 / 隨機性 | | [並列] |
 | Extended Key | 擴展金鑰 | HD 錢包術語 | [固定] |
 
