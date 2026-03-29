@@ -188,7 +188,7 @@ h1, h2, h3, h4, h5, h6 {
 /* We'll just use the stronger rule for all paragraph-related stuff to be sure */
 body p {
   margin: 1em 0 0 0;
-  text-align: justify;
+  text-align: left;
   text-indent: 0;
 
   widows: 2;
@@ -421,7 +421,7 @@ dl dd {
 /* Kindle does not justify list-item element, must wrap in nested block element */
 li > span.principal, dd > span.principal {
   display: block;
-  text-align: justify;
+  text-align: left;
 }
 
 ol.arabic {
@@ -898,7 +898,7 @@ aside.sidebar > h2 {
 
 aside.sidebar > div.content {
   margin-bottom: 1em;
-  text-align: justify; /* restore text alignment in content */
+  text-align: left;
 }
 
 /* QUESTION same for ordered-list? */
