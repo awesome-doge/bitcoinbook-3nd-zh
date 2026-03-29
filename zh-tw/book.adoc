@@ -11,6 +11,7 @@ Andreas M. Antonopoulos; David A. Harding
 :keywords: Bitcoin, 比特幣, 區塊鏈, 加密貨幣
 :copyright: CC BY-SA 4.0
 :lang: zh-TW
+:toc-title: 目錄
 :description: 深入介紹比特幣技術的權威指南（繁體中文版）
 
 [.text-center]

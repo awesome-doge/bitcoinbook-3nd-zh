@@ -74,7 +74,7 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
+body, body.book, body.book.toc2 {
   overflow-x: hidden;
   width: 100%;
   background: var(--color-bg) !important;
@@ -84,7 +84,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: var(--line-height-body);
+  line-height: var(--line-height-body) !important;
   letter-spacing: var(--letter-spacing-body);
 }
 
@@ -141,8 +141,8 @@ a, span {
 }
 
 /* 段落 */
-p {
-  line-height: var(--line-height-body);
+p, .paragraph p, .sectionbody p {
+  line-height: var(--line-height-body) !important;
   margin-bottom: var(--paragraph-spacing);
   color: var(--color-text);
 }
@@ -154,21 +154,55 @@ h1, h2, h3, #toctitle, .sidebarblock>.content>.title, h4, h5, h6 {
   line-height: var(--line-height-heading) !important;
   font-weight: 600 !important;
   letter-spacing: -0.01em;
+  word-spacing: normal !important;
 }
 
-h1 { font-size: 2.2em; margin-top: 1.5em; margin-bottom: 0.6em; }
-h2 { font-size: 1.75em; margin-top: var(--section-spacing); margin-bottom: 0.6em; padding-bottom: 0.3em; border-bottom: 2px solid var(--color-border-light); }
-h3, #toctitle, .sidebarblock>.content>.title { font-size: 1.4em; margin-top: 2em; }
-h4 { font-size: 1.2em; margin-top: 1.5em; }
-h5, h6 { font-size: 1.05em; margin-top: 1.25em; }
+#content h1, #content h2, #content h3, #content h4, #content h5, #content h6 {
+  color: var(--color-heading) !important;
+  font-family: var(--font-heading) !important;
+}
 
-/* 連結 */
-a { color: var(--color-link); transition: color 0.15s; }
-a:hover, a:focus { color: var(--color-link-hover); }
+h1 { font-size: 2.2em !important; margin-top: 1.5em; margin-bottom: 0.6em; }
+h2 { font-size: 1.75em !important; margin-top: var(--section-spacing); margin-bottom: 0.6em; padding-bottom: 0.3em; border-bottom: 2px solid var(--color-border-light); }
+h3, .sidebarblock>.content>.title { font-size: 1.4em !important; margin-top: 2em; }
+h4 { font-size: 1.2em !important; margin-top: 1.5em; }
+h5, h6 { font-size: 1.05em !important; margin-top: 1.25em; }
 
-/* 章節分隔 */
+/* 連結 — 正文中連結不加底線，hover 才加 */
+a {
+  color: var(--color-link) !important;
+  text-decoration: none !important;
+  transition: color 0.15s;
+  border-bottom: 1px solid transparent;
+}
+
+a:hover, a:focus {
+  color: var(--color-link-hover) !important;
+  border-bottom-color: var(--color-link-hover);
+}
+
+/* TOC 連結不需要 hover 底線 */
+#toc a, #floating-toc-content a {
+  border-bottom: none !important;
+}
+
+/* 章節分隔 — 漸層分隔線 + 充足間距 */
 .sect1 { padding-bottom: var(--section-spacing); }
-.sect1 + .sect1 { border-top: 1px solid var(--color-border-light); padding-top: var(--section-spacing); }
+.sect1 + .sect1 {
+  padding-top: var(--section-spacing);
+  border-top: none;
+  position: relative;
+}
+.sect1 + .sect1::before {
+  content: '';
+  display: block;
+  width: 60%;
+  max-width: 300px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-border), var(--color-accent), var(--color-border), transparent);
+  margin: 0 auto 2em;
+  border-radius: 1px;
+}
 
 /* 程式碼 */
 :not(pre):not([class^=L]) > code {
@@ -398,6 +432,52 @@ dl dd {
     border-left: 3px solid var(--color-accent);
     margin-left: -3px;
     font-weight: 500;
+  }
+
+  /* 桌面版 TOC 可收合 */
+  #toc.toc2 .toc-toggle {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    font-size: 10px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: 3px;
+    margin-right: 2px;
+    transition: transform 0.15s, background 0.15s;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  #toc.toc2 .toc-toggle:hover {
+    background: var(--color-toc-active);
+    color: var(--color-accent);
+  }
+
+  #toc.toc2 .toc-toggle.collapsed {
+    transform: rotate(-90deg);
+  }
+
+  #toc.toc2 li.toc-collapsed > ul {
+    display: none;
+  }
+
+  #toc.toc2 li > a {
+    display: inline;
+  }
+
+  #toc.toc2 .sectlevel0 > li,
+  #toc.toc2 .sectlevel1 > li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+  }
+
+  #toc.toc2 .sectlevel0 > li > ul,
+  #toc.toc2 .sectlevel1 > li > ul {
+    width: 100%;
   }
 
   /* 嵌入式 TOC */
@@ -1206,6 +1286,94 @@ pre, pre code {
   opacity: 1;
 }
 
+/* ===== 暗色模式切換按鈕 ===== */
+#theme-toggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 10002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+  box-shadow: 0 1px 4px var(--color-shadow);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#theme-toggle:hover {
+  background: var(--color-toc-active);
+  transform: scale(1.08);
+}
+
+#theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* 字體大小控制 */
+#font-controls {
+  position: fixed;
+  top: 12px;
+  right: 60px;
+  display: flex;
+  gap: 4px;
+  z-index: 10002;
+}
+
+#font-controls button {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 12px;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+#font-controls button:hover {
+  background: var(--color-toc-active);
+}
+
+/* 手動暗色模式 class */
+html[data-theme="dark"] {
+  --color-bg: #1a1b26;
+  --color-bg-secondary: #1f2133;
+  --color-bg-code: #24253a;
+  --color-bg-sidebar: #1f2133;
+  --color-bg-admonition: #1f2133;
+  --color-bg-quote: #22233a;
+  --color-text: #c9d1d9;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
+  --color-heading: #e6e8f0;
+  --color-link: #6ea8fe;
+  --color-link-hover: #93c5fd;
+  --color-border: #30363d;
+  --color-border-light: #2a2d3a;
+  --color-accent: #f7931a;
+  --color-accent-dark: #ff9f33;
+  --color-code-text: #c9d1d9;
+  --color-toc-bg: #1f2133;
+  --color-toc-active: #2a2d3a;
+  --color-shadow: rgba(0,0,0,0.3);
+  --color-overlay: rgba(0,0,0,0.85);
+}
+
 /* ===== 暗色模式追加覆寫 ===== */
 @media (prefers-color-scheme: dark) {
   /* Asciidoctor 內建樣式覆寫 */
@@ -1307,6 +1475,30 @@ summary:focus-visible {
   #chapter-nav,
   #current-chapter {
     display: none !important;
+  }
+}
+
+/* ===== 手機版控制按鈕位置調整 ===== */
+@media screen and (max-width: 767px) {
+  #theme-toggle {
+    top: auto;
+    bottom: 72px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  #font-controls {
+    top: auto;
+    bottom: 72px;
+    right: 58px;
+  }
+
+  #font-controls button {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
   }
 }
 
@@ -1504,6 +1696,10 @@ summary:focus-visible {
     // 收集章節資訊
     collectChapters();
 
+    // 主題與控制
+    addThemeToggle();
+    addFontControls();
+
     // 基本功能
     addReadingProgress();
     addBackToTopButton();
@@ -1542,6 +1738,101 @@ summary:focus-visible {
     });
   }
 
+  // 暗色模式切換
+  function addThemeToggle() {
+    // 讀取使用者偏好
+    var stored = null;
+    try { stored = localStorage.getItem('mastering-bitcoin-theme'); } catch(e) {}
+
+    if (stored === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else if (stored === 'light') {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    // 如果沒有 stored，使用系統偏好（CSS @media 已處理）
+
+    var btn = document.createElement('button');
+    btn.id = 'theme-toggle';
+    btn.setAttribute('aria-label', '切換深色/淺色模式');
+
+    function updateIcon() {
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+        (!document.documentElement.hasAttribute('data-theme') &&
+         window.matchMedia('(prefers-color-scheme: dark)').matches);
+      btn.textContent = isDark ? '\u2600' : '\u263D'; // ☀ or ☽
+    }
+
+    updateIcon();
+
+    btn.addEventListener('click', function() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      if (current === 'dark' || (!current && systemDark)) {
+        document.documentElement.removeAttribute('data-theme');
+        try { localStorage.setItem('mastering-bitcoin-theme', 'light'); } catch(e) {}
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        try { localStorage.setItem('mastering-bitcoin-theme', 'dark'); } catch(e) {}
+      }
+      updateIcon();
+    });
+
+    document.body.appendChild(btn);
+
+    // 監聽系統主題變更
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+      if (!localStorage.getItem('mastering-bitcoin-theme')) {
+        updateIcon();
+      }
+    });
+  }
+
+  // 字體大小控制
+  function addFontControls() {
+    var stored = null;
+    try { stored = localStorage.getItem('mastering-bitcoin-fontsize'); } catch(e) {}
+
+    var currentSize = stored ? parseInt(stored) : 100;
+    var minSize = 85;
+    var maxSize = 130;
+
+    if (stored) {
+      document.documentElement.style.fontSize = currentSize + '%';
+    }
+
+    var wrap = document.createElement('div');
+    wrap.id = 'font-controls';
+
+    var smaller = document.createElement('button');
+    smaller.textContent = 'A-';
+    smaller.setAttribute('aria-label', '縮小字體');
+
+    var bigger = document.createElement('button');
+    bigger.textContent = 'A+';
+    bigger.setAttribute('aria-label', '放大字體');
+
+    smaller.addEventListener('click', function() {
+      if (currentSize > minSize) {
+        currentSize -= 5;
+        document.documentElement.style.fontSize = currentSize + '%';
+        try { localStorage.setItem('mastering-bitcoin-fontsize', currentSize); } catch(e) {}
+      }
+    });
+
+    bigger.addEventListener('click', function() {
+      if (currentSize < maxSize) {
+        currentSize += 5;
+        document.documentElement.style.fontSize = currentSize + '%';
+        try { localStorage.setItem('mastering-bitcoin-fontsize', currentSize); } catch(e) {}
+      }
+    });
+
+    wrap.appendChild(smaller);
+    wrap.appendChild(bigger);
+    document.body.appendChild(wrap);
+  }
+
   // 圖片 Lazy Loading
   function addLazyLoading() {
     var images = document.querySelectorAll('.imageblock img');
@@ -1554,10 +1845,33 @@ summary:focus-visible {
     });
   }
 
-  // 桌面版 TOC 當前章節高亮
+  // 桌面版 TOC 可收合 + 當前章節高亮
   function addDesktopTocHighlight() {
     var toc = document.getElementById('toc');
     if (!toc) return;
+
+    // 可收合功能：為有子列表的 li 加入 toggle
+    var parentItems = toc.querySelectorAll('li');
+    parentItems.forEach(function(li) {
+      var subList = li.querySelector('ul');
+      if (subList) {
+        var toggle = document.createElement('span');
+        toggle.className = 'toc-toggle';
+        toggle.textContent = '\u25BC'; // ▼
+        toggle.setAttribute('aria-label', '展開/收合');
+        toggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          li.classList.toggle('toc-collapsed');
+          toggle.classList.toggle('collapsed');
+        });
+        li.insertBefore(toggle, li.firstChild);
+        // 預設收合子章節（只展開 sectlevel0）
+        if (li.parentElement && li.parentElement.classList.contains('sectlevel1')) {
+          li.classList.add('toc-collapsed');
+          toggle.classList.add('collapsed');
+        }
+      }
+    });
 
     var tocLinks = toc.querySelectorAll('a');
     var sections = [];
@@ -1590,14 +1904,25 @@ summary:focus-visible {
           tocLinks.forEach(function(link) { link.classList.remove('toc-active'); });
           if (current) {
             current.link.classList.add('toc-active');
+
+            // 自動展開當前章節所在的 TOC 分支
+            var parentLi = current.link.closest('li');
+            while (parentLi) {
+              if (parentLi.classList.contains('toc-collapsed')) {
+                parentLi.classList.remove('toc-collapsed');
+                var tog = parentLi.querySelector('.toc-toggle');
+                if (tog) tog.classList.remove('collapsed');
+              }
+              parentLi = parentLi.parentElement ? parentLi.parentElement.closest('li') : null;
+            }
+
             // 滾動 TOC 使當前項可見
             var tocEl = document.getElementById('toc');
-            if (tocEl && current.link.offsetTop) {
-              var linkTop = current.link.offsetTop - tocEl.offsetTop;
-              var tocScroll = tocEl.scrollTop;
-              var tocHeight = tocEl.clientHeight;
-              if (linkTop < tocScroll || linkTop > tocScroll + tocHeight - 40) {
-                tocEl.scrollTop = linkTop - tocHeight / 3;
+            if (tocEl && current.link.offsetParent) {
+              var linkRect = current.link.getBoundingClientRect();
+              var tocRect = tocEl.getBoundingClientRect();
+              if (linkRect.top < tocRect.top || linkRect.bottom > tocRect.bottom) {
+                current.link.scrollIntoView({ block: 'center', behavior: 'smooth' });
               }
             }
           }
