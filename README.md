@@ -1,65 +1,125 @@
-# Mastering Bitcoin
+# 精通比特幣：程式設計開放區塊鏈（第三版）- 繁體中文版
 
-> 🇹🇼 **繁體中文版本**：本倉庫正在進行《精通比特幣》第三版的繁體中文翻譯工作。
+> **Mastering Bitcoin: Programming the Open Blockchain (3rd Edition)**
+> 原著：Andreas M. Antonopoulos, David A. Harding
+> 繁體中文翻譯：Dr. Awesome Doge
 
-Mastering Bitcoin is a technical book that explains what Bitcoin is and how it works.
+[![線上閱讀](https://img.shields.io/badge/線上閱讀-bitcoinbook--3nd--zh.doge.tg-f7931a?style=for-the-badge)](https://bitcoinbook-3nd-zh.doge.tg/)
+[![Release](https://img.shields.io/github/v/release/awesome-doge/bitcoinbook-3nd-zh?style=for-the-badge&label=最新版本&color=10b981)](https://github.com/awesome-doge/bitcoinbook-3nd-zh/releases/latest)
+[![License](https://img.shields.io/badge/授權-CC--BY--SA%204.0-3b82f6?style=for-the-badge)](LICENSE)
 
-This repository contains the complete text of three editions of the book Mastering Bitcoin as published in paperback and ebook formats by O'Reilly Media. Different editions of this book are covered by different open licenses (see [LICENSE](LICENSE)). The three editions are:
+## 閱讀方式
 
-* The [first edition, second print](https://github.com/bitcoinbook/bitcoinbook/releases/tag/Edition1Print2), published in December 2014
-* The [second edition, third print](https://github.com/bitcoinbook/bitcoinbook/releases/tag/second_edition_print3), published in March 2018
-* The [third edition, first print](https://github.com/bitcoinbook/bitcoinbook/releases/tag/third_edition_print1), published in December 2023
+| 方式 | 說明 |
+|------|------|
+| [**線上閱讀**](https://bitcoinbook-3nd-zh.doge.tg/) | 瀏覽器直接開啟，支援暗色模式、章節導航、閱讀進度記憶 |
+| [**EPUB 下載**](https://github.com/awesome-doge/bitcoinbook-3nd-zh/releases/latest) | 適合 Apple Books、Kobo、Kindle 等電子書閱讀器 |
+| [**HTML 下載**](https://github.com/awesome-doge/bitcoinbook-3nd-zh/releases/latest) | 含圖片完整包，離線瀏覽 |
 
-# Reading This Book
+## 功能特色
 
-To read this book *for free*, see [BOOK.md](https://github.com/bitcoinbook/bitcoinbook/blob/develop/BOOK.md). Click on each of the chapters to read in your browser. 
+### 閱讀體驗
 
-_Please note that some of the links in each chapter do not work when reading the book on Github. This is because those links are intended for the print and ebook editions of the book and only work when all the chapters are rendered together. Unfortunatelly, Github does not have the ability to render the complete book at once._
+- **暗色模式** - 自動偵測系統設定 + 手動切換（右上角月亮圖示）
+- **字體大小調整** - A+/A- 即時調整，設定自動記憶
+- **閱讀進度記憶** - 下次打開自動提示「繼續閱讀」
+- **頁內搜尋** - `Ctrl+Shift+F` 開啟，即時高亮 + 上下跳轉
+- **PWA 離線閱讀** - 可安裝到手機主畫面
 
-<!-- /* This section no longer applies -harding */
-## Where is the PDF?
+### 導航
 
-**The current edition is not available as a PDF, deliberately**. Why? Because the publisher (O'Reilly Media) is a for-profit publisher who puts considerable resources behind producing, editing and distributing this book. The third edition of "Mastering Bitcoin" is available under a CC-BY-NC-ND license, not a CC-BY-SA license. The book will eventually (within a year of publication) be released under a CC-BY-SA license, at which point PDF copies and translations will be allowed (a PDF is a "derivative" product, which is what the "ND-NoDerivatives" part of the license prohibits). 
+- **可收合目錄** - 桌面版左側 TOC 支援展開/收合章節
+- **當前章節高亮** - 滾動時自動高亮所在章節
+- **拼音搜尋** - 手機版 TOC 輸入拼音首字母即可搜尋（如 `jy` = 交易）
+- **閱讀統計** - TOC 底部顯示已讀章節數和預估閱讀時間
 
-Making PDF copies violates the license and interferes with the publisher's and the authors' ability to earn from their work. Furthermore, if you make it so the publisher can't recoup their investment, they may delay the release into CC-BY-SA. A beautifully rendered PDF or epub version of this book is offered for sale by the publisher. Convenient packaging is the for-profit product, whereas the version available here is slightly less convenient but entirely free for personal and non-commercial use. If you want convenience and nice packaging, buy the book!
+### 排版
 
-Please don't create or distribute PDFs until the license is changed to CC-BY-SA. It is rare for a publisher to even agree to a CC-BY-NC-ND license. Don't make it harder for free culture by violating even that, already generous, license. 
--->
+- **中文字體** - Noto Serif CJK TC（正文）+ Noto Sans CJK TC（標題）
+- **程式碼** - JetBrains Mono 字體 + 語言標籤 + 行號 + 複製按鈕
+- **全面中文化** - 目錄、提示框、圖表標題全部中文
+- **閱讀進度條** - 頂部橙色進度條
+- **列印友善** - 完整 `@media print` 樣式
 
-# Mastering Bitcoin Third Edition
+## 目錄
 
-*"Mastering Bitcoin: Programming the Open Blockchain (3rd Edition)"* is now available in paperback and ebook formats by many booksellers worldwide, such as:
+| 章節 | 標題 |
+|:----:|------|
+| 前言 | 撰寫比特幣這本書 |
+| 第 1 章 | 介紹 |
+| 第 2 章 | 比特幣如何運作 |
+| 第 3 章 | Bitcoin Core：參考實作 |
+| 第 4 章 | 金鑰與地址 |
+| 第 5 章 | 錢包恢復 |
+| 第 6 章 | 交易 |
+| 第 7 章 | 授權與認證 |
+| 第 8 章 | 數位簽章 |
+| 第 9 章 | 交易手續費 |
+| 第 10 章 | 比特幣網路 |
+| 第 11 章 | 區塊鏈 |
+| 第 12 章 | 挖礦與共識 |
+| 第 13 章 | 比特幣安全性 |
+| 第 14 章 | 第二層應用 |
+| 附錄 A | 比特幣白皮書 |
+| 附錄 B | 勘誤表 |
+| 附錄 C | 比特幣改進提案 |
 
-* [EBooks.com](https://www.ebooks.com/en-us/book/211147266/mastering-bitcoin/andreas-m-antonopoulos/)
-* [Amazon](https://www.amazon.com/Mastering-Bitcoin-Programming-Open-Blockchain/dp/1098150090)
-* [Barnes and Noble](https://www.barnesandnoble.com/w/mastering-bitcoin-andreas-m-antonopoulos/1126323222?ean=9781098150051)
+## 本地建置
 
-The tag [third_edition_print_1](https://github.com/bitcoinbook/bitcoinbook/releases/tag/third_edition_print1) corresponds to the first print of the third edition of Mastering Bitcoin as published in paperback and ebook by O'Reilly Media in December 2023.
+```bash
+# 安裝依賴
+gem install asciidoctor rouge
 
- <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><span property="dct:title">Mastering Bitcoin: Programming the Open Blockchain (Third Edition)</span> by <span property="cc:attributionName">Andreas M. Antonopoulos, David A. Harding</span> is licensed under <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a> <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a>
+# 建置 HTML
+cd zh-tw
+asciidoctor --backend=html5 \
+  --out-file=../build/mastering-bitcoin-3rd-zh-tw.html \
+  --attribute=source-highlighter=rouge \
+  --attribute=toc=left \
+  --attribute=toclevels=2 \
+  --attribute=icons=font \
+  --attribute=sectanchors \
+  --attribute=docinfo=shared \
+  --attribute=lang=zh-TW \
+  --attribute=imagesdir=.. \
+  book.adoc
 
-# Other Editions and Languages
+# 建置 EPUB（需額外安裝）
+gem install asciidoctor-epub3
+asciidoctor-epub3 \
+  --out-file=../build/mastering-bitcoin-3rd-zh-tw.epub \
+  --attribute=lang=zh-TW \
+  --attribute=front-cover-image=../images/cover.png \
+  --attribute=epub3-stylesdir=. \
+  --attribute=epub3-stylesheet=epub3.scss \
+  book.adoc
+```
 
-## Mastering Bitcoin - First Edition
+或使用建置腳本：
 
-The tags [Edition1Print1](https://github.com/bitcoinbook/bitcoinbook/releases/tag/Edition1Print1), [Edition1Print2](https://github.com/bitcoinbook/bitcoinbook/releases/tag/Edition1Print2) correspond to the two existing prints of Mastering Bitcoin (First Edition) as published by O'Reilly Media.
+```bash
+./scripts/build-local.sh
+```
 
-<a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="https://purl.org/dc/terms/" href="https://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">Mastering Bitcoin - First Edition</span> by <a xmlns:cc="https://creativecommons.org/ns#" href="https://aantonop.com/books" property="cc:attributionName" rel="cc:attributionURL">aantonop Books LLC</a> is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+## CI/CD
 
-## Mastering Bitcoin - Second Edition
+| Workflow | 觸發條件 | 輸出 |
+|----------|---------|------|
+| **Build & Deploy** | Push to `main` | GitHub Pages 自動部署 |
+| **PR Preview** | Pull Request | 預覽 HTML artifact |
+| **Release** | Git tag `v*` | HTML + EPUB + ZIP + SHA256 checksums |
 
-The tags, [second_edition_print_1](https://github.com/bitcoinbook/bitcoinbook/releases/tag/second_edition_print_1)  [second_edition_print2](https://github.com/bitcoinbook/bitcoinbook/releases/tag/second_edition_print2),  [second_edition_print3](https://github.com/bitcoinbook/bitcoinbook/releases/tag/second_edition_print3), correspond to the first (June 8th, 2017), second (July 20th, 2017) and third (March  23rd, 2018) print of Mastering Bitcoin (Second Edition), as published by O'Reilly Media.
+## 翻譯規範
 
-<a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="https://purl.org/dc/terms/" href="https://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">Mastering Bitcoin - Second Edition</span> by <a xmlns:cc="https://creativecommons.org/ns#" href="https://aantonop.com/books" property="cc:attributionName" rel="cc:attributionURL">aantonop Books LLC</a> is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+- 術語對照表：[translation/terminology.md](translation/terminology.md)
+- 風格指南：[translation/style-guide.md](translation/style-guide.md)
+- 使用台灣正體中文，全形標點（，。！？）
+- 中英文之間加空格
+- 技術名詞首次出現：「中文（English）」，後續：「中文」
+- 程式碼、命令、變數名稱保持英文
 
-Mastering Bitcoin (Open Second Edition), based on the Seond Edition, is also available in English and Spanish at https://aantonop.com. Mastering Bitcoin 2nd Edition is also published in German, Polish, Japanese, Korean, Chinese and other languages by publishers in the respective countries.
+## 授權
 
-# Issues, Errors, Comments, Contributions
+本翻譯基於 [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) 授權。
 
-To contribute to this book, see [CONTRIBUTING.md](CONTRIBUTING.md). All contributions must be your original work and contributed under a public domain (CC0), or attribution (CC-BY) license. You must include your own attribution in the pull request, as an edit to the github_contrib.asciidoc file. 
-
-If you know how to make a pull request to contribute a fix, please write the correction and use a pull request to submit it for consideration against the [develop branch](https://github.com/bitcoinbook/bitcoinbook/tree/develop). If you are making several changes, please use a separate commit for each to make it easier to cherry-pick or resolve conflicts. Otherwise, please submit an issue, explaining the error or comment. If you would like to contribute extensive changes or new material, please coordinate with the author first; contact information can be found on his website: https://aantonop.com/
-
-# Translations
-
-If you are interested in translating this book, please join our team of volunteers at: https://www.transifex.com/bitcoinbook/mastering-bitcoin/
+原著 *Mastering Bitcoin: Programming the Open Blockchain (Third Edition)* 由 Andreas M. Antonopoulos 和 David A. Harding 著作，O'Reilly Media 出版。
