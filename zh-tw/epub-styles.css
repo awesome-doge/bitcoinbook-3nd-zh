@@ -1,0 +1,186 @@
+/* EPUB 中文排版優化 — 精通比特幣繁體中文版 */
+
+/* 基礎排版 */
+body {
+  font-family: "Noto Serif CJK TC", "Source Han Serif TC", "PingFang TC", "Apple LiGothic", serif;
+  line-height: 1.9;
+  letter-spacing: 0.02em;
+  text-rendering: optimizeLegibility;
+  word-break: normal;
+  overflow-wrap: break-word;
+  -epub-word-break: normal;
+}
+
+/* 中文標點優化 */
+:lang(zh-TW), :lang(zh) {
+  line-break: strict;
+  -epub-line-break: strict;
+}
+
+/* 標題 */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Noto Sans CJK TC", "Source Han Sans TC", "PingFang TC", sans-serif;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #1a1a2e;
+  margin-top: 1.5em;
+  margin-bottom: 0.6em;
+  page-break-after: avoid;
+}
+
+h1 { font-size: 1.8em; }
+h2 { font-size: 1.5em; border-bottom: 1px solid #e0e0e0; padding-bottom: 0.3em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1.1em; }
+
+/* 段落 */
+p {
+  line-height: 1.9;
+  margin-bottom: 1.2em;
+  text-align: justify;
+  text-justify: inter-ideograph;
+}
+
+/* 程式碼 */
+pre, code {
+  font-family: "Noto Sans Mono CJK TC", "SF Mono", "Cascadia Code", monospace;
+}
+
+pre {
+  font-size: 0.85em;
+  line-height: 1.5;
+  padding: 1em;
+  background: #f5f6f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  page-break-inside: avoid;
+}
+
+code {
+  font-size: 0.9em;
+  background: #f5f6f8;
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 1em;
+}
+
+/* 行內程式碼中英文間距 */
+:not(pre) > code {
+  margin-left: 0.1em;
+  margin-right: 0.1em;
+}
+
+/* 圖片 */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.imageblock {
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+
+.imageblock .title {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 0.5em;
+  text-align: center;
+}
+
+/* 表格 */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+  font-size: 0.9em;
+  page-break-inside: avoid;
+}
+
+table th, table td {
+  padding: 0.5em 0.75em;
+  border: 1px solid #ddd;
+  line-height: 1.6;
+}
+
+table th {
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+/* 警告框 */
+.admonitionblock {
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+
+.admonitionblock td.content {
+  padding: 0.75em 1em;
+  line-height: 1.8;
+}
+
+/* 側邊欄 */
+.sidebarblock {
+  background: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 1em;
+  margin: 1.5em 0;
+  page-break-inside: avoid;
+}
+
+.sidebarblock .title {
+  font-weight: 600;
+  margin-bottom: 0.5em;
+  text-align: center;
+}
+
+/* 引用 */
+blockquote, .quoteblock {
+  border-left: 3px solid #f7931a;
+  padding-left: 1em;
+  margin: 1.5em 0;
+  font-style: italic;
+}
+
+blockquote p, .quoteblock p {
+  line-height: 1.8;
+}
+
+/* 列表 */
+ul, ol {
+  line-height: 1.8;
+  margin-bottom: 1em;
+}
+
+li {
+  margin-bottom: 0.3em;
+}
+
+/* 連結 */
+a {
+  color: #2156a5;
+  text-decoration: none;
+}
+
+/* 註腳 */
+.footnote {
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+/* 章節分頁 */
+.sect1 {
+  page-break-before: always;
+}
+
+.sect1:first-of-type {
+  page-break-before: auto;
+}

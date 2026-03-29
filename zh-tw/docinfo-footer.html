@@ -1,16 +1,94 @@
-<!-- 手機版閱讀體驗優化 -->
+<!-- 全面閱讀體驗優化 -->
 <style>
-/* ===== 防止內容超出版面（全域） ===== */
+/* ===== CSS 自訂屬性（亮色/暗色模式） ===== */
+:root {
+  /* 色彩系統 */
+  --color-bg: #fff;
+  --color-bg-secondary: #f8f8f7;
+  --color-bg-code: #f5f6f8;
+  --color-bg-sidebar: #f3f3f2;
+  --color-bg-admonition: #fafafa;
+  --color-bg-quote: #fffaf5;
+  --color-text: #2c3e50;
+  --color-text-secondary: rgba(0,0,0,.6);
+  --color-text-muted: #6c757d;
+  --color-heading: #1a1a2e;
+  --color-link: #2156a5;
+  --color-link-hover: #1d4b8f;
+  --color-border: #e0e0e0;
+  --color-border-light: #e7e7e9;
+  --color-accent: #f7931a;
+  --color-accent-dark: #e07c00;
+  --color-code-text: #1a1a2e;
+  --color-toc-bg: #f8f8f7;
+  --color-toc-active: #fff7ed;
+  --color-shadow: rgba(0,0,0,0.08);
+  --color-overlay: rgba(0,0,0,0.7);
+
+  /* 排版系統 */
+  --font-body: "Noto Serif CJK TC", "Source Han Serif TC", "Noto Serif TC", "PingFang TC", "Apple LiGothic", "Microsoft JhengHei", "Noto Serif", Georgia, serif;
+  --font-heading: "Noto Sans CJK TC", "Source Han Sans TC", "PingFang TC", "Microsoft JhengHei", "Noto Sans", "Open Sans", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "SF Mono", "Cascadia Code", "Droid Sans Mono", "Noto Sans Mono CJK TC", monospace;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", sans-serif;
+
+  /* 間距系統 */
+  --content-max-width: 44em;
+  --line-height-body: 1.9;
+  --line-height-heading: 1.35;
+  --line-height-code: 1.55;
+  --paragraph-spacing: 1.5em;
+  --section-spacing: 2.5em;
+  --letter-spacing-body: 0.02em;
+}
+
+/* ===== 暗色模式 ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #1a1b26;
+    --color-bg-secondary: #1f2133;
+    --color-bg-code: #24253a;
+    --color-bg-sidebar: #1f2133;
+    --color-bg-admonition: #1f2133;
+    --color-bg-quote: #22233a;
+    --color-text: #c9d1d9;
+    --color-text-secondary: #9ca3af;
+    --color-text-muted: #6b7280;
+    --color-heading: #e6e8f0;
+    --color-link: #6ea8fe;
+    --color-link-hover: #93c5fd;
+    --color-border: #30363d;
+    --color-border-light: #2a2d3a;
+    --color-accent: #f7931a;
+    --color-accent-dark: #ff9f33;
+    --color-code-text: #c9d1d9;
+    --color-toc-bg: #1f2133;
+    --color-toc-active: #2a2d3a;
+    --color-shadow: rgba(0,0,0,0.3);
+    --color-overlay: rgba(0,0,0,0.85);
+  }
+}
+
+/* ===== 全域基礎樣式 ===== */
 html {
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
   overflow-x: hidden;
   width: 100%;
+  background: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  font-family: var(--font-body) !important;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
 }
 
-/* 所有區塊元素防溢出 */
+/* 防溢出 */
 #header, #content, #footnotes, #footer,
 .sect1, .sect2, .sect3, .sect4,
 .paragraph, .listingblock, .literalblock,
@@ -22,53 +100,347 @@ body {
   word-wrap: break-word;
 }
 
-/* 圖片絕對不超出 */
 img, svg, video, canvas, iframe, embed, object {
   max-width: 100%;
   height: auto;
 }
 
-/* 程式碼區塊：橫向滾動而非溢出 */
 pre {
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-/* 表格：橫向滾動而非溢出 */
 .tableblock, table {
   max-width: 100%;
   overflow-x: auto;
-  display: block;
 }
 
-/* 長網址和長單字斷行 */
-a, span, code {
+a, span {
+  overflow-wrap: break-word;
+}
+
+/* 中文標點與斷行優化 */
+:lang(zh-TW), :lang(zh) {
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+@supports (hanging-punctuation: first allow-end last) {
+  :lang(zh-TW), :lang(zh) {
+    hanging-punctuation: first allow-end last;
+  }
+}
+
+/* ===== 桌面版全域排版優化 ===== */
+
+/* 內容區域 */
+#header, #content, #footnotes, #footer {
+  max-width: var(--content-max-width) !important;
+}
+
+/* 段落 */
+p {
+  line-height: var(--line-height-body);
+  margin-bottom: var(--paragraph-spacing);
+  color: var(--color-text);
+}
+
+/* 標題 */
+h1, h2, h3, #toctitle, .sidebarblock>.content>.title, h4, h5, h6 {
+  font-family: var(--font-heading) !important;
+  color: var(--color-heading) !important;
+  line-height: var(--line-height-heading) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: 2.2em; margin-top: 1.5em; margin-bottom: 0.6em; }
+h2 { font-size: 1.75em; margin-top: var(--section-spacing); margin-bottom: 0.6em; padding-bottom: 0.3em; border-bottom: 2px solid var(--color-border-light); }
+h3, #toctitle, .sidebarblock>.content>.title { font-size: 1.4em; margin-top: 2em; }
+h4 { font-size: 1.2em; margin-top: 1.5em; }
+h5, h6 { font-size: 1.05em; margin-top: 1.25em; }
+
+/* 連結 */
+a { color: var(--color-link); transition: color 0.15s; }
+a:hover, a:focus { color: var(--color-link-hover); }
+
+/* 章節分隔 */
+.sect1 { padding-bottom: var(--section-spacing); }
+.sect1 + .sect1 { border-top: 1px solid var(--color-border-light); padding-top: var(--section-spacing); }
+
+/* 程式碼 */
+:not(pre):not([class^=L]) > code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-bg-code);
+  color: var(--color-code-text);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
   word-break: break-word;
   overflow-wrap: break-word;
 }
 
+.literalblock pre, .listingblock > .content > pre {
+  font-family: var(--font-mono);
+  background: var(--color-bg-code) !important;
+  color: var(--color-code-text);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  line-height: var(--line-height-code);
+  padding: 1.25em;
+}
+
+pre code {
+  font-family: var(--font-mono);
+  color: var(--color-code-text);
+}
+
+/* 表格 */
+table {
+  background: var(--color-bg) !important;
+  border-color: var(--color-border) !important;
+}
+
+table thead, table tfoot {
+  background: var(--color-bg-secondary) !important;
+}
+
+table thead tr th, table thead tr td,
+table tfoot tr th, table tfoot tr td,
+table tr th, table tr td {
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+
+table tr.even, table tr.alt {
+  background: var(--color-bg-secondary) !important;
+}
+
+/* 警告框 */
+.admonitionblock > table {
+  background: var(--color-bg-admonition) !important;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light) !important;
+}
+
+.admonitionblock > table td.content {
+  color: var(--color-text) !important;
+  border-left-color: var(--color-border) !important;
+  line-height: var(--line-height-body);
+  padding: 1em 1.25em;
+}
+
+/* 側邊欄 */
+.sidebarblock {
+  background: var(--color-bg-sidebar) !important;
+  border: 1px solid var(--color-border-light) !important;
+  border-radius: 8px;
+  padding: 1.5em;
+}
+
+.sidebarblock > .content > .title {
+  color: var(--color-heading) !important;
+}
+
+.sidebarblock p, .sidebarblock li {
+  color: var(--color-text);
+}
+
+/* 引用區塊 */
+.quoteblock {
+  border-left: 4px solid var(--color-accent) !important;
+  background: var(--color-bg-quote);
+  padding: 1em 1.25em;
+  border-radius: 0 8px 8px 0;
+  margin: 1.5em 0;
+}
+
+.quoteblock blockquote, .quoteblock p {
+  color: var(--color-text) !important;
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.quoteblock blockquote::before {
+  color: var(--color-accent) !important;
+}
+
+.quoteblock .attribution {
+  color: var(--color-text-muted);
+}
+
+/* 範例區塊 */
+.exampleblock > .content {
+  background: var(--color-bg) !important;
+  border-color: var(--color-border) !important;
+  border-radius: 8px;
+}
+
+/* 列表 */
+ul, ol {
+  line-height: var(--line-height-body);
+}
+
+li {
+  margin-bottom: 0.4em;
+}
+
+li p {
+  margin-bottom: 0.5em;
+}
+
+/* 定義列表 */
+dl dt {
+  color: var(--color-heading);
+  font-weight: 600;
+}
+
+dl dd {
+  line-height: var(--line-height-body);
+}
+
+/* 頁首 */
+#header > h1:first-child {
+  color: var(--color-heading) !important;
+}
+
+#header .details {
+  color: var(--color-text-secondary) !important;
+  border-color: var(--color-border-light) !important;
+}
+
+/* 頁尾 */
+#footer {
+  background: var(--color-bg-secondary) !important;
+  border-top: 1px solid var(--color-border-light);
+}
+
+#footer-text {
+  color: var(--color-text-secondary) !important;
+}
+
+/* 標題底線 */
+.subheader, .admonitionblock td.content>.title, .audioblock>.title,
+.exampleblock>.title, .imageblock>.title, .listingblock>.title,
+.literalblock>.title, .stemblock>.title, .openblock>.title,
+.paragraph>.title, .quoteblock>.title, table.tableblock>.title,
+.verseblock>.title, .videoblock>.title, .dlist>.title, .olist>.title,
+.ulist>.title, .qlist>.title, .hdlist>.title {
+  color: var(--color-text-secondary) !important;
+}
+
+/* 圖片標題 */
+.imageblock > .title {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-top: 0.5em;
+}
+
+/* 註腳 */
+#footnotes {
+  border-top: 1px solid var(--color-border-light);
+  color: var(--color-text-secondary);
+}
+
+/* ===== 桌面版 TOC 優化 ===== */
+@media screen and (min-width: 768px) {
+  body.toc2 {
+    padding-left: 18em !important;
+  }
+
+  #toc.toc2 {
+    width: 18em !important;
+    background: var(--color-toc-bg) !important;
+    border-right: 1px solid var(--color-border-light) !important;
+    padding: 1.25em 0.75em !important;
+  }
+
+  #toc.toc2 #toctitle {
+    color: var(--color-heading);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.1em;
+    padding: 0 0.5em 0.75em;
+    margin-bottom: 0.75em;
+    border-bottom: 2px solid var(--color-accent);
+  }
+
+  #toc.toc2 ul {
+    font-family: var(--font-ui);
+  }
+
+  #toc.toc2 a {
+    color: var(--color-text-secondary);
+    display: block;
+    padding: 0.35em 0.5em;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    text-decoration: none;
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  #toc.toc2 a:hover {
+    background: var(--color-toc-active);
+    color: var(--color-accent);
+  }
+
+  #toc.toc2 li {
+    margin-top: 0.15em;
+  }
+
+  /* 桌面版 TOC 當前章節高亮 */
+  #toc.toc2 a.toc-active {
+    background: var(--color-toc-active);
+    color: var(--color-accent) !important;
+    border-left: 3px solid var(--color-accent);
+    margin-left: -3px;
+    font-weight: 500;
+  }
+
+  /* 嵌入式 TOC */
+  #content #toc {
+    background: var(--color-bg-secondary) !important;
+    border-color: var(--color-border-light) !important;
+    border-radius: 8px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  body.toc2 {
+    padding-left: 22em !important;
+  }
+
+  #toc.toc2 {
+    width: 22em !important;
+  }
+
+  #toc.toc2 a {
+    font-size: 0.9em;
+    padding: 0.4em 0.6em;
+  }
+}
+
 /* ===== 手機版優化 (小於 768px) ===== */
 @media screen and (max-width: 767px) {
-  /* 整體佈局 */
   html {
     font-size: 100%;
     -webkit-text-size-adjust: 100%;
-    scroll-behavior: smooth;
   }
 
   body {
     padding: 0 !important;
     margin: 0;
-    line-height: 1.7;
+    line-height: 1.85;
     width: 100% !important;
     max-width: 100% !important;
   }
 
-  /* 主要內容區域 */
   #header, #content, #footnotes, #footer {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+    padding-left: 1.125rem !important;
+    padding-right: 1.125rem !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
@@ -79,45 +451,21 @@ a, span, code {
 
   /* 標題 */
   h1, h2, h3, h4, h5, h6 {
-    word-break: break-word;
     overflow-wrap: break-word;
-    hyphens: auto;
   }
 
-  h1 {
-    font-size: 1.6rem;
-    line-height: 1.35;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-  }
+  h1 { font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.6rem; }
+  h2 { font-size: 1.35rem; margin-top: 1.75rem; margin-bottom: 0.5rem; border-bottom-width: 1px; }
+  h3, #toctitle, .sidebarblock>.content>.title { font-size: 1.15rem; margin-top: 1.25rem; }
+  h4, h5, h6 { font-size: 1.05rem; }
 
-  h2 {
-    font-size: 1.4rem;
-    line-height: 1.35;
-    margin-top: 1.5rem;
-    margin-bottom: 0.6rem;
-  }
-
-  h3, #toctitle, .sidebarblock>.content>.title {
-    font-size: 1.2rem;
-    line-height: 1.4;
-    margin-top: 1.25rem;
-  }
-
-  h4, h5, h6 {
-    font-size: 1.1rem;
-    line-height: 1.4;
-  }
-
-  /* 書籍標題 */
   #header > h1:first-child {
-    font-size: 1.4rem;
+    font-size: 1.35rem;
     margin-top: 1rem;
     padding-bottom: 0.5rem;
     line-height: 1.4;
   }
 
-  /* 作者資訊 */
   #header .details {
     font-size: 0.85rem;
     padding: 0.5rem 0;
@@ -125,16 +473,16 @@ a, span, code {
     gap: 0.25rem;
   }
 
-  /* 段落 */
+  /* 段落 — 不用 justify，改用自然左對齊 */
   p {
     font-size: 1rem;
-    line-height: 1.8;
-    margin-bottom: 1rem;
-    text-align: justify;
+    line-height: 1.85;
+    margin-bottom: 1.1rem;
+    text-align: left;
     max-width: 100%;
   }
 
-  /* 目錄 */
+  /* 目錄 — 預設收合，只顯示章節層級 */
   #toc {
     padding: 0.75rem 0;
     margin-bottom: 1rem;
@@ -147,20 +495,9 @@ a, span, code {
     margin-bottom: 0.5rem;
   }
 
-  #toc ul {
-    margin-left: 0;
-    padding-left: 0;
-    max-width: 100%;
-  }
-
-  #toc > ul {
-    margin-left: 0;
-  }
-
-  #toc ul ul {
-    margin-left: 0.875rem;
-    padding-left: 0;
-  }
+  #toc ul { margin-left: 0; padding-left: 0; max-width: 100%; }
+  #toc > ul { margin-left: 0; }
+  #toc ul ul { margin-left: 0.875rem; padding-left: 0; }
 
   #toc li {
     line-height: 1.5;
@@ -172,28 +509,29 @@ a, span, code {
     display: block;
     padding: 0.4rem 0;
     font-size: 0.9rem;
-    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
-  /* 嵌入式目錄 */
   #content #toc {
     padding: 0.875rem;
     margin-bottom: 1rem;
     box-sizing: border-box;
   }
 
-  /* 程式碼區塊 */
+  /* 程式碼區塊 — 最小 13px 確保可讀 */
   .literalblock, .listingblock {
     max-width: 100%;
     overflow: hidden;
+    position: relative;
   }
 
   .literalblock pre,
   .listingblock > .content > pre {
-    font-size: 0.8rem;
-    line-height: 1.5;
-    padding: 0.875rem;
-    border-radius: 4px;
+    font-size: 0.825rem;
+    line-height: 1.55;
+    padding: 1rem;
+    padding-top: 2.2rem;
+    border-radius: 8px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     max-width: 100%;
@@ -206,21 +544,21 @@ a, span, code {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     max-width: 100%;
+    position: relative;
   }
 
   pre code {
-    font-size: 0.8rem;
-    line-height: 1.5;
+    font-size: 0.825rem;
+    line-height: 1.55;
     word-break: normal;
     overflow-wrap: normal;
   }
 
   /* 行內程式碼 */
   :not(pre):not([class^=L]) > code {
-    font-size: 0.875em;
-    padding: 0.125em 0.375em;
-    word-break: break-word;
-    overflow-wrap: break-word;
+    font-size: 0.85em;
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
   }
 
   /* 圖片 */
@@ -238,10 +576,9 @@ a, span, code {
   }
 
   .imageblock > .title {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     margin-top: 0.5rem;
     line-height: 1.4;
-    word-break: break-word;
   }
 
   /* 表格 */
@@ -254,24 +591,15 @@ a, span, code {
     font-size: 0.875rem;
   }
 
-  table.tableblock {
-    display: block;
-  }
-
-  table thead, table tbody, table tfoot {
-    display: table;
-    width: 100%;
-  }
-
-  table thead th,
-  table tbody td {
-    padding: 0.5rem 0.625rem;
-  }
+  table.tableblock { display: block; }
+  table thead, table tbody, table tfoot { display: table; width: 100%; }
+  table thead th, table tbody td { padding: 0.5rem 0.625rem; }
 
   /* 警告框 */
   .admonitionblock {
     max-width: 100%;
     overflow: hidden;
+    margin: 1.25rem 0;
   }
 
   .admonitionblock > table {
@@ -281,252 +609,163 @@ a, span, code {
   }
 
   .admonitionblock > table td.icon {
-    width: 45px;
-    padding: 0.5rem;
+    width: 40px;
+    padding: 0.75rem 0.5rem;
     vertical-align: top;
+    text-align: center;
   }
 
   .admonitionblock > table td.icon [class^="fa icon-"] {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
 
   .admonitionblock > table td.content {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.925rem;
-    line-height: 1.6;
-    word-break: break-word;
-    overflow-wrap: break-word;
+    padding: 0.75rem 0.875rem 0.75rem 0;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .admonitionblock > table td.content > .title {
+    font-weight: 600;
+    margin-bottom: 0.35rem;
   }
 
   /* 側邊欄 */
   .sidebarblock {
-    padding: 0.875rem;
-    margin: 1rem 0;
+    padding: 1rem;
+    margin: 1.25rem 0;
     max-width: 100%;
     box-sizing: border-box;
     overflow: hidden;
   }
 
   .sidebarblock > .content > .title {
-    font-size: 1.05rem;
-    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--color-border-light);
   }
 
-  .sidebarblock p {
-    font-size: 0.925rem;
-    line-height: 1.6;
-  }
+  .sidebarblock p { font-size: 0.9rem; line-height: 1.7; }
 
   /* 範例區塊 */
   .exampleblock {
     max-width: 100%;
     overflow: hidden;
+    margin: 1.25rem 0;
   }
 
   .exampleblock > .content {
-    padding: 0.875rem;
+    padding: 1rem;
     max-width: 100%;
     box-sizing: border-box;
+  }
+
+  .exampleblock > .title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    margin: 0;
   }
 
   /* 引用區塊 */
   .quoteblock {
-    margin: 1rem 0;
-    max-width: 100%;
-    overflow: hidden;
+    margin: 1.5rem 0;
+    padding: 0.75rem 0 0.75rem 1rem;
   }
+
+  .quoteblock blockquote { margin: 0; padding: 0; }
 
   .quoteblock blockquote,
   .quoteblock p {
-    font-size: 1rem;
-    line-height: 1.65;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    font-style: italic;
   }
 
-  .quoteblock blockquote::before {
-    font-size: 2rem;
-    margin-left: -0.5em;
+  .quoteblock blockquote::before { display: none; }
+
+  .quoteblock .attribution {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    font-style: normal;
   }
+
+  .quoteblock .attribution::before { content: '\2014 '; }
 
   /* 列表 */
-  ul, ol {
-    margin-left: 1.125rem;
-    padding-left: 0;
-    max-width: 100%;
-  }
-
-  li {
-    margin-bottom: 0.375rem;
-    line-height: 1.65;
-    max-width: 100%;
-  }
-
-  li p {
-    margin-bottom: 0.5rem;
-  }
-
-  /* 巢狀列表 */
-  ul ul, ul ol, ol ul, ol ol {
-    margin-left: 1rem;
-    margin-top: 0.375rem;
-  }
+  ul, ol { margin-left: 1.125rem; padding-left: 0; max-width: 100%; }
+  li { margin-bottom: 0.375rem; line-height: 1.7; max-width: 100%; }
+  li p { margin-bottom: 0.5rem; }
+  ul ul, ul ol, ol ul, ol ol { margin-left: 1rem; margin-top: 0.375rem; }
 
   /* 定義列表 */
-  dl {
-    max-width: 100%;
-  }
-
-  dl dt {
-    margin-top: 0.875rem;
-    font-size: 1rem;
-    word-break: break-word;
-  }
-
-  dl dd {
-    margin-left: 0.625rem;
-    margin-bottom: 0.625rem;
-    line-height: 1.6;
-    max-width: 100%;
-  }
-
-  /* 水平定義列表 */
-  .hdlist > table {
-    display: block;
-    overflow-x: auto;
-  }
+  dl { max-width: 100%; }
+  dl dt { margin-top: 0.875rem; font-size: 1rem; }
+  dl dd { margin-left: 0.625rem; margin-bottom: 0.625rem; line-height: 1.7; max-width: 100%; }
+  .hdlist > table { display: block; overflow-x: auto; }
 
   /* 章節 */
-  .sect1, .sect2, .sect3 {
-    max-width: 100%;
-    overflow: hidden;
-  }
-
-  .sect1 {
-    padding-bottom: 0.875rem;
-  }
-
-  .sect1 + .sect1 {
-    padding-top: 0.875rem;
-  }
+  .sect1, .sect2, .sect3 { max-width: 100%; overflow: hidden; }
+  .sect1 { padding-bottom: 1.25rem; }
+  .sect1 + .sect1 { padding-top: 1.25rem; }
 
   /* 頁腳 */
-  #footer {
-    padding: 1rem;
-    font-size: 0.85rem;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  #footer-text {
-    line-height: 1.5;
-  }
+  #footer { padding: 1rem; font-size: 0.85rem; max-width: 100% !important; box-sizing: border-box; }
+  #footer-text { line-height: 1.5; }
 
   /* 隱藏錨點連結 */
   h1 > a.anchor, h2 > a.anchor, h3 > a.anchor,
-  h4 > a.anchor, h5 > a.anchor, h6 > a.anchor {
-    display: none;
-  }
+  h4 > a.anchor, h5 > a.anchor, h6 > a.anchor { display: none; }
 
   /* 註腳 */
-  #footnotes {
-    font-size: 0.85rem;
-    padding: 0.75rem 0;
-    max-width: 100%;
-  }
-
-  #footnotes .footnote {
-    font-size: 0.8rem;
-    margin-left: 0.875rem;
-    line-height: 1.5;
-  }
+  #footnotes { font-size: 0.85rem; padding: 0.75rem 0; max-width: 100% !important; }
+  #footnotes .footnote { font-size: 0.8rem; margin-left: 0.875rem; line-height: 1.5; }
 
   /* 摺疊區塊 */
-  details {
-    margin-left: 0.5rem;
-    max-width: 100%;
-  }
-
-  details > summary {
-    padding: 0.5rem 0;
-    font-size: 1rem;
-    cursor: pointer;
-  }
+  details { margin-left: 0.5rem; max-width: 100%; }
+  details > summary { padding: 0.5rem 0; font-size: 1rem; cursor: pointer; }
 
   /* toc2 模式 */
-  body.toc2 {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    width: 100% !important;
-  }
+  body.toc2 { padding-left: 0 !important; padding-right: 0 !important; width: 100% !important; }
 
   #toc.toc2 {
     position: relative !important;
     width: 100% !important;
     height: auto !important;
     border-right: none !important;
-    border-bottom: 1px solid #e7e7e9;
+    border-bottom: 1px solid var(--color-border-light);
     padding: 1rem !important;
     box-sizing: border-box !important;
   }
 
-  /* Colist（程式碼註解列表） */
-  .colist {
-    max-width: 100%;
-    overflow: hidden;
-  }
-
-  .colist > table {
-    display: block;
-    overflow-x: auto;
-  }
+  /* Colist */
+  .colist { max-width: 100%; overflow: hidden; }
+  .colist > table { display: block; overflow-x: auto; }
 }
 
 /* ===== 極小螢幕 (小於 480px) ===== */
 @media screen and (max-width: 479px) {
   #header, #content, #footnotes, #footer {
-    padding-left: 0.75rem !important;
-    padding-right: 0.75rem !important;
+    padding-left: 0.875rem !important;
+    padding-right: 0.875rem !important;
   }
 
-  h1 {
-    font-size: 1.45rem;
-  }
+  h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.25rem; }
+  h3, #toctitle, .sidebarblock>.content>.title { font-size: 1.1rem; }
+  #header > h1:first-child { font-size: 1.25rem; }
 
-  h2 {
-    font-size: 1.3rem;
-  }
-
-  h3, #toctitle, .sidebarblock>.content>.title {
-    font-size: 1.125rem;
-  }
-
-  #header > h1:first-child {
-    font-size: 1.3rem;
-  }
-
-  p {
-    font-size: 0.95rem;
-    line-height: 1.75;
-  }
+  p { font-size: 0.95rem; line-height: 1.8; }
 
   .literalblock pre,
-  .listingblock > .content > pre {
-    font-size: 0.75rem;
-    padding: 0.625rem;
-  }
+  .listingblock > .content > pre { font-size: 0.8rem; padding: 0.75rem; padding-top: 2rem; }
 
-  pre code {
-    font-size: 0.75rem;
-  }
+  pre code { font-size: 0.8rem; }
 
-  table thead th,
-  table tbody td {
-    padding: 0.375rem 0.5rem;
-    font-size: 0.8rem;
-  }
-
-  #toc a {
-    font-size: 0.85rem;
-  }
+  table thead th, table tbody td { padding: 0.375rem 0.5rem; font-size: 0.8rem; }
+  #toc a { font-size: 0.85rem; }
 }
 
 /* ===== 平板優化 (768px - 1024px) ===== */
@@ -536,18 +775,9 @@ a, span, code {
     padding-right: 1.5rem;
   }
 
-  body.toc2 {
-    padding-left: 14em;
-  }
-
-  #toc.toc2 {
-    width: 14em;
-    font-size: 0.875rem;
-  }
-
-  #toc.toc2 ul ul {
-    padding-left: 0.875em;
-  }
+  body.toc2 { padding-left: 16em !important; }
+  #toc.toc2 { width: 16em !important; font-size: 0.85rem; }
+  #toc.toc2 ul ul { padding-left: 0.875em; }
 }
 
 /* ===== 觸控裝置優化 ===== */
@@ -576,6 +806,38 @@ a, span, code {
   h6:hover > a.anchor {
     visibility: hidden;
   }
+
+  /* 觸控回饋 */
+  button, a, [role="button"] {
+    -webkit-tap-highlight-color: rgba(247, 147, 26, 0.2);
+  }
+
+  /* 浮動按鈕觸控效果 */
+  #toc-toggle:active,
+  #back-to-top-btn:active,
+  #chapter-nav button:active {
+    transform: scale(0.92);
+  }
+
+  /* 目錄項目觸控效果 */
+  #floating-toc-content a:active {
+    background: #fff0e0 !important;
+  }
+
+  /* 程式碼複製按鈕觸控效果 */
+  .code-copy-btn:active {
+    transform: scale(0.95);
+  }
+}
+
+/* ===== 按鈕觸控優化 ===== */
+#toc-toggle,
+#back-to-top-btn,
+#chapter-nav button {
+  transition: transform 0.1s, opacity 0.2s, visibility 0.2s, background 0.15s;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* ===== 閱讀進度條 ===== */
@@ -655,10 +917,10 @@ a, span, code {
   left: 20px;
   width: calc(100vw - 40px);
   max-width: 320px;
-  max-height: 60vh;
-  background: #fff;
+  max-height: 65vh;
+  background: var(--color-bg);
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 20px var(--color-shadow);
   z-index: 9999;
   display: none;
   flex-direction: column;
@@ -671,13 +933,16 @@ a, span, code {
 
 #floating-toc-header {
   padding: 12px 16px;
-  background: #f5f5f5;
-  border-bottom: 1px solid #e0e0e0;
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
   font-weight: 600;
   font-size: 14px;
+  color: var(--color-heading);
+  font-family: var(--font-heading);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
 
 #floating-toc-close {
@@ -687,28 +952,97 @@ a, span, code {
   cursor: pointer;
   padding: 0;
   line-height: 1;
-  color: #666;
+  color: var(--color-text-muted);
+}
+
+/* 目錄搜尋框 */
+#toc-search-wrap {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border-light);
+  flex-shrink: 0;
+}
+
+#toc-search {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+#toc-search:focus {
+  border-color: var(--color-accent);
+}
+
+#toc-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* 閱讀進度摘要 */
+#toc-progress-summary {
+  padding: 8px 16px;
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  display: flex;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+#toc-progress-summary .progress-bar {
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+#toc-progress-summary .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f7931a, #ff6b00);
+  border-radius: 2px;
+  transition: width 0.3s;
 }
 
 #floating-toc-content {
   padding: 8px 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  flex: 1;
 }
 
 #floating-toc-content a {
-  display: block;
+  display: flex;
+  align-items: center;
   padding: 10px 16px;
-  color: #333;
+  color: var(--color-text);
   text-decoration: none;
   font-size: 14px;
+  font-family: var(--font-ui);
   border-left: 3px solid transparent;
+  transition: background 0.15s;
 }
 
 #floating-toc-content a:active,
 #floating-toc-content a.current {
-  background: #f0f0f0;
-  border-left-color: #f7931a;
+  background: var(--color-toc-active);
+  border-left-color: var(--color-accent);
+}
+
+#floating-toc-content a.read {
+  color: var(--color-text-muted);
+}
+
+#floating-toc-content a.read::after {
+  content: '\2713';
+  margin-left: auto;
+  color: #4caf50;
+  font-size: 12px;
 }
 
 #floating-toc-content .toc-h2 {
@@ -718,7 +1052,11 @@ a, span, code {
 #floating-toc-content .toc-h3 {
   padding-left: 28px;
   font-size: 13px;
-  color: #666;
+  color: var(--color-text-secondary);
+}
+
+#floating-toc-content a.hidden {
+  display: none;
 }
 
 /* ===== 當前章節指示器 ===== */
@@ -727,40 +1065,200 @@ a, span, code {
   top: 3px;
   left: 0;
   right: 0;
-  background: rgba(255,255,255,0.95);
+  background: var(--color-bg);
   padding: 8px 16px;
   font-size: 12px;
-  color: #666;
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
   text-align: center;
   z-index: 10000;
   transform: translateY(-100%);
   transition: transform 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  box-shadow: 0 1px 3px var(--color-shadow);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
 #current-chapter.visible {
   transform: translateY(0);
 }
 
-/* ===== 閱讀優化 ===== */
-p, li, td, th, blockquote, dd {
-  word-break: break-word;
-  overflow-wrap: break-word;
+#current-chapter .chapter-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 80px);
 }
 
-@supports (hanging-punctuation: allow-end) {
-  p, li, dd {
-    hanging-punctuation: allow-end;
-  }
+#current-chapter .reading-time {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  background: var(--color-bg-secondary);
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ===== 閱讀時間統計 ===== */
+#reading-stats {
+  position: fixed;
+  bottom: 74px;
+  right: 74px;
+  background: var(--color-bg);
+  padding: 8px 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--color-shadow);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  z-index: 9997;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+#reading-stats.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+#reading-stats .stat-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#reading-stats .stat-row + .stat-row {
+  margin-top: 4px;
+}
+
+#reading-stats .stat-label {
+  color: var(--color-text-muted);
+}
+
+#reading-stats .stat-value {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+/* ===== 閱讀優化 ===== */
+p, li, td, th, blockquote, dd {
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 pre, pre code {
   word-break: normal;
   overflow-wrap: normal;
   hyphens: none;
+}
+
+/* ===== 程式碼複製按鈕（全域） ===== */
+.code-copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-family: var(--font-ui);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  z-index: 10;
+  transition: all 0.15s;
+}
+
+.code-copy-btn:hover {
+  background: var(--color-bg);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.code-copy-btn:active {
+  background: var(--color-border);
+}
+
+.code-copy-btn.copied {
+  background: #4caf50;
+  color: #fff;
+  border-color: #4caf50;
+}
+
+/* 程式碼區塊滾動提示 */
+.code-scroll-hint {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  font-size: 10px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.listingblock.has-overflow .code-scroll-hint,
+.literalblock.has-overflow .code-scroll-hint {
+  opacity: 1;
+}
+
+/* ===== 暗色模式追加覆寫 ===== */
+@media (prefers-color-scheme: dark) {
+  /* Asciidoctor 內建樣式覆寫 */
+  .literalblock pre,
+  .listingblock>.content>pre:not(.highlight),
+  .listingblock>.content>pre[class=highlight],
+  .listingblock>.content>pre[class^="highlight "] {
+    background: var(--color-bg-code) !important;
+  }
+
+  .literalblock.output pre {
+    color: #c9d1d9;
+    background: #0d1117 !important;
+  }
+
+  /* 表格斑馬紋 */
+  table tr.even, table tr.alt {
+    background: var(--color-bg-secondary) !important;
+  }
+
+  /* 圖片在暗色模式下微調 */
+  .imageblock img {
+    opacity: 0.92;
+    transition: opacity 0.2s;
+  }
+
+  .imageblock img:hover {
+    opacity: 1;
+  }
+
+  /* 區塊引號 */
+  .quoteblock blockquote::before {
+    color: var(--color-accent) !important;
+  }
+
+  /* 側邊欄 */
+  .sidebarblock {
+    border-color: var(--color-border) !important;
+  }
+
+  /* 警告框 icon */
+  .admonitionblock > table td.icon .title {
+    color: var(--color-text-secondary);
+  }
+
+  /* Rouge 語法高亮暗色主題（備用） */
+  pre.rouge .c, pre.rouge .c1, pre.rouge .cm { color: #6a9955; }      /* 註解 */
+  pre.rouge .s, pre.rouge .s1, pre.rouge .s2 { color: #ce9178; }      /* 字串 */
+  pre.rouge .k, pre.rouge .kd, pre.rouge .kn { color: #569cd6; }      /* 關鍵字 */
+  pre.rouge .nf, pre.rouge .nb { color: #dcdcaa; }                     /* 函式 */
+  pre.rouge .mi, pre.rouge .mf { color: #b5cea8; }                     /* 數字 */
+  pre.rouge .o, pre.rouge .p { color: #d4d4d4; }                       /* 運算子 */
+  pre.rouge .na { color: #9cdcfe; }                                     /* 屬性 */
 }
 
 /* ===== 無障礙優化 ===== */
@@ -779,8 +1277,27 @@ pre, pre code {
 a:focus-visible,
 button:focus-visible,
 summary:focus-visible {
-  outline: 2px solid #2156a5;
+  outline: 2px solid var(--color-link);
   outline-offset: 2px;
+}
+
+/* Skip Navigation */
+.skip-nav {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  background: var(--color-accent);
+  color: #fff;
+  padding: 0.75em 1.5em;
+  z-index: 100000;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: 0 0 8px 0;
+}
+
+.skip-nav:focus {
+  top: 0;
 }
 
 /* ===== 桌面版隱藏手機功能 ===== */
@@ -790,6 +1307,173 @@ summary:focus-visible {
   #chapter-nav,
   #current-chapter {
     display: none !important;
+  }
+}
+
+/* ===== 列印樣式 ===== */
+@media print {
+  /* 隱藏互動元素 */
+  #toc-toggle, #floating-toc, #chapter-nav, #current-chapter,
+  #back-to-top-btn, #reading-progress, #reading-stats,
+  .code-copy-btn, .code-scroll-hint, .skip-nav {
+    display: none !important;
+  }
+
+  /* 基礎排版 */
+  body, body.toc2 {
+    background: #fff !important;
+    color: #000 !important;
+    padding: 0 !important;
+    font-size: 11pt;
+    line-height: 1.6;
+  }
+
+  #header, #content, #footnotes, #footer {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  /* 標題 */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  h2 {
+    border-bottom: 1px solid #ccc;
+  }
+
+  /* 段落 */
+  p, li, dd {
+    color: #000 !important;
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* TOC */
+  #toc.toc2 {
+    position: relative !important;
+    width: auto !important;
+    border: none !important;
+    background: none !important;
+    padding: 0 !important;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  #toc a {
+    color: #000 !important;
+    text-decoration: none !important;
+  }
+
+  /* 連結 */
+  a {
+    color: #000 !important;
+    text-decoration: underline;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #555;
+    word-break: break-all;
+  }
+
+  a[href^="#"]::after {
+    content: none;
+  }
+
+  /* 程式碼 */
+  .literalblock pre, .listingblock > .content > pre {
+    background: #f5f5f5 !important;
+    border: 1px solid #ddd !important;
+    color: #000 !important;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    font-size: 9pt;
+  }
+
+  :not(pre) > code {
+    background: #f0f0f0 !important;
+    color: #000 !important;
+  }
+
+  /* 圖片 */
+  .imageblock {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  img {
+    max-width: 100% !important;
+  }
+
+  /* 表格 */
+  table {
+    display: table !important;
+    background: #fff !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  table thead, table tbody, table tfoot {
+    display: table-row-group !important;
+    width: auto !important;
+  }
+
+  table thead tr th, table tr td {
+    color: #000 !important;
+    border-color: #ccc !important;
+  }
+
+  /* 警告框 */
+  .admonitionblock > table {
+    background: #fff !important;
+    border: 1px solid #ccc !important;
+  }
+
+  .admonitionblock > table td.content {
+    color: #000 !important;
+  }
+
+  /* 側邊欄 */
+  .sidebarblock {
+    background: #f8f8f8 !important;
+    border: 1px solid #ccc !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* 引用 */
+  .quoteblock {
+    border-left: 3px solid #999 !important;
+    background: none !important;
+  }
+
+  .quoteblock blockquote, .quoteblock p {
+    color: #333 !important;
+  }
+
+  /* 頁尾 */
+  #footer {
+    background: none !important;
+    border-top: 1px solid #ccc;
+  }
+
+  #footer-text {
+    color: #666 !important;
+  }
+
+  /* 章節分頁 */
+  .sect1 {
+    page-break-before: auto;
+  }
+
+  .sect1 + .sect1 {
+    border-top: none;
   }
 }
 </style>
@@ -810,6 +1494,13 @@ summary:focus-visible {
   }
 
   function init() {
+    // 無障礙：Skip Navigation
+    var skipNav = document.createElement('a');
+    skipNav.className = 'skip-nav';
+    skipNav.href = '#content';
+    skipNav.textContent = '跳至主要內容';
+    document.body.insertBefore(skipNav, document.body.firstChild);
+
     // 收集章節資訊
     collectChapters();
 
@@ -818,12 +1509,21 @@ summary:focus-visible {
     addBackToTopButton();
     enhanceCodeBlocks();
 
+    // 圖片 lazy loading
+    addLazyLoading();
+
+    // 桌面版 TOC 當前章節高亮
+    if (window.innerWidth > 767) {
+      addDesktopTocHighlight();
+    }
+
     // 手機版專屬功能
     if (window.innerWidth <= 767) {
       addFloatingToc();
       addChapterNav();
       addCurrentChapterIndicator();
       addImageZoom();
+      addSwipeGesture();
       saveReadingPosition();
     }
   }
@@ -840,6 +1540,75 @@ summary:focus-visible {
         index: index
       });
     });
+  }
+
+  // 圖片 Lazy Loading
+  function addLazyLoading() {
+    var images = document.querySelectorAll('.imageblock img');
+    images.forEach(function(img) {
+      // 首屏圖片不 lazy load
+      if (img.getBoundingClientRect().top > window.innerHeight * 1.5) {
+        img.setAttribute('loading', 'lazy');
+        img.setAttribute('decoding', 'async');
+      }
+    });
+  }
+
+  // 桌面版 TOC 當前章節高亮
+  function addDesktopTocHighlight() {
+    var toc = document.getElementById('toc');
+    if (!toc) return;
+
+    var tocLinks = toc.querySelectorAll('a');
+    var sections = [];
+    tocLinks.forEach(function(link) {
+      var href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        var target = document.getElementById(href.substring(1));
+        if (target) {
+          sections.push({ link: link, target: target });
+        }
+      }
+    });
+
+    if (sections.length === 0) return;
+
+    var ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(function() {
+          var scrollY = window.scrollY + 120;
+          var current = null;
+
+          for (var i = sections.length - 1; i >= 0; i--) {
+            if (sections[i].target.offsetTop <= scrollY) {
+              current = sections[i];
+              break;
+            }
+          }
+
+          tocLinks.forEach(function(link) { link.classList.remove('toc-active'); });
+          if (current) {
+            current.link.classList.add('toc-active');
+            // 滾動 TOC 使當前項可見
+            var tocEl = document.getElementById('toc');
+            if (tocEl && current.link.offsetTop) {
+              var linkTop = current.link.offsetTop - tocEl.offsetTop;
+              var tocScroll = tocEl.scrollTop;
+              var tocHeight = tocEl.clientHeight;
+              if (linkTop < tocScroll || linkTop > tocScroll + tocHeight - 40) {
+                tocEl.scrollTop = linkTop - tocHeight / 3;
+              }
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // 初始化
   }
 
   // 閱讀進度條
@@ -912,12 +1681,19 @@ summary:focus-visible {
     });
   }
 
+  // 已讀章節追蹤
+  var readChapters = {};
+  try {
+    var saved = localStorage.getItem('mastering-bitcoin-read-chapters');
+    if (saved) readChapters = JSON.parse(saved);
+  } catch(e) {}
+
   // 浮動目錄
   function addFloatingToc() {
     // 目錄按鈕
     var tocBtn = document.createElement('button');
     tocBtn.id = 'toc-toggle';
-    tocBtn.setAttribute('aria-label', '開啟目錄');
+    tocBtn.setAttribute('aria-label', '\u958b\u555f\u76ee\u9304');
     tocBtn.innerHTML = '\u2630'; // ☰
     document.body.appendChild(tocBtn);
 
@@ -925,19 +1701,38 @@ summary:focus-visible {
     var tocPanel = document.createElement('div');
     tocPanel.id = 'floating-toc';
 
+    // 標題
     var tocHeader = document.createElement('div');
     tocHeader.id = 'floating-toc-header';
-    tocHeader.innerHTML = '<span>目錄</span><button id="floating-toc-close">\u00d7</button>';
+    tocHeader.innerHTML = '<span>\u76ee\u9304</span><button id="floating-toc-close">\u00d7</button>';
 
+    // 搜尋框
+    var searchWrap = document.createElement('div');
+    searchWrap.id = 'toc-search-wrap';
+    searchWrap.innerHTML = '<input type="text" id="toc-search" placeholder="\u641c\u5c0b\u7ae0\u7bc0..." autocomplete="off">';
+
+    // 進度摘要
+    var progressSummary = document.createElement('div');
+    progressSummary.id = 'toc-progress-summary';
+    progressSummary.innerHTML = '<div><span id="toc-progress-text"></span><div class="progress-bar"><div class="progress-fill" id="toc-progress-fill"></div></div></div>';
+
+    // 目錄內容
     var tocContent = document.createElement('div');
     tocContent.id = 'floating-toc-content';
 
+    // 只統計 h2 章節數
+    var h2Chapters = chapters.filter(function(ch) { return ch.level === 'h2'; });
+
     // 填充目錄內容
-    chapters.forEach(function(ch) {
+    chapters.forEach(function(ch, idx) {
       var link = document.createElement('a');
       link.href = '#' + ch.id;
-      link.textContent = ch.text.substring(0, 40) + (ch.text.length > 40 ? '...' : '');
+      link.dataset.index = idx;
+      link.dataset.text = ch.text.toLowerCase();
+      link.textContent = ch.text.substring(0, 35) + (ch.text.length > 35 ? '...' : '');
       link.className = 'toc-' + ch.level;
+      if (readChapters[ch.id]) link.classList.add('read');
+
       link.addEventListener('click', function(e) {
         e.preventDefault();
         tocPanel.classList.remove('open');
@@ -947,13 +1742,34 @@ summary:focus-visible {
     });
 
     tocPanel.appendChild(tocHeader);
+    tocPanel.appendChild(searchWrap);
+    tocPanel.appendChild(progressSummary);
     tocPanel.appendChild(tocContent);
     document.body.appendChild(tocPanel);
 
-    // 事件
+    // 搜尋功能
+    var searchInput = searchWrap.querySelector('#toc-search');
+    searchInput.addEventListener('input', function() {
+      var query = this.value.toLowerCase().trim();
+      var links = tocContent.querySelectorAll('a');
+      links.forEach(function(link) {
+        if (!query || link.dataset.text.indexOf(query) !== -1) {
+          link.classList.remove('hidden');
+        } else {
+          link.classList.add('hidden');
+        }
+      });
+    });
+
+    // 開啟/關閉事件
     tocBtn.addEventListener('click', function() {
-      tocPanel.classList.toggle('open');
-      updateTocHighlight();
+      var isOpen = tocPanel.classList.toggle('open');
+      if (isOpen) {
+        updateTocHighlight();
+        updateProgressSummary();
+        scrollToCurrentInToc();
+        setTimeout(function() { searchInput.focus(); }, 100);
+      }
     });
 
     tocHeader.querySelector('#floating-toc-close').addEventListener('click', function() {
@@ -966,6 +1782,28 @@ summary:focus-visible {
         tocPanel.classList.remove('open');
       }
     });
+
+    // 更新進度摘要
+    function updateProgressSummary() {
+      var readCount = 0;
+      h2Chapters.forEach(function(ch) {
+        if (readChapters[ch.id]) readCount++;
+      });
+      var percent = h2Chapters.length > 0 ? Math.round((readCount / h2Chapters.length) * 100) : 0;
+
+      var progressText = document.getElementById('toc-progress-text');
+      var progressFill = document.getElementById('toc-progress-fill');
+      if (progressText) progressText.textContent = '\u5df2\u8b80 ' + readCount + '/' + h2Chapters.length + ' \u7ae0 (' + percent + '%)';
+      if (progressFill) progressFill.style.width = percent + '%';
+    }
+
+    // 滾動目錄到當前章節
+    function scrollToCurrentInToc() {
+      var currentLink = tocContent.querySelector('a.current');
+      if (currentLink) {
+        currentLink.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    }
   }
 
   // 更新目錄高亮
@@ -1028,10 +1866,57 @@ summary:focus-visible {
     }
   }
 
+  // 計算閱讀時間（中文每分鐘約 400 字）
+  var totalWordCount = 0;
+  var chapterWordCounts = {};
+
+  function calculateReadingTime() {
+    var content = document.getElementById('content');
+    if (!content) return;
+
+    var text = content.textContent || '';
+    // 計算中文字數和英文單字數
+    var chineseChars = (text.match(/[\u4e00-\u9fff]/g) || []).length;
+    var englishWords = (text.match(/[a-zA-Z]+/g) || []).length;
+    totalWordCount = chineseChars + englishWords;
+
+    // 計算各章節字數
+    chapters.forEach(function(ch, idx) {
+      var nextCh = chapters[idx + 1];
+      var startEl = ch.element;
+      var endEl = nextCh ? nextCh.element : null;
+
+      var chText = '';
+      var current = startEl;
+      while (current && current !== endEl) {
+        chText += current.textContent || '';
+        current = current.nextElementSibling;
+      }
+
+      var chChinese = (chText.match(/[\u4e00-\u9fff]/g) || []).length;
+      var chEnglish = (chText.match(/[a-zA-Z]+/g) || []).length;
+      chapterWordCounts[ch.id] = chChinese + chEnglish;
+    });
+  }
+
+  function getReadingTimeText(wordCount) {
+    var minutes = Math.ceil(wordCount / 400);
+    if (minutes < 1) return '<1 \u5206\u9418';
+    if (minutes >= 60) {
+      var hours = Math.floor(minutes / 60);
+      var mins = minutes % 60;
+      return hours + ' \u5c0f\u6642' + (mins > 0 ? ' ' + mins + ' \u5206' : '');
+    }
+    return minutes + ' \u5206\u9418';
+  }
+
   // 當前章節指示器
   function addCurrentChapterIndicator() {
+    calculateReadingTime();
+
     var indicator = document.createElement('div');
     indicator.id = 'current-chapter';
+    indicator.innerHTML = '<span class="chapter-title"></span><span class="reading-time"></span>';
     document.body.appendChild(indicator);
 
     var lastScrollY = 0;
@@ -1075,7 +1960,31 @@ summary:focus-visible {
       currentChapterIndex = newIndex;
       var indicator = document.getElementById('current-chapter');
       if (indicator && currentChapterIndex >= 0) {
-        indicator.textContent = chapters[currentChapterIndex].text;
+        var ch = chapters[currentChapterIndex];
+
+        // 更新章節標題
+        var titleEl = indicator.querySelector('.chapter-title');
+        if (titleEl) {
+          titleEl.textContent = ch.text.substring(0, 25) + (ch.text.length > 25 ? '...' : '');
+        }
+
+        // 更新閱讀時間
+        var timeEl = indicator.querySelector('.reading-time');
+        if (timeEl && chapterWordCounts[ch.id]) {
+          timeEl.textContent = getReadingTimeText(chapterWordCounts[ch.id]);
+        }
+
+        // 標記章節為已讀（只標記 h2 章節）
+        if (ch.level === 'h2' && !readChapters[ch.id]) {
+          readChapters[ch.id] = Date.now();
+          try {
+            localStorage.setItem('mastering-bitcoin-read-chapters', JSON.stringify(readChapters));
+          } catch(e) {}
+
+          // 更新目錄中的已讀標記
+          var tocLink = document.querySelector('#floating-toc-content a[href="#' + ch.id + '"]');
+          if (tocLink) tocLink.classList.add('read');
+        }
       }
       updateTocHighlight();
     }
@@ -1121,14 +2030,157 @@ summary:focus-visible {
 
   // 程式碼區塊增強
   function enhanceCodeBlocks() {
-    var pres = document.querySelectorAll('pre');
-    pres.forEach(function(pre) {
-      if (pre.scrollWidth > pre.clientWidth) {
-        pre.setAttribute('tabindex', '0');
-        pre.setAttribute('role', 'region');
-        pre.setAttribute('aria-label', '程式碼區塊，可橫向滾動');
+    var codeBlocks = document.querySelectorAll('.listingblock, .literalblock');
+    codeBlocks.forEach(function(block) {
+      var pre = block.querySelector('pre');
+      if (!pre) return;
+
+      var content = block.querySelector('.content') || block;
+
+      // 檢查是否需要橫向滾動
+      if (pre.scrollWidth > pre.clientWidth + 10) {
+        block.classList.add('has-overflow');
+
+        // 滾動提示
+        var hint = document.createElement('span');
+        hint.className = 'code-scroll-hint';
+        hint.textContent = '\u2190 \u53ef\u6ed1\u52d5 \u2192';
+        content.appendChild(hint);
+
+        // 滾動後隱藏提示
+        pre.addEventListener('scroll', function() {
+          hint.style.opacity = '0';
+        }, { once: true, passive: true });
       }
+
+      // 複製按鈕
+      var copyBtn = document.createElement('button');
+      copyBtn.className = 'code-copy-btn';
+      copyBtn.textContent = '\u8907\u88fd';
+      copyBtn.setAttribute('aria-label', '\u8907\u88fd\u7a0b\u5f0f\u78bc');
+
+      copyBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var code = pre.textContent;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(code).then(function() {
+            showCopySuccess(copyBtn);
+          }).catch(function() {
+            fallbackCopy(code, copyBtn);
+          });
+        } else {
+          fallbackCopy(code, copyBtn);
+        }
+      });
+
+      content.style.position = 'relative';
+      content.appendChild(copyBtn);
+
+      // 無障礙屬性
+      pre.setAttribute('tabindex', '0');
+      pre.setAttribute('role', 'region');
+      pre.setAttribute('aria-label', '\u7a0b\u5f0f\u78bc\u5340\u584a');
     });
+  }
+
+  function showCopySuccess(btn) {
+    btn.textContent = '\u5df2\u8907\u88fd';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = '\u8907\u88fd';
+      btn.classList.remove('copied');
+    }, 1500);
+  }
+
+  function fallbackCopy(text, btn) {
+    var textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.cssText = 'position:fixed;left:-9999px';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      showCopySuccess(btn);
+    } catch(e) {
+      btn.textContent = '\u5931\u6557';
+    }
+    document.body.removeChild(textarea);
+  }
+
+  // 滑動手勢支援（左右滑動切換章節）
+  function addSwipeGesture() {
+    var touchStartX = 0;
+    var touchStartY = 0;
+    var touchEndX = 0;
+    var touchEndY = 0;
+    var minSwipeDistance = 80;
+
+    document.addEventListener('touchstart', function(e) {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', function(e) {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+      handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+      var deltaX = touchEndX - touchStartX;
+      var deltaY = touchEndY - touchStartY;
+
+      // 只處理水平滑動（且垂直移動不大）
+      if (Math.abs(deltaX) > minSwipeDistance && Math.abs(deltaY) < 100) {
+        // 檢查是否在可滾動元素內
+        var activeEl = document.activeElement;
+        if (activeEl && (activeEl.scrollWidth > activeEl.clientWidth)) {
+          return; // 在可橫向滾動的元素內，不處理手勢
+        }
+
+        if (deltaX > 0) {
+          // 右滑 -> 上一章
+          navigateChapter(-1);
+          showSwipeHint('\u2190 \u4e0a\u4e00\u7ae0');
+        } else {
+          // 左滑 -> 下一章
+          navigateChapter(1);
+          showSwipeHint('\u4e0b\u4e00\u7ae0 \u2192');
+        }
+      }
+    }
+  }
+
+  function showSwipeHint(text) {
+    var hint = document.createElement('div');
+    hint.textContent = text;
+    hint.style.cssText = [
+      'position: fixed',
+      'top: 50%',
+      'left: 50%',
+      'transform: translate(-50%, -50%)',
+      'background: rgba(0,0,0,0.7)',
+      'color: #fff',
+      'padding: 12px 24px',
+      'border-radius: 8px',
+      'font-size: 14px',
+      'z-index: 10003',
+      'pointer-events: none',
+      'opacity: 1',
+      'transition: opacity 0.3s'
+    ].join(';');
+
+    document.body.appendChild(hint);
+
+    setTimeout(function() {
+      hint.style.opacity = '0';
+      setTimeout(function() {
+        if (hint.parentNode) {
+          document.body.removeChild(hint);
+        }
+      }, 300);
+    }, 600);
   }
 
   // 圖片放大

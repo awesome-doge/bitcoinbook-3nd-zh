@@ -45,6 +45,8 @@ jobs:
             --attribute=idprefix= \
             --attribute=idseparator=- \
             --attribute=docinfo=shared \
+            --attribute=lang=zh-TW \
+            --attribute=imagesdir=.. \
             book.adoc
 
       - name: Copy images to preview
