@@ -1,0 +1,19 @@
+{
+  "name": "精通比特幣：程式設計開放區塊鏈（第三版）",
+  "short_name": "精通比特幣",
+  "description": "深入介紹比特幣技術的權威指南（繁體中文版）",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f7931a",
+  "lang": "zh-TW",
+  "icons": [
+    {
+      "src": "/images/cover.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["books", "education"]
+}

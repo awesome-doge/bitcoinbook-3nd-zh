@@ -286,6 +286,40 @@ pre code {
   margin-bottom: 0.4em;
 }
 
+/* 程式碼行號（CSS counter） */
+.listingblock pre.highlight code,
+.listingblock > .content > pre > code {
+  counter-reset: line-number;
+}
+
+.listingblock pre.highlight code > span,
+.listingblock > .content > pre > code > span {
+  counter-increment: line-number;
+}
+
+/* JS 行號注入的樣式 */
+.code-line-numbers {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 1.25em 0;
+  width: 3em;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--color-text-muted);
+  opacity: 0.4;
+  user-select: none;
+  pointer-events: none;
+  border-right: 1px solid var(--color-border-light);
+  padding-right: 0.5em;
+}
+
+.listingblock.has-line-numbers > .content > pre {
+  padding-left: 4em !important;
+}
+
 /* 表格美化 */
 table.tableblock, table.tableblock.frame-all {
   background: var(--color-bg) !important;
@@ -635,6 +669,35 @@ dl dd {
   #toc.toc2 .sectlevel0 > li > ul,
   #toc.toc2 .sectlevel1 > li > ul {
     width: 100%;
+  }
+
+  /* 桌面版 TOC 底部閱讀統計 */
+  #toc-stats {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 12px;
+    background: var(--color-bg-secondary);
+    border-top: 1px solid var(--color-border-light);
+    font-family: var(--font-ui);
+    font-size: 0.75em;
+    color: var(--color-text-muted);
+  }
+
+  #toc-stats .stats-progress {
+    height: 3px;
+    background: var(--color-border);
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+
+  #toc-stats .stats-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-accent), #ff6b00);
+    border-radius: 2px;
+    transition: width 0.5s;
   }
 
   /* 嵌入式 TOC */
@@ -1682,6 +1745,89 @@ summary:focus-visible {
   }
 }
 
+/* ===== 頁內搜尋面板 ===== */
+#page-search {
+  position: fixed;
+  top: 12px;
+  right: 140px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px var(--color-shadow);
+  z-index: 10010;
+  display: none;
+  padding: 8px 12px;
+  gap: 8px;
+  align-items: center;
+  font-family: var(--font-ui);
+  font-size: 13px;
+}
+
+#page-search.open { display: flex; }
+
+#page-search input {
+  width: 200px;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+#page-search input:focus { border-color: var(--color-accent); }
+
+#page-search .search-info {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  min-width: 60px;
+  text-align: center;
+}
+
+#page-search button {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text);
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+#page-search button:hover {
+  background: var(--color-toc-active);
+}
+
+mark.search-highlight {
+  background: rgba(247, 147, 26, 0.35);
+  color: inherit;
+  padding: 0 1px;
+  border-radius: 2px;
+}
+
+mark.search-highlight.current {
+  background: rgba(247, 147, 26, 0.7);
+  outline: 2px solid var(--color-accent);
+}
+
+@media screen and (max-width: 767px) {
+  #page-search {
+    top: auto;
+    bottom: 70px;
+    right: 10px;
+    left: 10px;
+  }
+
+  #page-search input { width: 100%; flex: 1; }
+}
+
+/* ===== Toast 動畫 ===== */
+@keyframes slideUp {
+  from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
 /* ===== 列印樣式 ===== */
 @media print {
   /* 隱藏互動元素 */
@@ -1880,6 +2026,9 @@ summary:focus-visible {
     addThemeToggle();
     addFontControls();
 
+    // 頁內搜尋
+    addPageSearch();
+
     // 基本功能
     addReadingProgress();
     addBackToTopButton();
@@ -1893,6 +2042,9 @@ summary:focus-visible {
       addDesktopTocHighlight();
     }
 
+    // 全域：閱讀進度持久化
+    saveReadingPosition();
+
     // 手機版專屬功能
     if (window.innerWidth <= 767) {
       addFloatingToc();
@@ -1900,7 +2052,6 @@ summary:focus-visible {
       addCurrentChapterIndicator();
       addImageZoom();
       addSwipeGesture();
-      saveReadingPosition();
     }
   }
 
@@ -2013,6 +2164,134 @@ summary:focus-visible {
     document.body.appendChild(wrap);
   }
 
+  // 頁內搜尋
+  function addPageSearch() {
+    var panel = document.createElement('div');
+    panel.id = 'page-search';
+    panel.innerHTML = '<input type="text" placeholder="搜尋內容..." id="page-search-input" autocomplete="off">' +
+      '<span class="search-info" id="search-info"></span>' +
+      '<button id="search-prev">\u25B2</button>' +
+      '<button id="search-next">\u25BC</button>' +
+      '<button id="search-close">\u2715</button>';
+    document.body.appendChild(panel);
+
+    var input = document.getElementById('page-search-input');
+    var info = document.getElementById('search-info');
+    var highlights = [];
+    var currentIdx = -1;
+    var searchTimeout;
+
+    function clearHighlights() {
+      highlights.forEach(function(el) {
+        var parent = el.parentNode;
+        parent.replaceChild(document.createTextNode(el.textContent), el);
+        parent.normalize();
+      });
+      highlights = [];
+      currentIdx = -1;
+      info.textContent = '';
+    }
+
+    function doSearch(query) {
+      clearHighlights();
+      if (!query || query.length < 2) return;
+
+      var content = document.getElementById('content');
+      if (!content) return;
+
+      var walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null, false);
+      var textNodes = [];
+      while (walker.nextNode()) {
+        if (walker.currentNode.nodeValue.trim()) {
+          textNodes.push(walker.currentNode);
+        }
+      }
+
+      var lowerQuery = query.toLowerCase();
+      textNodes.forEach(function(node) {
+        var text = node.nodeValue;
+        var lowerText = text.toLowerCase();
+        var idx = lowerText.indexOf(lowerQuery);
+        if (idx === -1) return;
+        // 不處理 pre/code 內的文字
+        if (node.parentElement.closest('pre, code, script, style')) return;
+
+        var before = text.substring(0, idx);
+        var match = text.substring(idx, idx + query.length);
+        var after = text.substring(idx + query.length);
+
+        var mark = document.createElement('mark');
+        mark.className = 'search-highlight';
+        mark.textContent = match;
+
+        var parent = node.parentNode;
+        var frag = document.createDocumentFragment();
+        if (before) frag.appendChild(document.createTextNode(before));
+        frag.appendChild(mark);
+        if (after) frag.appendChild(document.createTextNode(after));
+        parent.replaceChild(frag, node);
+        highlights.push(mark);
+      });
+
+      if (highlights.length > 0) {
+        currentIdx = 0;
+        jumpTo(0);
+      }
+      info.textContent = highlights.length > 0 ? (currentIdx + 1) + '/' + highlights.length : '無結果';
+    }
+
+    function jumpTo(idx) {
+      if (highlights.length === 0) return;
+      highlights.forEach(function(h) { h.classList.remove('current'); });
+      currentIdx = ((idx % highlights.length) + highlights.length) % highlights.length;
+      highlights[currentIdx].classList.add('current');
+      highlights[currentIdx].scrollIntoView({ block: 'center', behavior: 'smooth' });
+      info.textContent = (currentIdx + 1) + '/' + highlights.length;
+    }
+
+    input.addEventListener('input', function() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(function() { doSearch(input.value.trim()); }, 300);
+    });
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        jumpTo(e.shiftKey ? currentIdx - 1 : currentIdx + 1);
+      } else if (e.key === 'Escape') {
+        closeSearch();
+      }
+    });
+
+    document.getElementById('search-prev').addEventListener('click', function() { jumpTo(currentIdx - 1); });
+    document.getElementById('search-next').addEventListener('click', function() { jumpTo(currentIdx + 1); });
+    document.getElementById('search-close').addEventListener('click', closeSearch);
+
+    function openSearch() {
+      panel.classList.add('open');
+      input.focus();
+      input.select();
+    }
+
+    function closeSearch() {
+      panel.classList.remove('open');
+      clearHighlights();
+      input.value = '';
+    }
+
+    // Ctrl+Shift+F / Cmd+Shift+F 開啟搜尋
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'F') {
+        e.preventDefault();
+        if (panel.classList.contains('open')) {
+          closeSearch();
+        } else {
+          openSearch();
+        }
+      }
+    });
+  }
+
   // 圖片 Lazy Loading
   function addLazyLoading() {
     var images = document.querySelectorAll('.imageblock img');
@@ -2114,6 +2393,53 @@ summary:focus-visible {
 
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll(); // 初始化
+
+    // 桌面版 TOC 閱讀統計面板
+    addTocStats(toc);
+  }
+
+  function addTocStats(toc) {
+    var statsDiv = document.createElement('div');
+    statsDiv.id = 'toc-stats';
+
+    var h2Chapters = chapters.filter(function(ch) { return ch.level === 'h2'; });
+    var totalChapters = h2Chapters.length;
+
+    statsDiv.innerHTML = '<div id="toc-stats-text"></div>' +
+      '<div class="stats-progress"><div class="stats-fill" id="toc-stats-fill"></div></div>';
+    toc.appendChild(statsDiv);
+
+    // 計算全書字數
+    var content = document.getElementById('content');
+    var fullText = content ? content.textContent : '';
+    var totalChinese = (fullText.match(/[\u4e00-\u9fff]/g) || []).length;
+    var totalEnglish = (fullText.match(/[a-zA-Z]+/g) || []).length;
+    var totalWords = totalChinese + totalEnglish;
+    var totalMinutes = Math.ceil(totalWords / 400);
+    var totalHours = Math.floor(totalMinutes / 60);
+    var remainMins = totalMinutes % 60;
+    var timeStr = totalHours > 0 ? totalHours + ' 小時 ' + remainMins + ' 分' : totalMinutes + ' 分鐘';
+
+    function updateStats() {
+      var readCount = 0;
+      try {
+        var saved = localStorage.getItem('mastering-bitcoin-read-chapters');
+        if (saved) {
+          var rc = JSON.parse(saved);
+          h2Chapters.forEach(function(ch) { if (rc[ch.id]) readCount++; });
+        }
+      } catch(e) {}
+
+      var pct = totalChapters > 0 ? Math.round((readCount / totalChapters) * 100) : 0;
+      var textEl = document.getElementById('toc-stats-text');
+      var fillEl = document.getElementById('toc-stats-fill');
+      if (textEl) textEl.textContent = '已讀 ' + readCount + '/' + totalChapters + ' 章 (' + pct + '%) · 全書約 ' + timeStr;
+      if (fillEl) fillEl.style.width = pct + '%';
+    }
+
+    updateStats();
+    // 每 30 秒更新
+    setInterval(updateStats, 30000);
   }
 
   // 閱讀進度條
@@ -2252,13 +2578,22 @@ summary:focus-visible {
     tocPanel.appendChild(tocContent);
     document.body.appendChild(tocPanel);
 
-    // 搜尋功能
+    // 搜尋功能（支援拼音首字母）
     var searchInput = searchWrap.querySelector('#toc-search');
+
+    // 為每個連結預計算拼音首字母
+    var tocLinks2 = tocContent.querySelectorAll('a');
+    tocLinks2.forEach(function(link) {
+      link.dataset.pinyin = getPinyinInitials(link.dataset.text);
+    });
+
     searchInput.addEventListener('input', function() {
       var query = this.value.toLowerCase().trim();
-      var links = tocContent.querySelectorAll('a');
-      links.forEach(function(link) {
-        if (!query || link.dataset.text.indexOf(query) !== -1) {
+      tocLinks2.forEach(function(link) {
+        if (!query) {
+          link.classList.remove('hidden');
+        } else if (link.dataset.text.indexOf(query) !== -1 ||
+                   link.dataset.pinyin.indexOf(query) !== -1) {
           link.classList.remove('hidden');
         } else {
           link.classList.add('hidden');
@@ -2495,23 +2830,20 @@ summary:focus-visible {
     }
   }
 
-  // 儲存閱讀位置
+  // 儲存閱讀位置（全域，桌面+手機）
   function saveReadingPosition() {
     var storageKey = 'mastering-bitcoin-reading-position';
 
-    // 恢復閱讀位置
+    // 恢復閱讀位置 — 用 toast 取代 confirm
     try {
       var saved = localStorage.getItem(storageKey);
       if (saved) {
         var data = JSON.parse(saved);
         var now = Date.now();
-        // 7天內的記錄有效
-        if (now - data.timestamp < 7 * 24 * 60 * 60 * 1000) {
+        if (now - data.timestamp < 7 * 24 * 60 * 60 * 1000 && data.scrollY > 300) {
           setTimeout(function() {
-            if (confirm('是否繼續上次的閱讀位置？\n' + (data.chapter || ''))) {
-              window.scrollTo(0, data.scrollY);
-            }
-          }, 500);
+            showResumeToast(data);
+          }, 800);
         }
       }
     } catch(e) {}
@@ -2533,6 +2865,75 @@ summary:focus-visible {
     }, { passive: true });
   }
 
+  // 中文字拼音首字母（Unicode 區間法，涵蓋常用字）
+  function getPinyinInitials(str) {
+    var initials = '';
+    for (var i = 0; i < str.length; i++) {
+      var c = str.charCodeAt(i);
+      if (c >= 0x4e00 && c <= 0x9fff) {
+        initials += getPinyinInitial(c);
+      } else if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122)) {
+        initials += str[i].toLowerCase();
+      }
+    }
+    return initials;
+  }
+
+  function getPinyinInitial(code) {
+    var map = [
+      [0x5765,'a'],[0x5e7C,'b'],[0x5D14,'c'],[0x592A,'d'],[0x53F8,'e'],
+      [0x7A47,'f'],[0x5C3B,'g'],[0x9EC4,'h'],[0x5360,'j'],[0x5F00,'k'],
+      [0x62C9,'l'],[0x5988,'m'],[0x62FF,'n'],[0x5594,'o'],[0x5991,'p'],
+      [0x671F,'q'],[0x7136,'r'],[0x4EE8,'s'],[0x4ED6,'t'],[0x7A75,'w'],
+      [0x5915,'x'],[0x4E2B,'y'],[0x5E00,'z']
+    ];
+    // 簡化的 Unicode 區間對照
+    var pinyinMap = 'ABCDEFGHJKLMNOPQRSTWXYZ';
+    var bounds = [
+      19968,19978,19993,20048,20102,20285,20588,20710,21040,21574,
+      22303,22763,23130,23569,24063,24417,25165,25930,26413,27671,
+      28516,29835,30495
+    ];
+    for (var i = bounds.length - 1; i >= 0; i--) {
+      if (code >= bounds[i]) {
+        return pinyinMap[i].toLowerCase();
+      }
+    }
+    return '';
+  }
+
+  function showResumeToast(data) {
+    var toast = document.createElement('div');
+    toast.style.cssText = [
+      'position: fixed', 'bottom: 80px', 'left: 50%', 'transform: translateX(-50%)',
+      'background: var(--color-bg-secondary, #f5f5f5)', 'color: var(--color-text, #333)',
+      'border: 1px solid var(--color-border, #ddd)', 'border-radius: 12px',
+      'padding: 12px 16px', 'box-shadow: 0 4px 16px rgba(0,0,0,0.15)',
+      'z-index: 10005', 'display: flex', 'align-items: center', 'gap: 12px',
+      'font-family: var(--font-ui, sans-serif)', 'font-size: 14px',
+      'max-width: 90vw', 'animation: slideUp 0.3s ease-out'
+    ].join(';');
+
+    var chapterName = (data.chapter || '').substring(0, 20);
+    toast.innerHTML = '<span>\u{1F4D6} 繼續閱讀「' + chapterName + '」？</span>' +
+      '<button id="resume-yes" style="background:var(--color-accent,#f7931a);color:#fff;border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:13px;white-space:nowrap">繼續</button>' +
+      '<button id="resume-no" style="background:none;border:1px solid var(--color-border,#ddd);border-radius:6px;padding:6px 10px;cursor:pointer;font-size:13px;color:var(--color-text-muted,#999)">✕</button>';
+
+    document.body.appendChild(toast);
+
+    document.getElementById('resume-yes').addEventListener('click', function() {
+      window.scrollTo({ top: data.scrollY, behavior: 'smooth' });
+      toast.remove();
+    });
+
+    document.getElementById('resume-no').addEventListener('click', function() {
+      toast.remove();
+    });
+
+    // 8 秒後自動消失
+    setTimeout(function() { if (toast.parentNode) toast.remove(); }, 8000);
+  }
+
   // 程式碼區塊增強
   function enhanceCodeBlocks() {
     var codeBlocks = document.querySelectorAll('.listingblock, .literalblock');
@@ -2541,6 +2942,21 @@ summary:focus-visible {
       if (!pre) return;
 
       var content = block.querySelector('.content') || block;
+
+      // 行號：5行以上的程式碼區塊加入行號
+      var codeText = pre.textContent || '';
+      var lines = codeText.split('\n');
+      if (lines.length >= 5 && block.classList.contains('listingblock')) {
+        block.classList.add('has-line-numbers');
+        var lineNums = document.createElement('div');
+        lineNums.className = 'code-line-numbers';
+        lineNums.setAttribute('aria-hidden', 'true');
+        var nums = [];
+        for (var ln = 1; ln <= lines.length; ln++) nums.push(ln);
+        lineNums.textContent = nums.join('\n');
+        content.style.position = 'relative';
+        content.insertBefore(lineNums, pre);
+      }
 
       // 檢查是否需要橫向滾動
       if (pre.scrollWidth > pre.clientWidth + 10) {
@@ -2738,6 +3154,10 @@ summary:focus-visible {
     });
 
     document.body.appendChild(overlay);
+  }
+  // Service Worker 註冊
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function() {});
   }
 })();
 </script>
