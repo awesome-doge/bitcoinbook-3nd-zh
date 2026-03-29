@@ -1852,6 +1852,87 @@ summary:focus-visible {
   }
 }
 
+/* ===== 電子書下載橫幅 ===== */
+#ebook-banner {
+  background: linear-gradient(135deg, var(--color-bg-secondary), var(--color-bg-code));
+  border: 1px solid var(--color-border-light);
+  border-radius: 10px;
+  padding: 12px 20px;
+  margin: 0 auto 1.5em;
+  max-width: var(--content-max-width);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+}
+
+#ebook-banner .banner-text {
+  color: var(--color-text-secondary);
+}
+
+#ebook-banner a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none !important;
+  border-bottom: none !important;
+  transition: background 0.15s, transform 0.1s;
+}
+
+#ebook-banner a:active {
+  transform: scale(0.97);
+}
+
+#ebook-banner .btn-epub {
+  background: var(--color-accent);
+  color: #fff !important;
+}
+
+#ebook-banner .btn-epub:hover {
+  background: var(--color-accent-dark);
+}
+
+#ebook-banner .btn-html {
+  background: var(--color-bg);
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border);
+}
+
+#ebook-banner .btn-html:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent) !important;
+}
+
+#ebook-banner .btn-github {
+  color: var(--color-text-muted) !important;
+  font-size: 0.75rem;
+}
+
+#ebook-banner .btn-github:hover {
+  color: var(--color-accent) !important;
+}
+
+@media screen and (max-width: 767px) {
+  #ebook-banner {
+    margin: 0 0.5rem 1rem;
+    padding: 10px 14px;
+    gap: 8px;
+    font-size: 0.8rem;
+  }
+
+  #ebook-banner a {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+}
+
 /* ===== 頁內搜尋面板 ===== */
 #page-search {
   position: fixed;
@@ -2133,6 +2214,9 @@ mark.search-highlight.current {
     addThemeToggle();
     addFontControls();
 
+    // 電子書下載橫幅
+    addEbookBanner();
+
     // 頁內搜尋
     addPageSearch();
 
@@ -2269,6 +2353,23 @@ mark.search-highlight.current {
     wrap.appendChild(smaller);
     wrap.appendChild(bigger);
     document.body.appendChild(wrap);
+  }
+
+  // 電子書下載橫幅
+  function addEbookBanner() {
+    var releaseUrl = 'https://github.com/awesome-doge/bitcoinbook-3nd-zh/releases/latest';
+    var banner = document.createElement('div');
+    banner.id = 'ebook-banner';
+    banner.innerHTML =
+      '<span class="banner-text">下載電子書</span>' +
+      '<a href="' + releaseUrl + '/download/mastering-bitcoin-3rd-zh-tw.epub" class="btn-epub">EPUB</a>' +
+      '<a href="' + releaseUrl + '/download/mastering-bitcoin-3rd-zh-tw-html.zip" class="btn-html">HTML</a>' +
+      '<a href="' + releaseUrl + '" class="btn-github">GitHub Release</a>';
+
+    var header = document.getElementById('header');
+    if (header && header.parentNode) {
+      header.parentNode.insertBefore(banner, header);
+    }
   }
 
   // 頁內搜尋
