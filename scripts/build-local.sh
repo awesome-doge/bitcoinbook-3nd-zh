@@ -94,7 +94,7 @@ if [ "$EPUB_AVAILABLE" = true ]; then
       --attribute=front-cover-image=../images/cover.png \
       --attribute=producer="繁體中文翻譯：Dr. Awesome Doge" \
       --attribute=epub3-stylesdir=. \
-      --attribute=epub3-stylesheet=epub-styles.css \
+      --attribute=epub3-stylesheet=epub3.scss \
       book.adoc
     cd ..
     echo -e "${GREEN}✓ EPUB 已生成：$OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.epub${NC}"

@@ -1,0 +1,92 @@
+@charset "UTF-8";
+
+$black: #000000;
+$off-black: #101010;
+$deep-gray: #202020;
+$dark-gray: #333332;
+$tuatara-gray: #40403E;
+$medium-gray: #707070;
+$gray: #C8C8C8;
+$off-white: #E0E0E0;
+$papaya-white: #FFF0D4;
+$white: #FFFFFF;
+
+$mahogany-red: #C83737;
+$flamingo-orange: #F2642A;
+$light-yellow: #FFC14F;
+$beauty-pink: #F1CECE;
+$cinderella-pink: #FCD9CA;
+
+$green: #57AD68;
+$medium-green: #468C54;
+
+// =========================
+// === assign the colors ===
+// =========================
+
+$body-background: $white;
+
+$header-text: $off-black;
+$h4-header-text: $deep-gray;
+$h5-header-text: $dark-gray;
+
+$chapter-header-title-text: $dark-gray;
+$chapter-header-title-border: $dark-gray;
+$chapter-header-em: $green;
+
+$link-border: $dark-gray;
+
+$blockquote-text: $black;
+$para-first-text: $dark-gray;
+
+$list-lvl1: $dark-gray;
+$list-lvl2: $green;
+$list-lvl3: $dark-gray;
+$list-lvl4: $green;
+
+$footer-context: $dark-gray;
+
+$abstract-text: $dark-gray;
+$abstract-link: $dark-gray;
+
+$caption-text: $dark-gray;
+
+$aside-background: $off-white;
+$aside-border: $gray;
+
+$button-text: $black;
+$button-shadow: $gray;
+
+$pre-text: $off-black;
+$pre-background: $off-white;
+$pre-border: $gray;
+
+$kbd-background: $off-white;
+$kbd-border: $gray;
+
+$mark-text: $black;
+$mark-background: $light-yellow;
+
+$last-mark-text: $green;
+
+$i-conum-text: $medium-green;
+
+$table-border: $medium-gray;
+
+$note-border: $light-yellow;
+$note-background: $papaya-white;
+
+$tip-border: $tuatara-gray;
+$tip-background: $off-white;
+
+$caution-border: $medium-gray;
+$caution-background: $off-white;
+
+$warning-border: $mahogany-red;
+$warning-background: $beauty-pink;
+
+$important-border: $flamingo-orange;
+$important-background: $cinderella-pink;
+
+$about-author-border: $gray;
+$headshot-border: $medium-gray;
