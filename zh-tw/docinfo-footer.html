@@ -550,15 +550,25 @@ dl dd {
     font-family: var(--font-ui);
   }
 
+  #toc.toc2 > ul {
+    margin-bottom: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  #toc.toc2 ul {
+    margin-bottom: 0 !important;
+    line-height: 1.3 !important;
+  }
+
   #toc.toc2 a {
     color: var(--color-text-secondary);
     display: block;
-    padding: 0.35em 0.5em;
+    padding: 0.15em 0.5em;
     border-radius: 4px;
     transition: background 0.15s, color 0.15s;
     text-decoration: none;
-    font-size: 0.85em;
-    line-height: 1.5;
+    font-size: 0.8em;
+    line-height: 1.3;
   }
 
   #toc.toc2 a:hover {
@@ -567,7 +577,9 @@ dl dd {
   }
 
   #toc.toc2 li {
-    margin-top: 0.15em;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    line-height: 1.3 !important;
   }
 
   /* 桌面版 TOC 當前章節高亮 */
@@ -682,12 +694,28 @@ dl dd {
     margin-top: 0.5rem;
   }
 
-  /* 書籍標題區域 */
+  /* 書籍標題區域 — 壓縮高度 */
   #header {
-    padding-top: 1rem !important;
+    padding-top: 0.75rem !important;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--color-border-light);
     margin-bottom: 0.5rem;
+  }
+
+  #header > h1:first-child {
+    font-size: 1.25rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+    padding-bottom: 0.25rem;
+    line-height: 1.35;
+  }
+
+  /* 作者/版本資訊壓縮 */
+  #header .details {
+    font-size: 0.75rem !important;
+    padding: 0.25rem 0 !important;
+    line-height: 1.3;
+    opacity: 0.7;
   }
 
   /* 標題 */
@@ -696,16 +724,9 @@ dl dd {
   }
 
   h1 { font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.6rem; }
-  h2 { font-size: 1.35rem; margin-top: 1.75rem; margin-bottom: 0.5rem; border-bottom-width: 1px; }
+  h2 { font-size: 1.3rem; margin-top: 1.75rem; margin-bottom: 0.5rem; border-bottom-width: 1px; }
   h3, #toctitle, .sidebarblock>.content>.title { font-size: 1.15rem; margin-top: 1.25rem; }
   h4, h5, h6 { font-size: 1.05rem; }
-
-  #header > h1:first-child {
-    font-size: 1.35rem;
-    margin-top: 1rem;
-    padding-bottom: 0.5rem;
-    line-height: 1.4;
-  }
 
   #header .details {
     font-size: 0.85rem;
@@ -1635,25 +1656,29 @@ summary:focus-visible {
 
 /* ===== 手機版控制按鈕位置調整 ===== */
 @media screen and (max-width: 767px) {
+  /* 主題切換放右上角（不與底部衝突） */
   #theme-toggle {
-    top: auto;
-    bottom: 72px;
-    right: 16px;
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
+    top: 10px;
+    right: 10px;
+    bottom: auto;
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+    opacity: 0.85;
   }
 
+  /* 字體控制放右上角主題按鈕左邊 */
   #font-controls {
-    top: auto;
-    bottom: 72px;
-    right: 58px;
+    top: 12px;
+    right: 50px;
+    bottom: auto;
   }
 
   #font-controls button {
-    width: 28px;
-    height: 28px;
-    font-size: 11px;
+    width: 26px;
+    height: 26px;
+    font-size: 10px;
+    opacity: 0.85;
   }
 }
 
