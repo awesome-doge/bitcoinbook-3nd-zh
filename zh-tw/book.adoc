@@ -12,6 +12,17 @@ Andreas M. Antonopoulos; David A. Harding
 :copyright: CC BY-SA 4.0
 :lang: zh-TW
 :toc-title: 目錄
+:webfonts!:
+:tip-caption: 提示
+:note-caption: 注意
+:warning-caption: 警告
+:caution-caption: 注意
+:important-caption: 重要
+:appendix-caption: 附錄
+:example-caption: 範例
+:figure-caption: 圖
+:table-caption: 表
+:last-update-label: 最後更新
 :description: 深入介紹比特幣技術的權威指南（繁體中文版）
 
 [.text-center]
