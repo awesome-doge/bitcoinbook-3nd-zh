@@ -135,9 +135,16 @@ a, span {
 
 /* ===== 桌面版全域排版優化 ===== */
 
-/* 內容區域 */
-#header, #content, #footnotes, #footer {
+/* 內容區域 — toc2 模式下居中 */
+#header, #content, #footnotes {
   max-width: var(--content-max-width) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* 頁尾不限寬 */
+#footer {
+  max-width: none !important;
 }
 
 /* 段落 */
@@ -145,6 +152,20 @@ p, .paragraph p, .sectionbody p {
   line-height: var(--line-height-body) !important;
   margin-bottom: var(--paragraph-spacing);
   color: var(--color-text);
+}
+
+/* 覆寫 preamble/lead 段落的大字體 */
+.paragraph.lead > p,
+#preamble > .sectionbody > [class=paragraph]:first-of-type p {
+  font-size: 1.1rem !important;
+  line-height: var(--line-height-body) !important;
+  color: var(--color-text) !important;
+}
+
+/* 覆寫 quoteblock 的 text-align:justify */
+.quoteblock blockquote, .quoteblock p {
+  text-align: left !important;
+  word-spacing: normal !important;
 }
 
 /* 標題 */
@@ -265,25 +286,49 @@ pre code {
   margin-bottom: 0.4em;
 }
 
-/* 表格 */
-table {
+/* 表格美化 */
+table.tableblock, table.tableblock.frame-all {
   background: var(--color-bg) !important;
-  border-color: var(--color-border) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
 }
 
 table thead, table tfoot {
   background: var(--color-bg-secondary) !important;
 }
 
-table thead tr th, table thead tr td,
-table tfoot tr th, table tfoot tr td,
-table tr th, table tr td {
-  color: var(--color-text) !important;
+table thead tr th {
+  color: var(--color-heading) !important;
+  font-family: var(--font-heading);
+  font-weight: 600 !important;
+  font-size: 0.9em;
+  letter-spacing: 0.02em;
   border-color: var(--color-border) !important;
+}
+
+table thead tr td,
+table tfoot tr th, table tfoot tr td,
+table tr td {
+  color: var(--color-text) !important;
+  border-color: var(--color-border-light) !important;
+  line-height: 1.7;
 }
 
 table tr.even, table tr.alt {
   background: var(--color-bg-secondary) !important;
+}
+
+/* 表格標題 */
+table.tableblock > caption.title, .tableblock > .title {
+  color: var(--color-text-muted) !important;
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  text-align: center;
+  font-style: italic;
+  margin-bottom: 0.5em;
 }
 
 /* 警告框 — 彩色左邊框 + 圖示背景 */
@@ -366,10 +411,24 @@ table tr.even, table tr.alt {
 }
 
 /* 範例區塊 */
+.exampleblock {
+  margin: 1.5em 0;
+}
+
 .exampleblock > .content {
   background: var(--color-bg) !important;
-  border-color: var(--color-border) !important;
+  border: 1px solid var(--color-border-light) !important;
   border-radius: 8px;
+  padding: 1.25em !important;
+}
+
+.exampleblock > .title {
+  color: var(--color-text-secondary) !important;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-style: normal !important;
+  font-size: 0.9rem;
+  margin-bottom: 0.5em;
 }
 
 /* 列表 */
@@ -459,6 +518,15 @@ dl dd {
 @media screen and (min-width: 768px) {
   body.toc2 {
     padding-left: 18em !important;
+    padding-right: 1.5em !important;
+  }
+
+  /* 內容居中在 TOC 右側可用空間 */
+  body.toc2 #header,
+  body.toc2 #content,
+  body.toc2 #footnotes {
+    padding-left: 2em !important;
+    padding-right: 2em !important;
   }
 
   #toc.toc2 {
@@ -568,6 +636,14 @@ dl dd {
 @media screen and (min-width: 1280px) {
   body.toc2 {
     padding-left: 22em !important;
+    padding-right: 2em !important;
+  }
+
+  body.toc2 #header,
+  body.toc2 #content,
+  body.toc2 #footnotes {
+    padding-left: 3em !important;
+    padding-right: 3em !important;
   }
 
   #toc.toc2 {
@@ -603,7 +679,15 @@ dl dd {
   }
 
   #content {
-    margin-top: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  /* 書籍標題區域 */
+  #header {
+    padding-top: 1rem !important;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border-light);
+    margin-bottom: 0.5rem;
   }
 
   /* 標題 */
@@ -884,17 +968,11 @@ dl dd {
   details { margin-left: 0.5rem; max-width: 100%; }
   details > summary { padding: 0.5rem 0; font-size: 1rem; cursor: pointer; }
 
-  /* toc2 模式 */
+  /* toc2 模式 — 手機版隱藏固定側邊欄，改用浮動 TOC */
   body.toc2 { padding-left: 0 !important; padding-right: 0 !important; width: 100% !important; }
 
   #toc.toc2 {
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
-    border-right: none !important;
-    border-bottom: 1px solid var(--color-border-light);
-    padding: 1rem !important;
-    box-sizing: border-box !important;
+    display: none !important;
   }
 
   /* Colist */
