@@ -75,6 +75,7 @@ jobs:
           cp zh-tw/llms.txt public/llms.txt
           cp zh-tw/llms-full.txt public/llms-full.txt
           cp zh-tw/ai.txt public/ai.txt
+          cp zh-tw/6aa3100e6866ac02756a2f5225285d51.txt public/6aa3100e6866ac02756a2f5225285d51.txt
 
       - name: Create CNAME file for custom domain
         run: |
@@ -95,3 +96,25 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Ping search engines
+        if: success()
+        run: |
+          # Google sitemap ping
+          curl -s "https://www.google.com/ping?sitemap=https://bitcoinbook-3nd-zh.doge.tg/sitemap.xml" > /dev/null || true
+
+          # IndexNow (Bing + Yandex + Naver + Seznam)
+          curl -s -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "host": "bitcoinbook-3nd-zh.doge.tg",
+              "key": "6aa3100e6866ac02756a2f5225285d51",
+              "keyLocation": "https://bitcoinbook-3nd-zh.doge.tg/6aa3100e6866ac02756a2f5225285d51.txt",
+              "urlList": [
+                "https://bitcoinbook-3nd-zh.doge.tg/",
+                "https://bitcoinbook-3nd-zh.doge.tg/llms.txt",
+                "https://bitcoinbook-3nd-zh.doge.tg/sitemap.xml"
+              ]
+            }' > /dev/null || true
+
+          echo "Search engines pinged successfully"
