@@ -69,7 +69,37 @@ _++等寬斜體（Constant width italic）++_:: 顯示應該用使用者提供�
 
 === 與前一版的變更
 
-include::../meta/third_edition_changes.asciidoc[]
+第三版的一個特別重點是將 2017 年的第二版文字和剩餘的 2014 年第一版文字進行現代化更新。此外，還新增了許多與 2023 年當代比特幣開發相關的概念：
+
+<<ch04_keys_addresses>>::
+  我們重新排列了地址資訊，按歷史順序介紹所有內容，新增了 P2PK 的章節（當時的「地址」是「IP 地址」），更新了之前的 P2PKH 和 P2SH 章節，然後新增了 segwit/bech32 和 taproot/bech32m 的章節。
+
+舊版第六章和第七章::
+  先前版本的第六章「交易」和第七章「進階交易」的文字已重新排列並擴展為四個新章節：<<c_transactions>>（交易的結構）、<<c_authorization_authentication>>（授權與認證）、<<c_signatures>>（數位簽章）和 <<tx_fees>>（交易手續費）。
+
+<<c_transactions>>::
+  我們新增了幾乎全新的文字，描述交易的結構。
+
+<<c_authorization_authentication>>::
+  我們新增了關於 MAST、P2C、無腳本多重簽章、taproot 和 tapscript 的新內容。
+
+<<c_signatures>>::
+  我們修訂了 ECDSA 的文字，並新增了關於 schnorr 簽章、多重簽章和門檻簽章的新內容。
+
+<<tx_fees>>::
+  我們新增了幾乎全新的文字，涵蓋手續費、RBF 和 CPFP 手續費追加、交易釘選（transaction pinning）、套件中繼（package relay）和 CPFP 例外規則（carve-out）。
+
+<<bitcoin_network_ch08>>::
+  我們新增了關於緊湊區塊中繼（compact block relay）的文字，對布隆過濾器進行了重大更新以更好地描述其隱私問題，以及關於緊湊區塊過濾器（compact block filters）的新內容。
+
+<<blockchain>>::
+  我們新增了關於 signet 的文字。
+
+<<mining>>::
+  我們新增了關於 BIP8 和快速試行（speedy trial）的文字。
+
+附錄::
+  我們移除了特定函式庫的附錄。在包含原始白皮書的附錄之後，我們新增了一個新附錄，描述比特幣的實作和屬性與白皮書中所提議的有何不同。
 
 === 本書中的比特幣地址和交易
 
