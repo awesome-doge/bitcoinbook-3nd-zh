@@ -100,10 +100,7 @@ jobs:
       - name: Ping search engines
         if: success()
         run: |
-          # Google sitemap ping
-          curl -s "https://www.google.com/ping?sitemap=https://bitcoinbook-3nd-zh.doge.tg/sitemap.xml" > /dev/null || true
-
-          # IndexNow (Bing + Yandex + Naver + Seznam)
+          # IndexNow (Bing + Yandex + Naver + Seznam + 更多)
           curl -s -X POST "https://api.indexnow.org/indexnow" \
             -H "Content-Type: application/json" \
             -d '{
