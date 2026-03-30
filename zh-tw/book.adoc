@@ -1,4 +1,4 @@
-= 精通比特幣：程式設計開放區塊鏈（第三版）
+= 精通比特幣（第三版）繁體中文｜免費線上閱讀｜比特幣區塊鏈完整教學
 Andreas M. Antonopoulos; David A. Harding
 :doctype: book
 :author: Andreas M. Antonopoulos; David A. Harding
@@ -23,7 +23,7 @@ Andreas M. Antonopoulos; David A. Harding
 :figure-caption: 圖
 :table-caption: 表
 :last-update-label: 最後更新
-:description: 深入介紹比特幣技術的權威指南（繁體中文版）
+:description: 《精通比特幣》第三版繁體中文版，免費線上閱讀！深入介紹比特幣與區塊鏈技術的權威教學指南。涵蓋錢包、交易、挖礦、Taproot、SegWit、閃電網路等核心概念。適合開發者與技術愛好者的比特幣入門教材。
 
 [.text-center]
 _繁體中文翻譯：Dr. Awesome Doge_

@@ -66,6 +66,11 @@ jobs:
         run: |
           cp -r images public/images
 
+      - name: Generate chapter landing pages
+        run: |
+          chmod +x scripts/generate-chapter-pages.sh
+          scripts/generate-chapter-pages.sh public/chapters
+
       - name: Copy SEO, AI, and PWA files
         run: |
           cp zh-tw/robots.txt public/robots.txt
