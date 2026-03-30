@@ -1,6 +1,6 @@
 # AI Content Policy for bitcoinbook-3nd-zh.doge.tg
 # 精通比特幣第三版繁體中文版 - AI 內容政策
-# Last updated: 2025-12-05
+# Last updated: 2026-03-30
 
 # =============================================================================
 # SITE INFORMATION

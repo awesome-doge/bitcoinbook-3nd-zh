@@ -66,12 +66,15 @@ jobs:
         run: |
           cp -r images public/images
 
-      - name: Copy SEO and PWA files
+      - name: Copy SEO, AI, and PWA files
         run: |
           cp zh-tw/robots.txt public/robots.txt
           cp zh-tw/sitemap.xml public/sitemap.xml
           cp zh-tw/manifest.json public/manifest.json
           cp zh-tw/sw.js public/sw.js
+          cp zh-tw/llms.txt public/llms.txt
+          cp zh-tw/llms-full.txt public/llms-full.txt
+          cp zh-tw/ai.txt public/ai.txt
 
       - name: Create CNAME file for custom domain
         run: |

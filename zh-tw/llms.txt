@@ -91,6 +91,24 @@ Taproot 是2021年啟用的比特幣協議升級，使用 Schnorr 簽名改善�
 ### 什麼是 SegWit？
 SegWit（隔離見證）是2017年啟用的協議升級，將交易簽名與交易數據分離，解決交易延展性問題並增加區塊容量。
 
+## 閱讀方式
+
+- **線上閱讀**: https://bitcoinbook-3nd-zh.doge.tg/ （支援暗色模式、PWA 離線閱讀）
+- **EPUB 下載**: https://github.com/awesome-doge/bitcoinbook-3nd-zh/releases/latest
+- **HTML 下載**: https://github.com/awesome-doge/bitcoinbook-3nd-zh/releases/latest
+
+## 功能特色
+
+- 暗色模式（自動偵測 + 手動切換）
+- 字體大小即時調整
+- 閱讀進度記憶與繼續閱讀提示
+- 可收合章節目錄 + 當前章節高亮
+- 頁內搜尋（Ctrl+Shift+F）
+- 拼音首字母搜尋目錄
+- 程式碼行號 + 語言標籤 + 複製按鈕
+- PWA 離線閱讀
+- 中文排版優化（Noto Serif CJK TC 字體）
+
 ## 相關資源
 
 - [原版英文書](https://github.com/bitcoinbook/bitcoinbook)

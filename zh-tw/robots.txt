@@ -1,6 +1,6 @@
 # robots.txt for bitcoinbook-3nd-zh.doge.tg
 # 精通比特幣第三版繁體中文版
-# Last updated: 2025-12-05
+# Last updated: 2026-03-30
 
 # =====================================================
 # Default: Allow all crawlers
@@ -154,3 +154,15 @@ Disallow: /
 
 User-agent: DotBot
 Disallow: /
+
+# =====================================================
+# Host directive (canonical domain)
+# =====================================================
+Host: bitcoinbook-3nd-zh.doge.tg
+
+# =====================================================
+# AI Content Files
+# =====================================================
+# llms.txt: https://bitcoinbook-3nd-zh.doge.tg/llms.txt
+# llms-full.txt: https://bitcoinbook-3nd-zh.doge.tg/llms-full.txt
+# ai.txt: https://bitcoinbook-3nd-zh.doge.tg/ai.txt
