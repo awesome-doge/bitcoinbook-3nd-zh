@@ -96,6 +96,8 @@ if [ "$EPUB_AVAILABLE" = true ]; then
       --attribute=epub3-stylesheet=epub3.scss \
       book.adoc
     cd ..
+    # 修復 EPUB 數學公式
+    python3 scripts/fix-epub-math.py "$OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.epub"
     echo -e "${GREEN}✓ EPUB 已生成：$OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.epub${NC}"
 else
     echo -e "${YELLOW}2/2 跳過 EPUB 構建（工具未安裝）${NC}"

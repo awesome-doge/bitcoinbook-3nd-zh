@@ -67,6 +67,9 @@ jobs:
             --attribute=epub3-stylesheet=epub3.scss \
             book.adoc
 
+      - name: Fix EPUB math formulas
+        run: python3 scripts/fix-epub-math.py release/mastering-bitcoin-3rd-zh-tw.epub
+
       - name: Package HTML with images
         run: |
           mkdir -p release/html-package
