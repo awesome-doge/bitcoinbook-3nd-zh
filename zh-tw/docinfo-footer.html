@@ -1852,6 +1852,32 @@ summary:focus-visible {
   }
 }
 
+/* ===== KaTeX 數學公式樣式 ===== */
+.stemblock {
+  margin: 1.5em 0;
+  text-align: center;
+  overflow-x: auto;
+}
+
+.stemblock .content {
+  display: inline-block;
+  text-align: left;
+}
+
+.katex { font-size: 1.1em; }
+
+.katex-display {
+  margin: 0.5em 0 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .katex { color: var(--color-text); }
+}
+
+html[data-theme="dark"] .katex {
+  color: #c9d1d9;
+}
+
 /* ===== 電子書下載橫幅 ===== */
 #ebook-banner {
   background: linear-gradient(135deg, var(--color-bg-secondary), var(--color-bg-code));
@@ -3363,6 +3389,35 @@ mark.search-highlight.current {
 
     document.body.appendChild(overlay);
   }
+  // KaTeX 數學公式渲染
+  function initKaTeX() {
+    if (typeof renderMathInElement === 'function') {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: '\\[', right: '\\]', display: true},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '$$', right: '$$', display: true}
+        ],
+        throwOnError: false
+      });
+    }
+  }
+
+  // 等 KaTeX 載入後渲染
+  if (typeof renderMathInElement === 'function') {
+    initKaTeX();
+  } else {
+    // KaTeX 是 defer 載入，等它 ready
+    var katexInterval = setInterval(function() {
+      if (typeof renderMathInElement === 'function') {
+        clearInterval(katexInterval);
+        initKaTeX();
+      }
+    }, 200);
+    // 最多等 10 秒
+    setTimeout(function() { clearInterval(katexInterval); }, 10000);
+  }
+
   // Service Worker 註冊
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function() {});
