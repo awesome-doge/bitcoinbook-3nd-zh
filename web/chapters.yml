@@ -1,0 +1,77 @@
+# 網站章節設定：依 book.adoc 中第一層章節的 ID 對應網址代稱與 SEO 描述。
+# slug 沿用先前 /chapters/<slug>.html 的網址，避免既有索引失效。
+# 新增或刪除章節時，建置腳本會在 ID 對不上時直接失敗。
+
+- id: 前言
+  slug: preface
+  label: 前言
+  description: 作者 Andreas M. Antonopoulos 與 David A. Harding 說明撰寫本書的緣由、目標讀者、排版慣例、程式碼範例的使用方式，以及第三版的主要變更。
+
+- id: ch01_intro_what_is_bitcoin
+  slug: bitcoin-introduction
+  description: 什麼是比特幣？從比特幣的歷史、運作原理與基本概念談起，涵蓋去中心化、數位貨幣、點對點網路，以及如何選擇錢包、取得並發送第一筆比特幣。
+
+- id: ch02_bitcoin_overview
+  slug: how-bitcoin-works
+  description: 比特幣交易的完整流程：從建立錢包、取得比特幣到發送交易。透過實際例子了解 UTXO、交易輸入與輸出、交易確認，以及交易如何被記錄進區塊鏈。
+
+- id: ch03_bitcoin_client
+  slug: bitcoin-core
+  description: Bitcoin Core 參考實作的安裝、編譯與設定，執行完整節點，並透過 JSON-RPC API 與命令列介面查詢區塊、交易與錢包資料。
+
+- id: ch04_keys_addresses
+  slug: keys-addresses
+  description: 比特幣密碼學基礎：私鑰、公鑰與地址的產生與關係。詳解橢圓曲線密碼學、secp256k1、Base58Check、Bech32 與 Bech32m 編碼，以及各種地址格式。
+
+- id: ch05_wallets
+  slug: wallets-recovery
+  description: 錢包如何安全地備份與恢復：確定性金鑰生成、階層確定性（HD）錢包（BIP32）、BIP39 恢復碼、備份金鑰衍生路徑，以及在網路商店中使用擴展公鑰。
+
+- id: c_transactions
+  slug: transactions
+  description: 比特幣交易的完整結構：版本、輸入、輸出、序列、見證結構與鎖定時間。逐欄位拆解序列化的原始交易，並說明隔離見證、交易可塑性、權重與 vbytes。
+
+- id: c_authorization_authentication
+  slug: authorization-authentication
+  description: 比特幣如何授權與驗證支出：Script 腳本語言、P2PKH、腳本化多重簽章、P2SH、OP_RETURN、時間鎖、條件流程控制、隔離見證，以及 MAST、Taproot 與 Tapscript。
+
+- id: c_signatures
+  slug: digital-signatures
+  description: 比特幣使用的數位簽章演算法：簽章的建立與驗證、簽章雜湊類型（SIGHASH）、Schnorr 簽章與無腳本多重簽章、ECDSA，以及簽章中隨機性的重要性。
+
+- id: tx_fees
+  slug: transaction-fees
+  description: 比特幣交易手續費：誰支付手續費、手續費率估算、手續費替代（RBF）、子支付父（CPFP）、包中繼、交易固定、錨點輸出，以及用時間鎖防禦手續費狙擊。
+
+- id: bitcoin_network_ch08
+  slug: bitcoin-network
+  description: 比特幣點對點網路架構：節點類型與角色、網路發現、緊湊區塊中繼、輕量級客戶端、布隆過濾器與緊湊區塊過濾器、加密連線，以及記憶池。
+
+- id: blockchain
+  slug: blockchain
+  description: 區塊鏈的資料結構：區塊結構、區塊標頭、區塊雜湊與高度、創世區塊、默克爾樹與輕量級客戶端，以及測試區塊鏈（testnet、signet、regtest）的使用方式。
+
+- id: mining
+  slug: mining-consensus
+  description: 工作量證明挖礦與去中心化共識：貨幣發行、交易的獨立驗證、Coinbase 交易、難度調整、挖礦池、算力攻擊，以及透過硬分叉與軟分叉改變共識規則。
+
+- id: ch11
+  slug: bitcoin-security
+  description: 比特幣安全的原則與實務：安全地開發比特幣系統、信任根、用戶安全最佳實踐、實體儲存與硬體簽章裝置、分散風險、多重簽章與治理。
+
+- id: ch12
+  slug: layer2-applications
+  description: 建立在比特幣上的應用：基礎構建塊、彩色幣、RGB 與 Taproot Assets、支付通道與狀態通道、雜湊時間鎖定合約（HTLC），以及閃電網路。
+
+- id: satoshi_whitepaper
+  slug: bitcoin-whitepaper
+  title: 比特幣白皮書
+  description: 中本聰的原始白皮書《比特幣：點對點電子現金系統》繁體中文全文翻譯，介紹交易、時間戳伺服器、工作量證明、網路與激勵機制。
+
+- id: 比特幣白皮書勘誤表
+  slug: whitepaper-errata
+  description: 比特幣白皮書中的已知錯誤與不精確之處，以及實際比特幣協議與白皮書描述的差異，包括隱私、攻擊者成功機率的計算等。
+
+- id: appdxbitcoinimpproposals
+  slug: bips
+  description: 比特幣改進提案（BIP）一覽：本書引用的重要 BIP 編號、標題、類型與狀態，作為查閱比特幣協議演進的索引。

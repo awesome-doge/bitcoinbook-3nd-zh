@@ -62,6 +62,13 @@ def fix_math_in_xhtml(content):
     pattern2 = r'<figure class="listing">\s*<pre>\\begin\{equation\}(.*?)\\end\{equation\}</pre>\s*</figure>'
     content = re.sub(pattern2, replace_math, content, flags=re.DOTALL)
 
+    # 替換行內公式（latexmath:[...] 在 EPUB 中輸出為 <code class="literal">）
+    def replace_inline(match):
+        return f'<i class="math-inline">{latex_to_unicode(match.group(1))}</i>'
+
+    pattern3 = r'<code class="literal">(?:\\\()?(\\[A-Za-z]+\{[^<]*?)(?:\\\))?</code>'
+    content = re.sub(pattern3, replace_inline, content)
+
     return content
 
 def fix_epub(epub_path):

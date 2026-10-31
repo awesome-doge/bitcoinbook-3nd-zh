@@ -4,37 +4,34 @@
 
 ## 腳本列表
 
-### 1. `build-local.sh` - 本地構建
+### 1. `build-site.rb` - 線上閱讀網站
 
-在本地構建 HTML、PDF 和 EPUB 版本。
+把 `zh-tw/book.adoc` 建置成多頁網站：每章一個獨立頁面（`/chapters/<slug>.html`），加上首頁、404、sitemap、全書搜尋索引與 `llms.txt`。
+章節網址與 SEO 描述設定在 `web/chapters.yml`，版型與樣式在 `web/templates/`、`web/assets/`，其餘原樣複製的檔案在 `web/static/`。
 
-**用法：**
+```bash
+ruby scripts/build-site.rb public                  # 輸出到 public/
+ruby scripts/check-site.rb public                  # 檢查連結、錨點、sitemap 與 SEO 欄位
+python3 -m http.server 8000 -d public              # 本機預覽 http://localhost:8000/
+```
+
+- 需要：`gem install asciidoctor rouge nokogiri`；若有 `cwebp`（`brew install webp`）會同時輸出 WebP 圖片
+- `STRICT_LINKS=1`：有找不到目標的站內連結時中止建置（CI 預設開啟）
+- `WRITE_CNAME=1`：輸出 GitHub Pages 的 `CNAME`
+
+### 2. `build-local.sh` - 本地完整構建
+
+建置線上閱讀網站與 EPUB，輸出到 `build/`。
+
 ```bash
 ./scripts/build-local.sh
 ```
 
-**功能：**
-- 檢查必要工具是否安裝
-- 構建 HTML（單一文件，包含樣式）
-- 構建 PDF（如果 asciidoctor-pdf 已安裝）
-- 構建 EPUB（如果 asciidoctor-epub3 已安裝）
-- 輸出到 `build/` 目錄
-
-**環境要求：**
-```bash
-# 必需
-gem install asciidoctor rouge
-
-# 可選（用於 PDF）
-gem install asciidoctor-pdf
-
-# 可選（用於 EPUB）
-gem install asciidoctor-epub3
-```
+需要 `asciidoctor`、`rouge`、`nokogiri`；EPUB 另需 `asciidoctor-epub3`。
 
 ---
 
-### 2. `create-release.sh` - 創建 Release
+### 3. `create-release.sh` - 創建 Release
 
 創建新的 GitHub Release，自動觸發 CI/CD 流程。
 
@@ -160,45 +157,27 @@ gh run view <run-id> --log
 
 ## 輸出格式對比
 
-| 格式 | 適用場景 | 檔案大小 | 優點 | 缺點 |
-|------|---------|---------|------|------|
-| **HTML** | 線上閱讀、分享連結 | ~1 MB | 搜尋方便、可複製代碼 | 需要網路連接 |
-| **PDF** | 列印、離線閱讀 | ~15 MB | 格式固定、適合列印 | 檔案較大 |
-| **EPUB** | 電子書閱讀器 | ~5 MB | 響應式排版、節省空間 | 格式支援因閱讀器而異 |
+| 格式 | 適用場景 | 說明 |
+|------|---------|------|
+| **線上網站** | 線上閱讀、分享連結、搜尋引擎索引 | 每章一頁，含全書搜尋、深色／護眼模式、字級調整 |
+| **HTML 單頁版** | 離線閱讀 | Release 附件，整本書一個檔案 |
+| **EPUB** | 電子書閱讀器 | Release 附件，含封面與所有圖片 |
 
 ---
 
-## 進階配置
+## 自訂網站樣式
 
-### 自定義 PDF 主題
-
-編輯 `theme/pdf-theme.yml` 自定義 PDF 樣式：
-
-```yaml
-# 字體
-font:
-  catalog:
-    Noto Sans TC:
-      normal: NotoSansTC-Regular.ttf
-      bold: NotoSansTC-Bold.ttf
-
-# 顏色
-base:
-  font-color: #333333
-heading:
-  font-color: #f7931a  # Bitcoin 橙色
-```
-
-### 自定義 HTML 樣式
-
-編輯 `theme/epub.css` 自定義 HTML 樣式。
+- 版面與排版：`web/assets/site.css`
+- 互動功能（目錄、搜尋、閱讀設定、進度記憶）：`web/assets/site.js`
+- 頁面版型：`web/templates/*.html.erb`
+- 章節網址代稱與搜尋引擎描述：`web/chapters.yml`
 
 ---
 
 ## 相關文檔
 
 - [DEPLOYMENT.md](../DEPLOYMENT.md) - 完整的部署指南
-- [.github/workflows/deploy.yml](../.github/workflows/deploy.yml) - GitHub Actions 配置
+- [.github/workflows/build-and-deploy.yml](../.github/workflows/build-and-deploy.yml) - GitHub Pages 建置與部署
 - [CLAUDE.md](../CLAUDE.md) - 專案開發指南
 
 ---

@@ -1,0 +1,39 @@
+<div class="home">
+  <section class="hero">
+    <img class="hero-cover" src="/assets/cover-480.webp" width="480" height="630" alt="《精通比特幣》第三版封面：搬運葉片的切葉蟻" fetchpriority="high">
+    <div class="hero-text">
+      <p class="hero-kicker">Mastering Bitcoin · 第三版 · 繁體中文</p>
+      <h1>精通比特幣<span class="hero-sub">程式設計開放區塊鏈</span></h1>
+      <p class="hero-authors">Andreas M. Antonopoulos、David A. Harding 著<br>Dr. Awesome Doge 譯</p>
+      <p class="hero-lead">比特幣領域最權威的技術書，第三版全文繁體中文翻譯，免費線上閱讀。從金鑰、地址、錢包與交易，一路到腳本、數位簽章、挖礦與共識、Taproot 和閃電網路，帶你從原理理解比特幣。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="<%= pages[1].path %>">開始閱讀第 1 章</a>
+        <a class="btn btn-resume" href="#" hidden data-resume>繼續閱讀</a>
+        <a class="btn" href="<%= EPUB_URL %>" rel="noopener">下載 EPUB</a>
+      </div>
+      <p class="hero-facts"><%= pages.count { |p| p.label.start_with?('第') } %> 章 · <%= pages.count { |p| p.label.start_with?('附錄') } %> 篇附錄 · 約 <%= (total_minutes / 60.0).round %> 小時閱讀 · CC BY-SA 4.0</p>
+    </div>
+  </section>
+
+  <section class="home-toc" aria-labelledby="toc-title">
+    <h2 id="toc-title">目錄</h2>
+    <ol class="toc-cards">
+      <%- pages.each do |p| -%>
+      <li>
+        <a href="<%= p.path %>">
+          <span class="card-label"><%= h p.label %></span>
+          <span class="card-title"><%= h(p.label == p.title ? p.title : p.title) %></span>
+          <span class="card-desc"><%= h p.description %></span>
+          <span class="card-meta">約 <%= p.minutes %> 分鐘</span>
+        </a>
+      </li>
+      <%- end -%>
+    </ol>
+  </section>
+
+  <section class="home-about" aria-labelledby="about-title">
+    <h2 id="about-title">關於這個譯本</h2>
+    <p>《精通比特幣》（<i lang="en">Mastering Bitcoin: Programming the Open Blockchain</i>）第三版於 2023 年 12 月由 O'Reilly Media 出版，原著以 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh_TW" rel="license noopener">CC BY-SA 4.0</a> 授權公開。本站為其繁體中文（臺灣）譯本，同樣以 CC BY-SA 4.0 釋出，可自由分享與改作，惟須註明出處並以相同方式分享。</p>
+    <p>本書主要寫給程式設計師，但前幾章也適合想深入了解比特幣運作原理的一般讀者。若發現翻譯錯誤或技術問題，歡迎到 <a href="<%= REPO_URL %>/issues" rel="noopener">GitHub</a> 回報或提交修正。</p>
+  </section>
+</div>

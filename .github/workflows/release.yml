@@ -45,8 +45,7 @@ jobs:
             --out-file=../release/mastering-bitcoin-3rd-zh-tw.html \
             --attribute=source-highlighter=rouge \
             --attribute=toc=left \
-            --attribute=toclevels=3 \
-            --attribute=icons=font \
+            --attribute=toclevels=2 \
             --attribute=sectanchors \
             --attribute=idprefix= \
             --attribute=idseparator=- \
@@ -134,21 +133,11 @@ jobs:
             - **譯者**: Dr. Awesome Doge
             - **授權**: CC-BY-SA 4.0 International
 
-            ## 📋 功能特色
+            ## 📋 內容
 
-            - ✅ 完整 14 章 + 3 附錄繁體中文翻譯
-            - ✅ 暗色模式支援（自動偵測 + 手動切換）
-            - ✅ 可收合章節目錄 + 當前章節高亮
-            - ✅ 字體大小 A+/A- 即時調整
-            - ✅ 閱讀進度記憶 + 繼續閱讀提示
-            - ✅ 頁內搜尋（Ctrl+Shift+F）
-            - ✅ 程式碼區塊行號 + 語言標籤 + 複製按鈕
-            - ✅ 拼音首字母搜尋目錄
-            - ✅ PWA 離線閱讀支援
-            - ✅ 全面中文化（目錄/提示/警告/圖表標題）
-            - ✅ 中文排版優化（Noto Serif CJK TC 字體 · 1.9 倍行高）
-            - ✅ 列印友善樣式
-            - ✅ EPUB 中文排版專用樣式
+            - ✅ 完整 14 章 + 3 篇附錄繁體中文翻譯
+            - ✅ EPUB 版針對中文排版調整樣式，數學公式轉為 Unicode
+            - ✅ HTML 單頁版可離線閱讀，支援系統深色模式
 
             ---
 

@@ -1,0 +1,17 @@
+{
+  "name": "精通比特幣（第三版）繁體中文版",
+  "short_name": "精通比特幣",
+  "description": "《精通比特幣》第三版繁體中文全文，免費線上閱讀。",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fbfaf7",
+  "theme_color": "#fbfaf7",
+  "lang": "zh-Hant-TW",
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "categories": ["books", "education"]
+}

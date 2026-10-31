@@ -1,6 +1,6 @@
 #!/bin/bash
 # 本地構建腳本
-# 用於測試 HTML 和 EPUB 生成
+# 用於測試線上閱讀網站與 EPUB 生成
 
 set -e
 
@@ -65,22 +65,12 @@ echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}開始構建...${NC}"
 echo -e "${BLUE}========================================${NC}"
 
-# 構建 HTML
+# 構建線上閱讀網站（每章一頁）
 echo ""
-echo -e "${BLUE}1/2 構建 HTML...${NC}"
-cd zh-tw
-asciidoctor \
-  --backend=html5 \
-  --out-file="../$OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.html" \
-  --attribute=source-highlighter=rouge \
-  --attribute=toc=left \
-  --attribute=toclevels=2 \
-  --attribute=lang=zh-TW \
-  --attribute=imagesdir=.. \
-  --attribute=docinfo=shared \
-  book.adoc
-cd ..
-echo -e "${GREEN}✓ HTML 已生成：$OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.html${NC}"
+echo -e "${BLUE}1/2 構建線上閱讀網站...${NC}"
+ruby scripts/build-site.rb "$OUTPUT_DIR/site"
+ruby scripts/check-site.rb "$OUTPUT_DIR/site"
+echo -e "${GREEN}✓ 網站已生成：$OUTPUT_DIR/site/${NC}"
 
 # 構建 EPUB
 echo ""
@@ -120,7 +110,7 @@ echo ""
 
 # 提供快速訪問建議
 echo -e "${BLUE}快速訪問：${NC}"
-echo -e "  HTML：open $OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.html"
+echo -e "  網站：python3 -m http.server 8000 -d $OUTPUT_DIR/site  然後開啟 http://localhost:8000/"
 if [ "$EPUB_AVAILABLE" = true ]; then
     echo -e "  EPUB：open $OUTPUT_DIR/mastering-bitcoin-3rd-zh-tw.epub"
 fi

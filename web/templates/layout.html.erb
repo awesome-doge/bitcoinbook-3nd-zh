@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title><%= h title %></title>
+<meta name="description" content="<%= h description %>">
+<%- if noindex -%>
+<meta name="robots" content="noindex">
+<%- else -%>
+<link rel="canonical" href="<%= canonical %>">
+<%- end -%>
+<meta name="author" content="Andreas M. Antonopoulos, David A. Harding">
+<meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16161a" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
+<%- unless noindex -%>
+<meta property="og:site_name" content="<%= SITE_NAME %>">
+<meta property="og:type" content="<%= og_type %>">
+<meta property="og:title" content="<%= h title %>">
+<meta property="og:description" content="<%= h description %>">
+<meta property="og:url" content="<%= canonical %>">
+<meta property="og:image" content="<%= SITE_URL + OG_IMAGE %>">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+<%- end -%>
+<%- if current -%>
+<%- if current.prev -%>
+<link rel="prev" href="<%= current.prev.path %>">
+<%- end -%>
+<%- if current.next -%>
+<link rel="next" href="<%= current.next.path %>">
+<%- end -%>
+<%- end -%>
+<script>
+(function(){try{var d=document.documentElement,s=localStorage,t=s.getItem('mb-theme'),z=s.getItem('mb-size'),f=s.getItem('mb-font');if(t&&t!=='auto')d.setAttribute('data-theme',t);if(z)d.style.setProperty('--fs',z+'px');if(f)d.setAttribute('data-font',f)}catch(e){}})();
+</script>
+<link rel="stylesheet" href="<%= ASSET.call('site.css') %>">
+<link rel="stylesheet" href="<%= ASSET.call('code.css') %>">
+<%- if has_math -%>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous" media="print" onload="this.media='all'">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<%- end -%>
+<script defer src="<%= ASSET.call('site.js') %>"></script>
+<%- if jsonld -%>
+<script type="application/ld+json"><%= jsonld(jsonld) %></script>
+<%- end -%>
+<script async src="https://www.googletagmanager.com/gtag/js?id=<%= GA_ID %>"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','<%= GA_ID %>');</script>
+</head>
+<body class="<%= body_class %>">
+<a class="skip-link" href="#main">跳到主要內容</a>
+<header class="topbar">
+  <button class="icon-btn" type="button" data-action="toggle-nav" aria-controls="sidebar" aria-expanded="false" aria-label="開啟目錄">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <a class="brand" href="/" aria-label="<%= BOOK_TITLE %> 首頁">
+    <span class="brand-mark" aria-hidden="true">₿</span><span class="brand-text">精通比特幣</span>
+  </a>
+  <%- if current -%>
+  <p class="topbar-title"><span class="topbar-label"><%= h current.label %></span><%= h(current.label == current.title ? '' : current.title) %></p>
+  <%- end -%>
+  <div class="topbar-actions">
+    <button class="icon-btn search-btn" type="button" data-action="search" aria-label="搜尋全書（快捷鍵 /）">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <span class="search-btn-text">搜尋</span><kbd>/</kbd>
+    </button>
+    <button class="icon-btn" type="button" data-action="settings" aria-controls="settings" aria-expanded="false" aria-label="閱讀設定">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19 9 5l5 14M5.8 14.5h6.4M15 19l3-8 3 8M15.9 16.5h4.2"/></svg>
+    </button>
+  </div>
+  <div class="progress" aria-hidden="true"><span></span></div>
+</header>
+
+<div class="settings" id="settings" hidden>
+  <div class="settings-group" role="group" aria-label="主題">
+    <span class="settings-label">主題</span>
+    <div class="seg">
+      <button type="button" data-theme-set="auto">自動</button>
+      <button type="button" data-theme-set="light">淺色</button>
+      <button type="button" data-theme-set="sepia">護眼</button>
+      <button type="button" data-theme-set="dark">深色</button>
+    </div>
+  </div>
+  <div class="settings-group" role="group" aria-label="字級">
+    <span class="settings-label">字級</span>
+    <div class="seg">
+      <button type="button" data-size="-1" aria-label="縮小字級">A−</button>
+      <output class="size-value" aria-live="polite">18</output>
+      <button type="button" data-size="1" aria-label="放大字級">A+</button>
+    </div>
+  </div>
+  <div class="settings-group" role="group" aria-label="字型">
+    <span class="settings-label">字型</span>
+    <div class="seg">
+      <button type="button" data-font-set="sans">黑體</button>
+      <button type="button" data-font-set="serif">明體</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="全書目錄">
+    <div class="sidebar-head">
+      <a href="/" class="sidebar-book"><%= BOOK_TITLE %></a>
+      <span class="sidebar-sub">繁體中文版</span>
+    </div>
+    <ol class="book-toc">
+      <%- pages.each do |p| -%>
+      <li<%= ' class="is-current"' if p == current %>>
+        <a href="<%= p.path %>"<%= ' aria-current="page"' if p == current %>><span class="toc-label"><%= h p.label %></span><%= h(p.label == p.title ? '' : p.title) %></a>
+        <%- if p == current && !toc.empty? -%>
+        <ol class="section-toc">
+          <%- toc.each do |t| -%>
+          <li><a href="#<%= t[:id] %>"><%= h t[:title] %></a></li>
+          <%- end -%>
+        </ol>
+        <%- end -%>
+      </li>
+      <%- end -%>
+    </ol>
+    <div class="sidebar-foot">
+      <a href="<%= EPUB_URL %>" rel="noopener">下載 EPUB 電子書</a>
+      <a href="<%= REPO_URL %>" rel="noopener">GitHub 原始碼</a>
+    </div>
+  </nav>
+  <div class="scrim" data-action="close-nav" hidden></div>
+
+  <main id="main" class="main" tabindex="-1">
+<%= content %>
+  </main>
+
+  <%- unless toc.empty? -%>
+  <aside class="rail" aria-label="本章內容">
+    <p class="rail-title">本章內容</p>
+    <ol>
+      <%- toc.each do |t| -%>
+      <li><a href="#<%= t[:id] %>"><%= h t[:title] %></a></li>
+      <%- end -%>
+    </ol>
+  </aside>
+  <%- end -%>
+</div>
+
+<footer class="site-footer">
+  <p>原著《Mastering Bitcoin》第三版由 Andreas M. Antonopoulos 與 David A. Harding 撰寫，O'Reilly Media 出版。繁體中文翻譯：Dr. Awesome Doge。</p>
+  <p>本書內容以 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh_TW" rel="license noopener">CC BY-SA 4.0</a> 授權釋出 · <a href="<%= REPO_URL %>" rel="noopener">GitHub</a> · <a href="<%= REPO_URL %>/issues" rel="noopener">回報翻譯問題</a> · <a href="<%= ORIGINAL_URL %>" rel="noopener">英文原著</a></p>
+</footer>
+
+<dialog class="search" id="search" aria-label="搜尋全書">
+  <form method="dialog" class="search-form" role="search">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input type="search" id="search-input" placeholder="搜尋全書，例如：UTXO、助記詞、Taproot" autocomplete="off" spellcheck="false" aria-label="搜尋關鍵字">
+    <button type="submit" class="search-close" value="close" aria-label="關閉搜尋">Esc</button>
+  </form>
+  <p class="search-status" aria-live="polite"></p>
+  <ol class="search-results"></ol>
+</dialog>
+</body>
+</html>

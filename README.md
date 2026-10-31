@@ -67,25 +67,17 @@
 ## 本地建置
 
 ```bash
-# 安裝依賴
-gem install asciidoctor rouge
+# 安裝依賴（cwebp 可選，用來輸出 WebP 圖片：brew install webp）
+gem install asciidoctor rouge nokogiri
 
-# 建置 HTML
-cd zh-tw
-asciidoctor --backend=html5 \
-  --out-file=../build/mastering-bitcoin-3rd-zh-tw.html \
-  --attribute=source-highlighter=rouge \
-  --attribute=toc=left \
-  --attribute=toclevels=2 \
-  --attribute=icons=font \
-  --attribute=sectanchors \
-  --attribute=docinfo=shared \
-  --attribute=lang=zh-TW \
-  --attribute=imagesdir=.. \
-  book.adoc
+# 建置線上閱讀網站（每章一頁）並檢查連結、錨點與 SEO 欄位
+ruby scripts/build-site.rb public
+ruby scripts/check-site.rb public
+python3 -m http.server 8000 -d public   # 開啟 http://localhost:8000/
 
-# 建置 EPUB（需額外安裝）
+# 建置 EPUB（需額外安裝 asciidoctor-epub3）
 gem install asciidoctor-epub3
+cd zh-tw
 asciidoctor-epub3 \
   --out-file=../build/mastering-bitcoin-3rd-zh-tw.epub \
   --attribute=lang=zh-TW \
@@ -95,11 +87,13 @@ asciidoctor-epub3 \
   book.adoc
 ```
 
-或使用建置腳本：
+或使用建置腳本一次產生網站與 EPUB：
 
 ```bash
 ./scripts/build-local.sh
 ```
+
+網站的版型、樣式與章節設定位於 `web/`，詳見 [scripts/README.md](scripts/README.md)。
 
 ## CI/CD
 

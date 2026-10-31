@@ -1,0 +1,26 @@
+<article class="chapter" aria-labelledby="<%= h page.id %>">
+  <nav class="breadcrumb" aria-label="導覽路徑"><a href="/"><%= BOOK_TITLE %></a><span aria-hidden="true">/</span><span><%= h page.label %></span></nav>
+  <header class="chapter-head">
+    <%- if page.label != page.title -%>
+    <p class="chapter-label"><%= h page.label %></p>
+    <%- end -%>
+    <h1 id="<%= h page.id %>"><%= page.title_html %></h1>
+    <p class="chapter-meta">約 <%= page.minutes %> 分鐘閱讀<%- unless page.toc.empty? -%> · <%= page.toc.size %> 個小節<%- end -%></p>
+  </header>
+  <div class="prose">
+<%= page.html %>
+  </div>
+  <nav class="pager" aria-label="章節導覽">
+    <%- if page.prev -%>
+    <a class="pager-link prev" href="<%= page.prev.path %>" rel="prev"><span class="pager-dir">← 上一章</span><span class="pager-title"><%= h page.prev.full_title %></span></a>
+    <%- else -%>
+    <a class="pager-link prev" href="/" rel="prev"><span class="pager-dir">← 回到</span><span class="pager-title">封面與目錄</span></a>
+    <%- end -%>
+    <%- if page.next -%>
+    <a class="pager-link next" href="<%= page.next.path %>" rel="next"><span class="pager-dir">下一章 →</span><span class="pager-title"><%= h page.next.full_title %></span></a>
+    <%- else -%>
+    <a class="pager-link next" href="/" rel="next"><span class="pager-dir">全書完 →</span><span class="pager-title">回到封面與目錄</span></a>
+    <%- end -%>
+  </nav>
+  <p class="edit-link"><a href="<%= REPO_URL %>/blob/main/<%= page.source %>" rel="noopener">在 GitHub 上檢視或改善本章翻譯</a></p>
+</article>

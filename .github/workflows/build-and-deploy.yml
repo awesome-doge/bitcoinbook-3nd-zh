@@ -8,6 +8,9 @@ on:
     paths:
       - 'zh-tw/**'
       - 'images/**'
+      - 'web/**'
+      - 'scripts/build-site.rb'
+      - 'scripts/check-site.rb'
       - '.github/workflows/build-and-deploy.yml'
   workflow_dispatch:
 
@@ -29,62 +32,28 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # sitemap 的 lastmod 取自各章原始檔的最後修改時間
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: '3.3'
           bundler-cache: false
 
-      - name: Install AsciiDoctor and dependencies
+      - name: Install build tools
         run: |
-          gem install asciidoctor
-          gem install rouge
+          gem install asciidoctor rouge nokogiri --no-document
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends webp
 
-      - name: Create output directory
-        run: mkdir -p public
+      - name: Build site
+        run: ruby scripts/build-site.rb public
+        env:
+          STRICT_LINKS: '1'
+          WRITE_CNAME: '1'
 
-      - name: Build HTML
-        run: |
-          cd zh-tw
-          asciidoctor \
-            --backend=html5 \
-            --out-file=../public/index.html \
-            --attribute=source-highlighter=rouge \
-            --attribute=toc=left \
-            --attribute=toclevels=2 \
-            --attribute=icons=font \
-            --attribute=sectanchors \
-            --attribute=idprefix= \
-            --attribute=idseparator=- \
-            --attribute=docinfo=shared \
-            --attribute=lang=zh-TW \
-            --attribute=imagesdir=.. \
-            book.adoc
-
-      - name: Copy images to output
-        run: |
-          cp -r images public/images
-
-      - name: Generate chapter landing pages
-        run: |
-          chmod +x scripts/generate-chapter-pages.sh
-          scripts/generate-chapter-pages.sh public/chapters
-
-      - name: Copy SEO, AI, and PWA files
-        run: |
-          cp zh-tw/robots.txt public/robots.txt
-          cp zh-tw/sitemap.xml public/sitemap.xml
-          cp zh-tw/manifest.json public/manifest.json
-          cp zh-tw/sw.js public/sw.js
-          cp zh-tw/llms.txt public/llms.txt
-          cp zh-tw/llms-full.txt public/llms-full.txt
-          cp zh-tw/ai.txt public/ai.txt
-          cp zh-tw/6aa3100e6866ac02756a2f5225285d51.txt public/6aa3100e6866ac02756a2f5225285d51.txt
-
-      - name: Create CNAME file for custom domain
-        run: |
-          echo "bitcoinbook-3nd-zh.doge.tg" > public/CNAME
+      - name: Check links, anchors and SEO metadata
+        run: ruby scripts/check-site.rb public
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -105,18 +74,8 @@ jobs:
       - name: Ping search engines
         if: success()
         run: |
-          # IndexNow (Bing + Yandex + Naver + Seznam + 更多)
+          # IndexNow（Bing、Yandex、Naver、Seznam 等）：通知所有頁面已更新
+          urls=$(curl -s https://bitcoinbook-3nd-zh.doge.tg/sitemap.xml | grep -o '<loc>[^<]*' | sed 's/<loc>//' | jq -R . | jq -s -c .)
           curl -s -X POST "https://api.indexnow.org/indexnow" \
             -H "Content-Type: application/json" \
-            -d '{
-              "host": "bitcoinbook-3nd-zh.doge.tg",
-              "key": "6aa3100e6866ac02756a2f5225285d51",
-              "keyLocation": "https://bitcoinbook-3nd-zh.doge.tg/6aa3100e6866ac02756a2f5225285d51.txt",
-              "urlList": [
-                "https://bitcoinbook-3nd-zh.doge.tg/",
-                "https://bitcoinbook-3nd-zh.doge.tg/llms.txt",
-                "https://bitcoinbook-3nd-zh.doge.tg/sitemap.xml"
-              ]
-            }' > /dev/null || true
-
-          echo "Search engines pinged successfully"
+            -d "{\"host\":\"bitcoinbook-3nd-zh.doge.tg\",\"key\":\"6aa3100e6866ac02756a2f5225285d51\",\"keyLocation\":\"https://bitcoinbook-3nd-zh.doge.tg/6aa3100e6866ac02756a2f5225285d51.txt\",\"urlList\":${urls}}" > /dev/null || true

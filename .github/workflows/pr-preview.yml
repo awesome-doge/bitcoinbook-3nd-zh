@@ -8,6 +8,9 @@ on:
     paths:
       - 'zh-tw/**'
       - 'images/**'
+      - 'web/**'
+      - 'scripts/build-site.rb'
+      - 'scripts/check-site.rb'
 
 jobs:
   preview:
@@ -20,38 +23,21 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: '3.3'
           bundler-cache: false
 
-      - name: Install AsciiDoctor
+      - name: Install build tools
         run: |
-          gem install asciidoctor
-          gem install rouge
+          gem install asciidoctor rouge nokogiri --no-document
+          sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends webp
 
-      - name: Create preview directory
-        run: mkdir -p preview
+      - name: Build site preview
+        run: ruby scripts/build-site.rb preview
+        env:
+          STRICT_LINKS: '1'
 
-      - name: Build HTML preview
-        run: |
-          cd zh-tw
-          asciidoctor \
-            --backend=html5 \
-            --out-file=../preview/index.html \
-            --attribute=source-highlighter=rouge \
-            --attribute=toc=left \
-            --attribute=toclevels=2 \
-            --attribute=icons=font \
-            --attribute=sectanchors \
-            --attribute=idprefix= \
-            --attribute=idseparator=- \
-            --attribute=docinfo=shared \
-            --attribute=lang=zh-TW \
-            --attribute=imagesdir=.. \
-            book.adoc
-
-      - name: Copy images to preview
-        run: |
-          cp -r images preview/images
+      - name: Check links, anchors and SEO metadata
+        run: ruby scripts/check-site.rb preview
 
       - name: Upload preview artifact
         uses: actions/upload-artifact@v4
@@ -77,7 +63,7 @@ jobs:
 
             [點此下載 HTML 預覽檔案](https://github.com/${repo.owner}/${repo.repo}/actions/runs/${runId})
 
-            請在 Artifacts 區塊下載 \`preview-html-pr-${prNumber}\` 檔案，解壓縮後在瀏覽器開啟 \`index.html\`。
+            請在 Artifacts 區塊下載 \`preview-html-pr-${prNumber}\` 檔案，解壓縮後在該資料夾執行 \`python3 -m http.server\`，再用瀏覽器開啟 http://localhost:8000/ 。
 
             ### ✅ 建置資訊
 

@@ -1,5 +1,6 @@
 # Build outputs
 public/
+build/
 release/
 *.html
 !zh-tw/docinfo.html

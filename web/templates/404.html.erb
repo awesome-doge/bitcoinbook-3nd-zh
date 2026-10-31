@@ -1,0 +1,11 @@
+<div class="not-found">
+  <p class="chapter-label">404</p>
+  <h1>找不到這個頁面</h1>
+  <p>網址可能已經變更。這本書現在每一章都有獨立的頁面，可以從下面的目錄找到想看的內容，或使用右上角的搜尋。</p>
+  <ol class="plain-toc">
+    <%- pages.each do |p| -%>
+    <li><a href="<%= p.path %>"><span class="toc-label"><%= h p.label %></span><%= h(p.label == p.title ? '' : p.title) %></a></li>
+    <%- end -%>
+  </ol>
+  <p><a class="btn btn-primary" href="/">回到首頁</a></p>
+</div>
