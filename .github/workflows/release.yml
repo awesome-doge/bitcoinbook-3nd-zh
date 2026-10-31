@@ -40,9 +40,7 @@ jobs:
       - name: Build HTML (standalone)
         run: |
           cd zh-tw
-          asciidoctor \
-            --backend=html5 \
-            --out-file=../release/mastering-bitcoin-3rd-zh-tw.html \
+          common="--backend=html5 \
             --attribute=source-highlighter=rouge \
             --attribute=toc=left \
             --attribute=toclevels=2 \
@@ -50,9 +48,14 @@ jobs:
             --attribute=idprefix= \
             --attribute=idseparator=- \
             --attribute=lang=zh-TW \
-            --attribute=imagesdir=.. \
-            --attribute=docinfo=shared \
-            book.adoc
+            --attribute=docinfo=shared"
+          # 單一檔案版：圖片以 data URI 內嵌，下載後直接開啟即可離線閱讀
+          asciidoctor $common --attribute=data-uri \
+            --out-file=../release/mastering-bitcoin-3rd-zh-tw.html book.adoc
+          # 完整包版：圖片以相對路徑 images/ 引用，與 zip 內的資料夾結構一致
+          mkdir -p ../release/html-package
+          asciidoctor $common \
+            --out-file=../release/html-package/mastering-bitcoin-3rd-zh-tw.html book.adoc
 
       - name: Build EPUB
         run: |
@@ -71,11 +74,9 @@ jobs:
 
       - name: Package HTML with images
         run: |
-          mkdir -p release/html-package
-          cp release/mastering-bitcoin-3rd-zh-tw.html release/html-package/
           cp -r images release/html-package/
           cd release
-          zip -r mastering-bitcoin-3rd-zh-tw-html.zip html-package/
+          zip -qr mastering-bitcoin-3rd-zh-tw-html.zip html-package/
 
       - name: Generate checksums
         run: |
@@ -107,8 +108,8 @@ jobs:
 
             ## 📚 下載檔案
 
-            - **HTML 單頁版**: `mastering-bitcoin-3rd-zh-tw.html` - 可在瀏覽器直接開啟（不含圖片）
-            - **HTML 完整包**: `mastering-bitcoin-3rd-zh-tw-html.zip` - 包含所有圖片的完整版本
+            - **HTML 單頁版**: `mastering-bitcoin-3rd-zh-tw.html` - 單一檔案，已內嵌全部圖片，可在瀏覽器直接離線閱讀
+            - **HTML 完整包**: `mastering-bitcoin-3rd-zh-tw-html.zip` - HTML 與圖片資料夾分開存放，檔案較小
             - **EPUB 版**: `mastering-bitcoin-3rd-zh-tw.epub` - 適合電子書閱讀器，包含封面和所有圖片
 
             > **注意**: 本專案因中英文混排技術限制，已停止 PDF 版本開發。如需 PDF，建議使用瀏覽器的「列印為 PDF」功能從 HTML 版本轉換。

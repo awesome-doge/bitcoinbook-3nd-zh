@@ -171,6 +171,7 @@ gh run view <run-id> --log
 - 互動功能（目錄、搜尋、閱讀設定、進度記憶）：`web/assets/site.js`
 - 頁面版型：`web/templates/*.html.erb`
 - 章節網址代稱與搜尋引擎描述：`web/chapters.yml`
+- 搜尋同義詞（例如輸入「助記詞」也找得到「恢復碼」）：`web/search-synonyms.yml`；簡體字查詢使用 `web/data/` 的 OpenCC 繁簡對照表
 
 ---
 

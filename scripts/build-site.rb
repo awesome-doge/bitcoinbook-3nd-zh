@@ -23,6 +23,7 @@ require 'fileutils'
 require 'digest'
 require 'time'
 require 'cgi'
+require 'set'
 
 ROOT = File.expand_path('..', __dir__)
 OUT = File.expand_path(ARGV[0] || 'public', ROOT)
@@ -443,7 +444,17 @@ File.write(File.join(OUT, 'sitemap.xml'), sitemap)
 search = pages.flat_map do |p|
   p.search.map { |e| e.merge(c: p.label == p.title ? p.label : "#{p.label}　#{p.title}") }
 end
-File.write(File.join(OUT, 'search-index.json'), JSON.generate(search))
+# 搜尋時把查詢與內文都逐字轉成簡體再比對（一字對一字、長度不變，標示位置仍對得上），簡體字查詢因此也找得到。
+# 對照表取自 OpenCC（Apache-2.0，見 web/data/），只輸出書中與同義詞表實際用到的字。
+synonyms = YAML.load_file(File.join(WEB, 'search-synonyms.yml'))
+used_chars = (JSON.generate(search) + JSON.generate(synonyms)).scan(/\p{Han}/).to_set
+t2s = File.foreach(File.join(WEB, 'data', 'opencc-TSCharacters.txt')).filter_map do |line|
+  next if line.start_with?('#')
+  trad, simp = line.chomp.split("\t")
+  simp = simp.to_s.split(' ').first
+  "#{trad}#{simp}" if simp && trad != simp && used_chars.include?(trad)
+end.join
+File.write(File.join(OUT, 'search-index.json'), JSON.generate({ entries: search, t2s: t2s, synonyms: synonyms }))
 
 # 舊版單頁網站的 /#錨點 連結由首頁依此表轉址
 ids = {}

@@ -177,7 +177,12 @@ descriptions live in `web/chapters.yml` (the build fails if chapter IDs and this
 standalone single-file HTML attached to releases.
 
 In translated text, emphasis next to CJK characters must use the unconstrained form `__強調__`; `_強調_` is not rendered
-when adjacent to Chinese characters.
+when adjacent to Chinese characters. The same applies to inline roles: write `[.keep-together]##文字##`, not `#文字#`.
+Tables written as raw HTML (`<table id="x"><caption>…`) are invisible to AsciiDoc, so a bare `<<x>>` renders as `[x]`;
+give such cross-references explicit text, e.g. `<<x,表格標題>>`.
+
+Site search treats the groups in `web/search-synonyms.yml` as equivalent terms and matches Simplified Chinese queries via
+the OpenCC character table in `web/data/` (only characters used by the book are shipped).
 
 **Note**: This project focuses on HTML and EPUB formats. PDF generation has been discontinued due to technical limitations with Chinese-English mixed text layout.
 

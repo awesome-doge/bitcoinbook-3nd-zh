@@ -229,12 +229,43 @@
   var index = null;
   var loading = null;
   var selected = -1;
+  var t2s = {};
+  var synonyms = [];
+
+  // 逐字轉小寫並轉成簡體，長度不變：繁簡兩種查詢都能比對，比對到的位置也能直接用在原文上
+  function norm(s) {
+    var out = '';
+    for (var i = 0; i < s.length; i++) {
+      var c = s[i];
+      var lc = c.toLowerCase();
+      if (lc.length === 1) c = lc;
+      out += t2s[c] || c;
+    }
+    return out;
+  }
+
+  // 查詢詞本身，加上把其中的同義詞換成同組其他詞的變化（例如「助記詞」也找「恢復碼」）
+  function expand(term) {
+    var alts = [term];
+    synonyms.forEach(function (group) {
+      group.forEach(function (w) {
+        if (term.indexOf(w) < 0) return;
+        group.forEach(function (other) {
+          var alt = term.split(w).join(other);
+          if (alts.indexOf(alt) < 0) alts.push(alt);
+        });
+      });
+    });
+    return alts;
+  }
 
   function loadIndex() {
     if (!loading) {
       status.textContent = '正在載入搜尋資料…';
       loading = fetch('/search-index.json').then(function (r) { return r.json(); }).then(function (data) {
-        index = data.map(function (e) { return { e: e, t: e.t.toLowerCase(), x: e.x.toLowerCase() }; });
+        for (var i = 0; i + 1 < data.t2s.length; i += 2) t2s[data.t2s[i]] = data.t2s[i + 1];
+        synonyms = data.synonyms.map(function (g) { return g.map(norm); });
+        index = data.entries.map(function (e) { return { e: e, t: norm(e.t), x: norm(e.x) }; });
         status.textContent = '';
         runSearch();
       }).catch(function () {
@@ -257,46 +288,68 @@
     return s.replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
   }
 
-  function highlight(text, terms) {
-    var html = escapeHtml(text);
-    terms.forEach(function (t) {
-      var re = new RegExp('(' + escapeHtml(t).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
-      html = html.replace(re, '<mark>$1</mark>');
+  // text 是原文，normed 是它轉換後的版本（長度相同），在 normed 找到的位置直接標示在原文上
+  function highlight(text, normed, words) {
+    var marks = [];
+    words.forEach(function (w) {
+      for (var p = normed.indexOf(w); p >= 0; p = normed.indexOf(w, p + w.length)) marks.push([p, p + w.length]);
     });
-    return html;
+    marks.sort(function (a, b) { return a[0] - b[0]; });
+    var html = '';
+    var at = 0;
+    marks.forEach(function (m) {
+      if (m[0] < at) return;
+      html += escapeHtml(text.slice(at, m[0])) + '<mark>' + escapeHtml(text.slice(m[0], m[1])) + '</mark>';
+      at = m[1];
+    });
+    return html + escapeHtml(text.slice(at));
   }
 
-  function snippet(text, lower, term) {
-    var i = lower.indexOf(term);
-    if (i < 0) return text.slice(0, 90) + (text.length > 90 ? '…' : '');
-    var start = Math.max(0, i - 36);
-    return (start > 0 ? '…' : '') + text.slice(start, i + term.length + 60) + (i + term.length + 60 < text.length ? '…' : '');
+  function snippet(item, words) {
+    var i = -1;
+    var len = 0;
+    words.forEach(function (w) {
+      var p = item.x.indexOf(w);
+      if (p >= 0 && (i < 0 || p < i)) { i = p; len = w.length; }
+    });
+    var start = i < 0 ? 0 : Math.max(0, i - 36);
+    var end = i < 0 ? 90 : i + len + 60;
+    return {
+      pre: start > 0 ? '…' : '',
+      text: item.e.x.slice(start, end),
+      normed: item.x.slice(start, end),
+      post: end < item.x.length ? '…' : ''
+    };
+  }
+
+  function count(hay, w) {
+    var n = 0;
+    for (var p = hay.indexOf(w); p >= 0 && n < 20; p = hay.indexOf(w, p + w.length)) n++;
+    return n;
   }
 
   function runSearch() {
     if (!index) return;
-    var q = input.value.trim().toLowerCase();
+    var q = norm(input.value.trim());
     selected = -1;
     if (!q) {
       results.innerHTML = '';
       status.textContent = '';
       return;
     }
-    var terms = q.split(/\s+/).filter(Boolean);
+    var terms = q.split(/\s+/).filter(Boolean).map(expand);
+    var words = [].concat.apply([], terms);
     var hits = [];
     index.forEach(function (item) {
       var score = 0;
       for (var i = 0; i < terms.length; i++) {
-        var inTitle = item.t.indexOf(terms[i]) >= 0;
-        var pos = item.x.indexOf(terms[i]);
-        if (!inTitle && pos < 0) return;
-        score += inTitle ? 20 : 0;
-        if (pos >= 0) {
-          var n = 0;
-          var p = pos;
-          while (p >= 0 && n < 20) { n++; p = item.x.indexOf(terms[i], p + terms[i].length); }
-          score += n;
-        }
+        var best = 0;
+        terms[i].forEach(function (w) {
+          var s = (item.t.indexOf(w) >= 0 ? 20 : 0) + count(item.x, w);
+          if (s > best) best = s;
+        });
+        if (!best) return;
+        score += best;
       }
       hits.push({ item: item, score: score });
     });
@@ -304,9 +357,10 @@
     status.textContent = hits.length ? '找到 ' + hits.length + ' 個相關小節' : '沒有找到「' + input.value.trim() + '」，試試其他關鍵字。';
     results.innerHTML = hits.slice(0, 40).map(function (h) {
       var e = h.item.e;
+      var s = snippet(h.item, words);
       return '<li><a href="' + e.u + '"><span class="sr-chapter">' + escapeHtml(e.c) + '</span>' +
-        '<span class="sr-title">' + highlight(e.t, terms) + '</span>' +
-        '<span class="sr-snippet">' + highlight(snippet(e.x, h.item.x, terms[0]), terms) + '</span></a></li>';
+        '<span class="sr-title">' + highlight(e.t, h.item.t, words) + '</span>' +
+        '<span class="sr-snippet">' + s.pre + highlight(s.text, s.normed, words) + s.post + '</span></a></li>';
     }).join('');
   }
 
