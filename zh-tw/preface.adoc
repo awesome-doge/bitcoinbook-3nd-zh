@@ -61,7 +61,7 @@ _++等寬斜體（Constant width italic）++_:: 顯示應該用使用者提供�
 
 這本書是為了幫助你完成工作。一般來說，如果本書提供了範例程式碼，你可以在你的程式和文件中使用它。除非你重現了程式碼的重要部分，否則你不需要聯絡我們以獲得許可。例如，編寫一個使用本書中幾個程式碼塊的程式不需要許可。銷售或分發 O'Reilly 書籍中的範例需要許可。透過引用本書和引用範例程式碼來回答問題不需要許可。將本書中大量範例程式碼合併到你的產品文件中確實需要許可。
 
-我們感謝但不要求署名。署名通常包括 [.keep-together]#標題、#作者、出版商和 ISBN。例如：「__Mastering Bitcoin__，第 3 版，作者 [.keep-together]#Andreas M.# Antonopoulos 和 David A. Harding（O'Reilly）。Copyright 2024 David Harding，ISBN 978-1-098-15009-9。」
+我們感謝但不要求署名。署名通常包括 [.keep-together]##標題、##作者、出版商和 ISBN。例如：「__Mastering Bitcoin__，第 3 版，作者 [.keep-together]##Andreas M.## Antonopoulos 和 David A. Harding（O'Reilly）。Copyright 2024 David Harding，ISBN 978-1-098-15009-9。」
 
 本書的某些版本以開源授權提供，例如 https://oreil.ly/RzUHE[CC-BY-NC]，在這種情況下，該授權的條款適用。
 

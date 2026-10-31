@@ -196,7 +196,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 
 接下來，該函數透過將當前區塊高度除以減半間隔（+SubsidyHalvingInterval+）來計算已發生的 +halvings+ 數量。
 
-接下來，該函數使用二進位右移運算子將獎勵 [.keep-together]#(+nSubsidy+)# 除以二，針對每一輪減半。在區塊 277,316 的情況下，這將對 50 億聰的獎勵進行一次二進位右移（一次減半），結果為 25 億聰，或 25 比特幣。在第 33 次減半之後，補貼將向下捨入為零。使用二進位右移運算子是因為它比多次重複除法更有效。為了避免潛在的錯誤，在 63 次減半之後跳過移位操作，並將補貼設定為 0。
+接下來，該函數使用二進位右移運算子將獎勵 [.keep-together]##(+nSubsidy+)## 除以二，針對每一輪減半。在區塊 277,316 的情況下，這將對 50 億聰的獎勵進行一次二進位右移（一次減半），結果為 25 億聰，或 25 比特幣。在第 33 次減半之後，補貼將向下捨入為零。使用二進位右移運算子是因為它比多次重複除法更有效。為了避免潛在的錯誤，在 63 次減半之後跳過移位操作，並將補貼設定為 0。
 
 最後，coinbase 獎勵（+nSubsidy+）被添加到交易手續費（+nFees+），並返回總和。
 
@@ -209,7 +209,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 
 透過這些計算，Jing 的節點然後構建 coinbase 交易來支付他自己的區塊獎勵。
 
-coinbase 交易具有特殊格式。它沒有指定要花費的先前 UTXO 的交易輸入，而是具有「coinbase」輸入。我們在 <<inputs>> 中檢查了交易輸入。讓我們比較常規交易輸入與 coinbase 交易輸入。<<table_8-1>> 顯示了常規交易的結構，而 <<table_8-2>> 顯示了((("輸入", "coinbase 與常規交易"))) coinbase 交易輸入的結構。
+coinbase 交易具有特殊格式。它沒有指定要花費的先前 UTXO 的交易輸入，而是具有「coinbase」輸入。我們在 <<inputs>> 中檢查了交易輸入。讓我們比較常規交易輸入與 coinbase 交易輸入。<<table_8-1,「正常」交易輸入的結構>> 顯示了常規交易的結構，而 <<table_8-2,coinbase 交易輸入的結構>> 顯示了((("輸入", "coinbase 與常規交易"))) coinbase 交易輸入的結構。
 
 ++++
 <table id="table_8-1">
@@ -302,7 +302,7 @@ coinbase 的前幾個位元組曾經是任意的，但現在不再如此。根�
 
 === 構建區塊標頭
 
-為了構建((("挖礦", "構建區塊標頭", id="mining-blockheader")))((("節點", "礦工節點", "構建區塊標頭", id="nodes-miner-blockheader")))((("區塊標頭", "構建", id="block-header-construct")))區塊標頭，挖礦節點需要填寫六個欄位，如 <<block_header_structure_ch10>> 中所列。
+為了構建((("挖礦", "構建區塊標頭", id="mining-blockheader")))((("節點", "礦工節點", "構建區塊標頭", id="nodes-miner-blockheader")))((("區塊標頭", "構建", id="block-header-construct")))區塊標頭，挖礦節點需要填寫六個欄位，如 <<block_header_structure_ch10,區塊標頭的結構>> 中所列。
 
 ++++
 <table id="block_header_structure_ch10">
@@ -358,7 +358,7 @@ BIP 34、66 和 65 中定義的協議升級按該順序發生，BIP66（嚴格 D
 
 今天，除非正在進行升級共識協議的嘗試，否則 versionbits 欄位沒有意義，在這種情況下，您將需要閱讀其文件以確定它如何使用 versionbits。
 
-接下來，挖礦節點需要添加「前一個區塊雜湊」（也稱為 [.keep-together]#+prevhash+）。#這是從網路接收的前一個區塊的區塊標頭的雜湊，Jing 的節點已接受並選擇它作為其候選區塊的__父區塊__。
+接下來，挖礦節點需要添加「前一個區塊雜湊」（也稱為 [.keep-together]##+prevhash+）。##這是從網路接收的前一個區塊的區塊標頭的雜湊，Jing 的節點已接受並選擇它作為其候選區塊的__父區塊__。
 
 [TIP]
 ====

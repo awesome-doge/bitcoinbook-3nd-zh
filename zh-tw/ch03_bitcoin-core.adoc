@@ -580,7 +580,7 @@ dab0d2fa2b42a45182fc83e817130100000000
 
 交易解碼顯示了此交易的所有組成部分，包括交易輸入和輸出。在這種情況下，我們看到交易使用了一個輸入並生成了兩個輸出。此交易的輸入是來自先前確認交易的輸出（顯示為輸入 +txid+）。兩個輸出對應於向 Bob 的付款和回到 Alice 的找零。
 
-我們可以透過使用相同的命令（例如，[.keep-together]#+getrawtransaction+）#檢查此交易中其 +txid+ 引用的先前交易來進一步探索區塊鏈。從交易跳到交易，我們可以追蹤一條交易鏈，因為硬幣從一個所有者傳遞到((("Bitcoin Core", "command-line interface", "exploring/decoding transactions", startref="bitcoin-core-command-transaction")))((("command-line interface (Bitcoin Core)", "exploring/decoding transactions", startref="command-transaction")))((("transactions", "exploring/decoding", startref="transactions-explore-decode")))((("exploring", "transactions", startref="explore-transaction")))((("decoding", "transactions", startref="decode-transaction")))另一個所有者。
+我們可以透過使用相同的命令（例如，[.keep-together]##+getrawtransaction+）##檢查此交易中其 +txid+ 引用的先前交易來進一步探索區塊鏈。從交易跳到交易，我們可以追蹤一條交易鏈，因為硬幣從一個所有者傳遞到((("Bitcoin Core", "command-line interface", "exploring/decoding transactions", startref="bitcoin-core-command-transaction")))((("command-line interface (Bitcoin Core)", "exploring/decoding transactions", startref="command-transaction")))((("transactions", "exploring/decoding", startref="transactions-explore-decode")))((("exploring", "transactions", startref="explore-transaction")))((("decoding", "transactions", startref="decode-transaction")))另一個所有者。
 
 ==== 探索區塊
 
@@ -648,7 +648,7 @@ f6cd83c3ca
 
 +bitcoin-cli+ 助手((("Bitcoin Core", "command-line interface", "API access", id="bitcoin-core-command-api")))((("command-line interface (Bitcoin Core)", "API access", id="command-api")))((("API access", id="api")))對於探索 Bitcoin Core API 和測試功能非常有用。但 API 的全部意義在於以程式設計方式存取功能。在本節中，我們將示範從另一個程式存取 Bitcoin Core。
 
-Bitcoin Core 的 API 是一個 JSON-RPC 介面。JSON 是一種非常方便的方式來呈現人類和程式都可以輕鬆閱讀的資料。RPC 代表遠端[.keep-together]#過程#呼叫，這意味著我們正在透過網路協議呼叫遠端（在 Bitcoin Core 節點上）的過程（函數）。在這種情況下，網路協議是 HTTP。
+Bitcoin Core 的 API 是一個 JSON-RPC 介面。JSON 是一種非常方便的方式來呈現人類和程式都可以輕鬆閱讀的資料。RPC 代表遠端[.keep-together]##過程##呼叫，這意味著我們正在透過網路協議呼叫遠端（在 Bitcoin Core 節點上）的過程（函數）。在這種情況下，網路協議是 HTTP。
 
 當我們使用 +bitcoin-cli+ 命令獲取有關命令的幫助時，它向我們顯示了使用 +curl+（通用命令列 HTTP 客戶端）構建這些 JSON-RPC 呼叫之一的範例：
 
@@ -685,7 +685,7 @@ $ curl
 ----
 ====
 
-或者，你可以使用 Bitcoin Core 原始碼目錄中的 [.keep-together]#_./share/rpcauth/rpcauth.py_# 中提供的助手腳本建立靜態密碼。
+或者，你可以使用 Bitcoin Core 原始碼目錄中的 [.keep-together]##_./share/rpcauth/rpcauth.py_## 中提供的助手腳本建立靜態密碼。
 
 如果你在自己的程式中實作 JSON-RPC 呼叫，你可以使用通用 HTTP 函式庫來構建呼叫，類似於前面的 +curl+ 範例中所示的內容。
 
@@ -789,4 +789,4 @@ https://oreil.ly/Qfjgq[NBitcoin]:: .NET ((("C# toolkits")))((("NBitcoin")))frame
 
 還有許多其他程式語言的更多函式庫，並且一直在建立更多。
 
-如果你按照本章的說明操作，你現在已經執行 Bitcoin Core 並開始使用你自己的完整節點探索網路和區塊鏈。從現在開始，你可以獨立使用你控制的軟體——在你控制的電腦上——來驗證你收到的任何比特幣是否遵循比特幣系統中的每條規則，而無需信任任何外部權威機構。在接下來的章節中，我們將更多地了解系統的規則以及你的節點和錢包如何使用它們來保護你的錢、保護你的隱私，並使支出和接收[.keep-together]#方便。#
+如果你按照本章的說明操作，你現在已經執行 Bitcoin Core 並開始使用你自己的完整節點探索網路和區塊鏈。從現在開始，你可以獨立使用你控制的軟體——在你控制的電腦上——來驗證你收到的任何比特幣是否遵循比特幣系統中的每條規則，而無需信任任何外部權威機構。在接下來的章節中，我們將更多地了解系統的規則以及你的節點和錢包如何使用它們來保護你的錢、保護你的隱私，並使支出和接收[.keep-together]##方便。##
