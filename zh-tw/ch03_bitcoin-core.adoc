@@ -1,15 +1,15 @@
 [[ch03_bitcoin_client]]
 == Bitcoin Core：參考實作
 
-人們只有在相信他們以後能夠花費這些錢時，才會接受金錢來換取他們有價值的商品和服務。偽造或意外貶值的錢可能以後無法花費，因此每個接受比特幣的人都有強烈的動機去驗證他們收到的比特幣的完整性。比特幣系統的設計使得完全在你本地電腦上執行的軟體可以完美地防止偽造、貶值和其他幾個關鍵問題成為可能。提供該功能的軟體稱為 _完全驗證節點（full verification node）_，因為它根據系統中的每條規則驗證每筆已確認的比特幣交易。完全((("full nodes")))驗證節點，簡稱 _完整節點（full nodes）_，還可以提供用於理解比特幣如何運作以及網路中當前正在發生什麼的工具和資料。
+人們只有在相信他們以後能夠花費這些錢時，才會接受金錢來換取他們有價值的商品和服務。偽造或意外貶值的錢可能以後無法花費，因此每個接受比特幣的人都有強烈的動機去驗證他們收到的比特幣的完整性。比特幣系統的設計使得完全在你本地電腦上執行的軟體可以完美地防止偽造、貶值和其他幾個關鍵問題成為可能。提供該功能的軟體稱為 __完全驗證節點（full verification node）__，因為它根據系統中的每條規則驗證每筆已確認的比特幣交易。完全((("full nodes")))驗證節點，簡稱 __完整節點（full nodes）__，還可以提供用於理解比特幣如何運作以及網路中當前正在發生什麼的工具和資料。
 
 在本章中，我們將安裝 Bitcoin Core，這是自比特幣網路開始以來大多數完整節點運營者一直使用的實作。然後，我們將從你的節點檢查區塊、交易和其他資料，這些資料具有權威性——不是因為某些強大的實體將其指定為這樣，而是因為你的節點獨立驗證了它。在本書的其餘部分，我們將繼續使用 Bitcoin Core 來建立和檢查與區塊鏈和網路相關的資料。
 
 === 從比特幣到 Bitcoin Core
 
-Bitcoin ((("Bitcoin Core", "explained", id="bitcoin-core-explain")))是一個 _開源_ 專案，原始碼在開放（MIT）授權下可用，可免費下載並用於任何目的。不僅僅是開源，比特幣是由一個開放的志願者社群開發的。起初，該社群僅由((("Nakamoto, Satoshi")))中本聰（Satoshi Nakamoto）組成。到 2023 年，比特幣的原始碼已有 1,000 多位貢獻者，其中約有十幾位開發者幾乎全職從事程式碼工作，還有幾十位兼職開發者。任何人都可以為程式碼做出貢獻&#x2014;包括你！
+Bitcoin ((("Bitcoin Core", "explained", id="bitcoin-core-explain")))是一個 __開源__ 專案，原始碼在開放（MIT）授權下可用，可免費下載並用於任何目的。不僅僅是開源，比特幣是由一個開放的志願者社群開發的。起初，該社群僅由((("Nakamoto, Satoshi")))中本聰（Satoshi Nakamoto）組成。到 2023 年，比特幣的原始碼已有 1,000 多位貢獻者，其中約有十幾位開發者幾乎全職從事程式碼工作，還有幾十位兼職開發者。任何人都可以為程式碼做出貢獻&#x2014;包括你！
 
-當中本聰創建比特幣時，軟體在白皮書發表之前大部分已經完成（在 <<satoshi_whitepaper>> 中複製）。中本聰想確保實作在發表論文之前有效。第一個實作，當時簡稱為「Bitcoin」，已經過大量修改和改進。它已經演變成所謂的 _Bitcoin Core_，以區別於其他實作。Bitcoin Core 是比特幣系統的 _參考實作_，這意味著它為技術的每個部分應該如何實作提供參考。Bitcoin Core 實作了比特幣的所有方面，包括錢包、交易和區塊驗證引擎、區塊構建工具，以及比特幣點對點通訊的所有現代部分。
+當中本聰創建比特幣時，軟體在白皮書發表之前大部分已經完成（在 <<satoshi_whitepaper>> 中複製）。中本聰想確保實作在發表論文之前有效。第一個實作，當時簡稱為「Bitcoin」，已經過大量修改和改進。它已經演變成所謂的 __Bitcoin Core__，以區別於其他實作。Bitcoin Core 是比特幣系統的 __參考實作__，這意味著它為技術的每個部分應該如何實作提供參考。Bitcoin Core 實作了比特幣的所有方面，包括錢包、交易和區塊驗證引擎、區塊構建工具，以及比特幣點對點通訊的所有現代部分。
 
 <<bitcoin_core_architecture>> 顯示了 Bitcoin Core 的架構。
 
@@ -74,7 +74,7 @@ v0.12.0rc2
 ...
 ----
 
-標記列表顯示所有發布的比特幣版本。按照慣例，_release candidates_（發布候選）((("release candidates")))用於測試，具有字尾「rc」。可以在生產系統上執行的穩定版本沒有字尾。從前面的列表中，選擇最高版本發布，在撰寫本文時為 v24.0.1。要將本地程式碼與此版本同步，請使用 +git checkout+ 命令：
+標記列表顯示所有發布的比特幣版本。按照慣例，__release candidates__（發布候選）((("release candidates")))用於測試，具有字尾「rc」。可以在生產系統上執行的穩定版本沒有字尾。從前面的列表中，選擇最高版本發布，在撰寫本文時為 v24.0.1。要將本地程式碼與此版本同步，請使用 +git checkout+ 命令：
 
 ----
 $ git checkout v24.0.1
@@ -96,7 +96,7 @@ nothing to commit, working tree clean
 
 ==== 配置 Bitcoin Core 建構
 
-原始碼((("Bitcoin Core", "compiling from source code", "configuring build", id="bitcoin-core-compile-configure")))((("compiling Bitcoin Core from source code", "configuring build", id="compile-bitcoin-core-configure")))((("source code, compiling Bitcoin Core", "configuring build", id="source-code-compile-configure")))((("configuring", "Bitcoin Core build", id="configure-build")))包含文件，可以在許多檔案中找到。查看位於 _bitcoin_ 目錄中 _README.md_ 中的主要文件。在本章中，我們將建構 Bitcoin Core 守護程式（伺服器），在 Linux（類 Unix 系統）上也稱為 +bitcoind+。透過閱讀 _doc/build-unix.md_ 查看在你的平台上編譯 +bitcoind+ 命令列客戶端的說明。替代說明可以在 _doc_ 目錄中找到；例如，Windows 說明的 _build-windows.md_。在撰寫本文時，Android、FreeBSD、NetBSD、OpenBSD、macOS（OSX）、Unix 和 Windows 的說明可用。
+原始碼((("Bitcoin Core", "compiling from source code", "configuring build", id="bitcoin-core-compile-configure")))((("compiling Bitcoin Core from source code", "configuring build", id="compile-bitcoin-core-configure")))((("source code, compiling Bitcoin Core", "configuring build", id="source-code-compile-configure")))((("configuring", "Bitcoin Core build", id="configure-build")))包含文件，可以在許多檔案中找到。查看位於 _bitcoin_ 目錄中 _README.md_ 中的主要文件。在本章中，我們將建構 Bitcoin Core 守護程式（伺服器），在 Linux（類 Unix 系統）上也稱為 +bitcoind+。透過閱讀 _doc/build-unix.md_ 查看在你的平台上編譯 +bitcoind+ 命令列客戶端的說明。替代說明可以在 _doc_ 目錄中找到；例如，Windows 說明的 __build-windows.md__。在撰寫本文時，Android、FreeBSD、NetBSD、OpenBSD、macOS（OSX）、Unix 和 Windows 的說明可用。
 
 仔細查看建構先決條件，這些先決條件位於建構文件的第一部分。這些是在你可以開始編譯比特幣之前必須存在於你系統上的函式庫。如果缺少這些先決條件，建構過程將失敗並出現錯誤。如果發生這種情況是因為你錯過了先決條件，你可以安裝它，然後從你離開的地方恢復建構過程。假設已安裝先決條件，你可以透過使用 _autogen.sh_ 腳本生成一組建構腳本來啟動建構過程：
 
@@ -297,7 +297,7 @@ Options:
 [[txindex]]
 .交易資料庫索引和 txindex 選項
 ****
-預設情況下，Bitcoin Core 僅建構((("txindex option (bitcoind option)")))((("transactions", "building complete index")))包含與使用者錢包相關的交易的資料庫。如果你想使用像 +getrawtransaction+ 這樣的命令存取 _任何_ 交易（請參閱 <<exploring_and_decoding_transactions>>），你需要配置 Bitcoin Core 以建構完整的交易索引，可以使用 +txindex+ 選項來實現。在 Bitcoin Core 配置檔案中設定 +txindex=1+。如果你一開始沒有設定此選項，後來將其設定為完全索引，你需要等待它重建索引。
+預設情況下，Bitcoin Core 僅建構((("txindex option (bitcoind option)")))((("transactions", "building complete index")))包含與使用者錢包相關的交易的資料庫。如果你想使用像 +getrawtransaction+ 這樣的命令存取 __任何__ 交易（請參閱 <<exploring_and_decoding_transactions>>），你需要配置 Bitcoin Core 以建構完整的交易索引，可以使用 +txindex+ 選項來實現。在 Bitcoin Core 配置檔案中設定 +txindex=1+。如果你一開始沒有設定此選項，後來將其設定為完全索引，你需要等待它重建索引。
 ****
 
 <<full_index_node>> 顯示如何將前面的選項與完全索引節點組合，作為比特幣應用程式的 API 後端執行。
@@ -584,7 +584,7 @@ dab0d2fa2b42a45182fc83e817130100000000
 
 ==== 探索區塊
 
-探索區塊((("Bitcoin Core", "command-line interface", "exploring blocks", id="bitcoin-core-command-blocks")))((("command-line interface (Bitcoin Core)", "exploring blocks", id="command-blocks")))((("blocks", "exploring", id="blocks-explore")))((("exploring", "blocks", id="explore-blocks")))與探索交易類似。但是，區塊可以透過區塊 _height（高度）_ 或區塊 _hash（雜湊）_ 引用。首先，讓我們按高度找到一個區塊。我們使用 +getblockhash+ 命令，該命令將區塊高度作為參數，並返回該區塊的區塊 _header hash（區塊頭雜湊）_：
+探索區塊((("Bitcoin Core", "command-line interface", "exploring blocks", id="bitcoin-core-command-blocks")))((("command-line interface (Bitcoin Core)", "exploring blocks", id="command-blocks")))((("blocks", "exploring", id="blocks-explore")))((("exploring", "blocks", id="explore-blocks")))與探索交易類似。但是，區塊可以透過區塊 __height（高度）__ 或區塊 __hash（雜湊）__ 引用。首先，讓我們按高度找到一個區塊。我們使用 +getblockhash+ 命令，該命令將區塊高度作為參數，並返回該區塊的區塊 __header hash（區塊頭雜湊）__：
 
 ++++
 <pre data-type="programlisting">
@@ -642,7 +642,7 @@ f6cd83c3ca
 </pre>
 ++++
 
-+confirmations+ 條目告訴我們此區塊的 _depth（深度）_——在它之上建構了多少區塊，表明更改此區塊中任何交易的難度。+height+ 告訴我們此區塊之前有多少區塊。我們看到區塊的版本、建立時間（根據其礦工）、前 11 個區塊的中位時間（礦工更難操縱的時間測量），以及三種不同測量的區塊大小（其舊版剝離大小、其完整大小以及其權重單位大小）。我們還看到一些用於安全和工作量證明的欄位（默克爾根、nonce、bits、difficulty 和 chainwork）；我們將在 <<mining>> 中詳細檢查((("Bitcoin Core", "command-line interface", "exploring blocks", startref="bitcoin-core-command-blocks")))((("command-line interface (Bitcoin Core)", "exploring blocks", startref="command-blocks")))((("blocks", "exploring", startref="blocks-explore")))((("exploring", "blocks", startref="explore-blocks")))那些。
++confirmations+ 條目告訴我們此區塊的 __depth（深度）__——在它之上建構了多少區塊，表明更改此區塊中任何交易的難度。+height+ 告訴我們此區塊之前有多少區塊。我們看到區塊的版本、建立時間（根據其礦工）、前 11 個區塊的中位時間（礦工更難操縱的時間測量），以及三種不同測量的區塊大小（其舊版剝離大小、其完整大小以及其權重單位大小）。我們還看到一些用於安全和工作量證明的欄位（默克爾根、nonce、bits、difficulty 和 chainwork）；我們將在 <<mining>> 中詳細檢查((("Bitcoin Core", "command-line interface", "exploring blocks", startref="bitcoin-core-command-blocks")))((("command-line interface (Bitcoin Core)", "exploring blocks", startref="command-blocks")))((("blocks", "exploring", startref="blocks-explore")))((("exploring", "blocks", startref="explore-blocks")))那些。
 
 ==== 使用 Bitcoin Core 的程式設計介面
 

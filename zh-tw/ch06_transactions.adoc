@@ -5,7 +5,7 @@
 
 相反，考慮一下 Alice 如何將一塊土地的控制權轉移給 Bob。她不能實體上拿起土地並交給 Bob。相反，存在某種記錄（通常由當地政府維護），該記錄描述了 Alice 擁有的土地。Alice 透過說服政府更新記錄以表明 Bob 現在擁有該土地來將該土地轉移給 Bob。
 
-比特幣以類似的方式運作。每個比特幣完整節點上都存在一個資料庫，表明 Alice 控制一定數量的比特幣。Alice 透過說服完整節點更新其資料庫以表明 Alice 的一些比特幣現在由 Bob 控制來支付給 Bob。Alice 用來說服完整節點更新其資料庫的資料稱為_交易（transaction）_。這是在不直接使用 Alice 或 Bob 的身分的情況下完成的，正如我們將在 <<c_authorization_authentication>> 中看到的那樣。
+比特幣以類似的方式運作。每個比特幣完整節點上都存在一個資料庫，表明 Alice 控制一定數量的比特幣。Alice 透過說服完整節點更新其資料庫以表明 Alice 的一些比特幣現在由 Bob 控制來支付給 Bob。Alice 用來說服完整節點更新其資料庫的資料稱為__交易（transaction）__。這是在不直接使用 Alice 或 Bob 的身分的情況下完成的，正如我們將在 <<c_authorization_authentication>> 中看到的那樣。
 
 在本章中，我們將解構比特幣交易並檢查其每個部分，以了解它們如何以高度表達和令人驚訝的可靠方式促進價值轉移。
 
@@ -68,12 +68,12 @@ image::images/mbc3_0601.png["Alice 交易的位元組對映"]
 
 === 擴展標記和標誌
 
-範例序列化交易的接下來兩個欄位((("transactions", "extended serialization format")))((("extended serialization format")))((("BIP144 extended serialization format")))是作為隔離見證（segwit）軟分叉變更的一部分新增到比特幣共識規則中的。這些規則根據 BIP 141 和 143 進行了更改，但_擴展序列化格式_在 BIP144 中定義。
+範例序列化交易的接下來兩個欄位((("transactions", "extended serialization format")))((("extended serialization format")))((("BIP144 extended serialization format")))是作為隔離見證（segwit）軟分叉變更的一部分新增到比特幣共識規則中的。這些規則根據 BIP 141 和 143 進行了更改，但__擴展序列化格式__在 BIP144 中定義。
 
 [role="less_space pagebreak-before"]
 如果交易包含見證結構（我們將在 <<witness_structure>> 中描述），則標記必須為零（0x00），標誌必須為非零。在當前的 P2P 協定中，標誌應始終為一（0x01）；替代標誌保留用於以後的協定升級。
 
-如果交易不需要見證堆疊，則標記和標誌不得存在。這與比特幣交易序列化格式的原始版本相容，現在稱為_傳統序列化_。詳情請參見 <<legacy_serialization>>。
+如果交易不需要見證堆疊，則標記和標誌不得存在。這與比特幣交易序列化格式的原始版本相容，現在稱為__傳統序列化__。詳情請參見 <<legacy_serialization>>。
 
 在((("transactions", "legacy serialization")))((("legacy serialization")))傳統序列化中，標記位元組將被解釋為輸入數量（零）。交易不能有零個輸入，因此標記向現代程式發出正在使用擴展序列化的信號。標誌欄位提供類似的信號，並且還簡化了未來更新序列化格式的過程。
 
@@ -138,7 +138,7 @@ image::images/mbc3_0602.png["Alice 交易的輸入欄位中位元組的對映"]
 ++++
 ****
 
-交易中的每個輸入都必須包含三個欄位：_輸出點（outpoint）_欄位、長度前綴的_輸入腳本_欄位和_序列_
+交易中的每個輸入都必須包含三個欄位：__輸出點（outpoint）__欄位、長度前綴的__輸入腳本__欄位和__序列__
 
 我們將在以下各節中查看每個欄位。某些輸入還包括見證堆疊，但這在交易末尾序列化，因此我們將((("transactions", "inputs", "length of list", startref="transaction-input-length")))((("inputs", "length of list", startref="input-transaction-length")))稍後檢查它。
 
@@ -146,11 +146,11 @@ image::images/mbc3_0602.png["Alice 交易的輸入欄位中位元組的對映"]
 [[outpoints]]
 ==== 輸出點
 
-比特幣((("transactions", "inputs", "outpoint field", id="transaction-input-outpoint")))((("inputs", "outpoint field", id="input-transaction-outpoint")))((("outpoint field (transaction inputs)", id="outpoint")))交易是完整節點更新其幣所有權資訊資料庫的請求。為了讓 Alice 將她的一些比特幣的控制權轉移給 Bob，她首先需要告訴完整節點如何找到她收到這些比特幣的先前轉移。由於對比特幣的控制權是在交易輸出中分配的，Alice 使用_輸出點（outpoint）_欄位_指向_先前的_輸出_。每個輸入必須包含單個輸出點。
+比特幣((("transactions", "inputs", "outpoint field", id="transaction-input-outpoint")))((("inputs", "outpoint field", id="input-transaction-outpoint")))((("outpoint field (transaction inputs)", id="outpoint")))交易是完整節點更新其幣所有權資訊資料庫的請求。為了讓 Alice 將她的一些比特幣的控制權轉移給 Bob，她首先需要告訴完整節點如何找到她收到這些比特幣的先前轉移。由於對比特幣的控制權是在交易輸出中分配的，Alice 使用__輸出點（outpoint）__欄位__指向__先前的__輸出__。每個輸入必須包含單個輸出點。
 
 輸出點包含 Alice 收到她現在想要花費的比特幣的交易的 32 位元組 txid。此 txid 採用比特幣的內部位元組順序表示雜湊；請參見 <<internal_and_display_order>>。
 
-由於交易可能包含多個輸出，Alice 還需要識別該交易中要使用的特定輸出，((("output indexes")))稱為其_輸出索引（output index）_。輸出索引是從零開始的 4 位元組無符號整數。
+由於交易可能包含多個輸出，Alice 還需要識別該交易中要使用的特定輸出，((("output indexes")))稱為其__輸出索引（output index）__。輸出索引是從零開始的 4 位元組無符號整數。
 
 當完整節點遇到輸出點時，它使用該資訊嘗試找到引用的輸出。完整節點僅需要查看區塊鏈中的早期交易。例如，Alice 的交易包含在區塊 774,958 中。驗證她的交易的完整節點僅在該區塊和先前的區塊中查找她的輸出點引用的先前輸出，而不是任何後續區塊。在區塊 774,958 內，它們將僅查看放置在 Alice 交易之前的區塊中的交易，由區塊的默克爾樹中葉子的順序確定（請參見 <<merkle_trees>>）。
 
@@ -162,14 +162,14 @@ image::images/mbc3_0602.png["Alice 交易的輸入欄位中位元組的對映"]
 
 - 對於已確認的交易，確認它的區塊的高度以及該區塊的中位時間過去（MTP）。這是相對時間鎖（在 <<relative_timelocks>> 中描述）和 coinbase 交易的輸出（在 <<coinbase_transactions>> 中描述）所必需的。
 
-- 證明先前輸出存在於區塊鏈中（或作為已知的未確認交易），並且沒有其他交易花費它。比特幣的共識規則之一禁止在有效區塊鏈中多次花費任何輸出。這是反對((("double spending")))((("conflicting transactions")))_雙重支付_的規則：Alice 不能在單獨的交易中使用相同的先前輸出同時支付給 Bob 和 Carol。兩個交易各自試圖花費相同的先前輸出，稱為_衝突交易（conflicting transactions）_，因為在有效的區塊鏈中只能包含其中一個。
+- 證明先前輸出存在於區塊鏈中（或作為已知的未確認交易），並且沒有其他交易花費它。比特幣的共識規則之一禁止在有效區塊鏈中多次花費任何輸出。這是反對((("double spending")))((("conflicting transactions")))__雙重支付__的規則：Alice 不能在單獨的交易中使用相同的先前輸出同時支付給 Bob 和 Carol。兩個交易各自試圖花費相同的先前輸出，稱為__衝突交易（conflicting transactions）__，因為在有效的區塊鏈中只能包含其中一個。
 
 不同的完整節點實作在不同時間嘗試了追蹤先前輸出的不同方法。Bitcoin Core 目前使用被認為在保留所有必要資訊的同時最小化磁碟空間的解決方案：它保留一個資料庫，該資料庫儲存每個 UTXO 及其基本元資料（例如其確認區塊高度）。每次新的交易區塊到達時，它們花費的所有輸出都從 UTXO 資料庫中刪除，它們創建的所有輸出都新增到((("transactions", "inputs", "outpoint field", startref="transaction-input-outpoint")))((("inputs", "outpoint field", startref="input-transaction-outpoint")))((("outpoint field (transaction inputs)", startref="outpoint")))資料庫中。
 
 [[internal_and_display_order]]
 .內部和顯示位元組順序
 ****
-比特幣以各種方式使用((("hash functions", "digests")))((("digests")))((("internal byte order")))((("display byte order")))雜湊函數的輸出，稱為_摘要（digests）_。摘要為區塊和交易提供唯一標識符；它們用於地址、區塊、交易、簽章等的承諾；摘要在比特幣的工作量證明函數中反覆運算。在某些情況下，雜湊摘要以一種位元組順序顯示給使用者，但在內部以不同的位元組順序使用，造成混亂。例如，考慮我們範例交易中輸出點的先前輸出 txid：
+比特幣以各種方式使用((("hash functions", "digests")))((("digests")))((("internal byte order")))((("display byte order")))雜湊函數的輸出，稱為__摘要（digests）__。摘要為區塊和交易提供唯一標識符；它們用於地址、區塊、交易、簽章等的承諾；摘要在比特幣的工作量證明函數中反覆運算。在某些情況下，雜湊摘要以一種位元組順序顯示給使用者，但在內部以不同的位元組順序使用，造成混亂。例如，考慮我們範例交易中輸出點的先前輸出 txid：
 
 ----
 eb3ae38f27191aa5f3850dc9cad00492b88b72404f9da135698679268041c54a
@@ -196,7 +196,7 @@ $ bitcoin-cli getrawtransaction \
 
 這種奇怪的行為可能是早期比特幣軟體中 https://oreil.ly/01JH2[設計決策]的意外後果。作為一個實際問題，這意味著比特幣軟體的開發者需要記住反轉他們向使用者顯示的交易和區塊標識符中的位元組順序。
 
-在本書中，我們使用術語_內部位元組順序（internal byte order）_來表示出現在交易和區塊中的資料。我們使用_顯示位元組順序（display byte order）_來表示顯示給使用者的形式。另一組常用術語是內部版本的_小端位元組順序（little-endian byte order）_和顯示版本的_大端位元組順序（big-endian byte order）_。
+在本書中，我們使用術語__內部位元組順序（internal byte order）__來表示出現在交易和區塊中的資料。我們使用__顯示位元組順序（display byte order）__來表示顯示給使用者的形式。另一組常用術語是內部版本的__小端位元組順序（little-endian byte order）__和顯示版本的__大端位元組順序（big-endian byte order）__。
 ****
 
 ==== 輸入腳本
@@ -217,16 +217,16 @@ fa2580bb664b020220366060ea8203d766722ed0a02d1599b99d3c95b97dab8e
 [[sequence]]
 ==== 序列
 
-輸入((("transactions", "inputs", "sequence field", id="transaction-input-sequence")))((("inputs", "sequence field", id="input-transaction-sequence")))((("sequence field (transaction inputs)", id="sequence-field")))的最後四個位元組是其_序列_編號。該欄位的用途和含義隨著時間而改變。
+輸入((("transactions", "inputs", "sequence field", id="transaction-input-sequence")))((("inputs", "sequence field", id="input-transaction-sequence")))((("sequence field (transaction inputs)", id="sequence-field")))的最後四個位元組是其__序列__編號。該欄位的用途和含義隨著時間而改變。
 
 [[original_tx_replacement]]
 ===== 基於序列的原始交易替換
 
 序列((("sequence-based transaction replacement", id="sequence-replace")))欄位最初旨在允許建立同一交易的多個版本，後續版本取代較早版本作為確認的候選項。序列編號追蹤交易的版本。
 
-例如，假設 Alice 和 Bob 想要在一場紙牌遊戲上下注。他們首先各自簽署一筆交易，將一些錢存入一個需要他們兩人簽章才能((("multisignature scripts")))((("setup transactions")))花費的輸出腳本中，這是一個_多重簽章_腳本（_multisig_ 簡稱）。這被稱為_設置交易_。然後他們建立一筆花費該輸出的交易：
+例如，假設 Alice 和 Bob 想要在一場紙牌遊戲上下注。他們首先各自簽署一筆交易，將一些錢存入一個需要他們兩人簽章才能((("multisignature scripts")))((("setup transactions")))花費的輸出腳本中，這是一個__多重簽章__腳本（__multisig__ 簡稱）。這被稱為__設置交易__。然後他們建立一筆花費該輸出的交易：
 
-- 交易的第一個版本，nSequence 為 0（0x00000000），將 Alice 和 Bob 最初存入的錢退還給他們。這被稱為_退款交易_。此時他們都不廣播退款交易。他們只在出現問題時才需要它。
+- 交易的第一個版本，nSequence 為 0（0x00000000），將 Alice 和 Bob 最初存入的錢退還給他們。這被稱為__退款交易__。此時他們都不廣播退款交易。他們只在出現問題時才需要它。
 
 - Alice 贏得了第一輪紙牌遊戲，因此交易的第二個版本（序列為 1）增加了支付給 Alice 的金額並減少了 Bob 的份額。他們都簽署了更新的交易。同樣，除非出現問題，否則他們不需要廣播這個版本的交易。
 
@@ -240,7 +240,7 @@ fa2580bb664b020220366060ea8203d766722ed0a02d1599b99d3c95b97dab8e
 
 - 在另一個場景中，想像 Bob 在 Alice 廣播最終版本前幾秒廣播了交易的較早版本。節點將中繼 Bob 的版本，礦工將嘗試挖掘它，但當 Alice 的具有較高序列編號的版本到達時，節點也會中繼它，使用原始 Bitcoin 程式碼的礦工將嘗試挖掘它而不是 Bob 的版本。除非 Bob 運氣好，在 Alice 的版本到達之前發現了一個區塊，否則將是 Alice 的交易版本得到確認。
 
-這種類型的協議就是我們現在((("payment channels")))稱為_支付通道_的協議。Bitcoin 的創造者在歸屬於他的一封電子郵件中稱((("high-frequency transactions")))這些為_高頻交易_，並描述了添加到協議中以支援它們的許多功能。我們稍後將了解其中的一些其他功能，並發現現代版本的支付通道如何越來越多地在 Bitcoin 中使用。
+這種類型的協議就是我們現在((("payment channels")))稱為__支付通道__的協議。Bitcoin 的創造者在歸屬於他的一封電子郵件中稱((("high-frequency transactions")))這些為__高頻交易__，並描述了添加到協議中以支援它們的許多功能。我們稍後將了解其中的一些其他功能，並發現現代版本的支付通道如何越來越多地在 Bitcoin 中使用。
 
 純粹基於序列的支付通道存在一些問題。第一個問題是，用較高序列交易替換較低序列交易的規則只是軟體策略的問題。礦工沒有直接的動機去偏好交易的某一個版本而不是其他任何版本。第二個問題是，第一個發送交易的人可能會運氣好並得到確認，即使它不是最高序列的交易。一個由於運氣不好而在幾個百分點的時間內失敗的安全協議不是一個非常有效的協議。
 
@@ -251,7 +251,7 @@ fa2580bb664b020220366060ea8203d766722ed0a02d1599b99d3c95b97dab8e
 [[sequence-bip125]]
 ===== 選擇性交易替換信號
 
-在((("opt-in transaction replacement")))((("replace by fee (RBF)")))((("transaction fees", "opt-in transaction replacement")))原始基於序列的交易替換因可能被濫用而被禁用後，提出了一個解決方案：程式設計 Bitcoin Core 和其他中繼完整節點軟體，允許支付較高交易手續費率的交易替換支付較低費率的衝突交易。這被稱為_手續費替代_，或簡稱 _RBF_。一些使用者和企業反對在 Bitcoin Core 中添加對交易替換的支援，因此達成了一項妥協，再次使用序列欄位來支援替換。
+在((("opt-in transaction replacement")))((("replace by fee (RBF)")))((("transaction fees", "opt-in transaction replacement")))原始基於序列的交易替換因可能被濫用而被禁用後，提出了一個解決方案：程式設計 Bitcoin Core 和其他中繼完整節點軟體，允許支付較高交易手續費率的交易替換支付較低費率的衝突交易。這被稱為__手續費替代__，或簡稱 __RBF__。一些使用者和企業反對在 Bitcoin Core 中添加對交易替換的支援，因此達成了一項妥協，再次使用序列欄位來支援替換。
 
 如 BIP125 所述，任何輸入的序列設置為低於 0xfffffffe 的值（即至少比最大值低 2）的未確認交易向網路發出信號，表明其簽署者希望它可以被支付更高費率的衝突交易替換。Bitcoin Core 允許替換那些未確認的交易，並繼續禁止替換其他交易。這允許反對替換的使用者和企業簡單地忽略包含 BIP125 信號的未確認交易，直到它們被確認。
 
@@ -293,7 +293,7 @@ image::images/mbc3_0604.png["Alice 交易中輸出欄位的位元組映射"]
 
 ==== 金額
 
-特定((("transactions", "outputs", "amount field", id="transaction-output-amount")))((("outputs", "amount field", id="output-transaction-amount")))((("amount field (transaction outputs)", id="amount-field")))輸出的第一個欄位是其_金額_，在 Bitcoin Core 中也稱為「value」。這是一個 8 位元組有符號整數，指示要轉移的聰數。聰是可以在鏈上 Bitcoin 交易中表示的 bitcoin 的最小單位。一個 bitcoin 中有 1 億個聰。
+特定((("transactions", "outputs", "amount field", id="transaction-output-amount")))((("outputs", "amount field", id="output-transaction-amount")))((("amount field (transaction outputs)", id="amount-field")))輸出的第一個欄位是其__金額__，在 Bitcoin Core 中也稱為「value」。這是一個 8 位元組有符號整數，指示要轉移的聰數。聰是可以在鏈上 Bitcoin 交易中表示的 bitcoin 的最小單位。一個 bitcoin 中有 1 億個聰。
 
 Bitcoin 的共識規則允許輸出的值小至零，大至 2100 萬個 bitcoin（2.1 千兆聰）。
 
@@ -302,14 +302,14 @@ Bitcoin 的共識規則允許輸出的值小至零，大至 2100 萬個 bitcoin�
 [[uneconomical_outputs]]
 ===== 不經濟的輸出和不允許的粉塵
 
-儘管((("uneconomical outputs", id="uneconomical")))((("dust policies", id="dust")))沒有任何價值，零值輸出可以在與任何其他輸出相同的規則下花費。然而，花費一個輸出（將其用作交易中的輸入）會增加交易的大小，從而增加需要支付的手續費金額。如果輸出的價值小於額外手續費的成本，那麼花費該輸出就沒有經濟意義。這樣的輸出被稱為_不經濟的輸出_。
+儘管((("uneconomical outputs", id="uneconomical")))((("dust policies", id="dust")))沒有任何價值，零值輸出可以在與任何其他輸出相同的規則下花費。然而，花費一個輸出（將其用作交易中的輸入）會增加交易的大小，從而增加需要支付的手續費金額。如果輸出的價值小於額外手續費的成本，那麼花費該輸出就沒有經濟意義。這樣的輸出被稱為__不經濟的輸出__。
 
 零值輸出始終是不經濟的輸出；即使交易的費率為零，它也不會為花費它的交易貢獻任何價值。然而，許多其他低價值的輸出也可能是不經濟的，甚至是無意的。例如，以今天網路上的典型費率，一個輸出可能為交易增加的價值超過花費它的成本——但明天，費率可能會上升並使輸出變得不經濟。
 
 如 <<outpoints>> 中所述，完整節點需要追蹤所有 UTXO，這意味著每個 UTXO 都會使執行完整節點變得稍微困難一些。對於包含重要價值的 UTXO，最終會有動機去花費它們，所以它們不是問題。但是，控制不經濟 UTXO 的人沒有動機去花費它，可能使其成為完整節點營運商的永久負擔。因為 Bitcoin 的去中心化取決於許多人願意執行完整節點，所以 Bitcoin Core 等幾個完整節點實作使用影響未確認交易中繼和挖礦的策略來阻止建立不經濟的輸出。
 
 [role="less_space pagebreak-before"]
-反對中繼或挖掘建立新的不經濟輸出的交易的策略被稱為_粉塵_策略，基於價值非常小的輸出和大小非常小的粒子之間的隱喻比較。Bitcoin Core 的粉塵策略很複雜並包含幾個任意數字，因此我們了解的許多程式簡單地假設少於 546 聰的輸出是粉塵，預設情況下不會被中繼或挖掘。偶爾有降低粉塵限制的提案，也有提高粉塵限制的反提案，因此我們鼓勵使用預簽交易或多方協議的開發人員檢查自本書出版以來策略是否已更改。
+反對中繼或挖掘建立新的不經濟輸出的交易的策略被稱為__粉塵__策略，基於價值非常小的輸出和大小非常小的粒子之間的隱喻比較。Bitcoin Core 的粉塵策略很複雜並包含幾個任意數字，因此我們了解的許多程式簡單地假設少於 546 聰的輸出是粉塵，預設情況下不會被中繼或挖掘。偶爾有降低粉塵限制的提案，也有提高粉塵限制的反提案，因此我們鼓勵使用預簽交易或多方協議的開發人員檢查自本書出版以來策略是否已更改。
 
 [TIP]
 ====
@@ -318,21 +318,21 @@ Bitcoin 的共識規則允許輸出的值小至零，大至 2100 萬個 bitcoin�
 然而，Utreexo 仍然需要一些節點儲存所有 UTXO 資料，尤其是為礦工和其他需要快速驗證新區塊的操作提供服務的節點。這意味著即使在大多數節點使用 Utreexo 的可能未來中，不經濟的輸出仍然可能是完整節點的問題。
 ====
 
-Bitcoin Core 關於粉塵的策略規則確實有一個例外：以 +OP_RETURN+ 開頭的輸出腳本（稱為_資料載體輸出_）可以具有零值。+OP_RETURN+ 操作碼導致腳本立即失敗，無論其後是什麼，因此這些輸出永遠無法被花費。這意味著完整節點不需要追蹤它們，Bitcoin Core 利用這一功能允許使用者在區塊鏈中儲存少量任意資料，而不增加其 UTXO 資料庫的大小。由於輸出是不可花費的，它們不是不經濟的——分配給它們的任何聰都會永久不可花費——因此允許金額為零可確保聰不會被((("transactions", "outputs", "amount field", startref="transaction-output-amount")))((("outputs", "amount field", startref="output-transaction-amount")))((("amount field (transaction outputs)", startref="amount-field")))((("uneconomical outputs", startref="uneconomical")))((("dust policies", startref="dust")))銷毀。
+Bitcoin Core 關於粉塵的策略規則確實有一個例外：以 +OP_RETURN+ 開頭的輸出腳本（稱為__資料載體輸出__）可以具有零值。+OP_RETURN+ 操作碼導致腳本立即失敗，無論其後是什麼，因此這些輸出永遠無法被花費。這意味著完整節點不需要追蹤它們，Bitcoin Core 利用這一功能允許使用者在區塊鏈中儲存少量任意資料，而不增加其 UTXO 資料庫的大小。由於輸出是不可花費的，它們不是不經濟的——分配給它們的任何聰都會永久不可花費——因此允許金額為零可確保聰不會被((("transactions", "outputs", "amount field", startref="transaction-output-amount")))((("outputs", "amount field", startref="output-transaction-amount")))((("amount field (transaction outputs)", startref="amount-field")))((("uneconomical outputs", startref="uneconomical")))((("dust policies", startref="dust")))銷毀。
 
 ==== 輸出腳本
 
-輸出((("transactions", "outputs", "output scripts", id="transaction-output-script")))((("outputs", "output scripts", id="output-transaction-script")))((("output scripts", id="output-script2")))金額後面是一個 compactSize 整數，指示_輸出腳本_的長度，該腳本包含花費 bitcoin 所需要滿足的條件。根據 Bitcoin 的共識規則，輸出腳本的最小大小為零。
+輸出((("transactions", "outputs", "output scripts", id="transaction-output-script")))((("outputs", "output scripts", id="output-transaction-script")))((("output scripts", id="output-script2")))金額後面是一個 compactSize 整數，指示__輸出腳本__的長度，該腳本包含花費 bitcoin 所需要滿足的條件。根據 Bitcoin 的共識規則，輸出腳本的最小大小為零。
 
 輸出腳本的共識允許的最大大小取決於檢查時的時間。交易輸出中的輸出腳本的大小沒有明確限制，但後續交易只能花費具有 10,000 位元組或更小腳本的先前輸出。隱含地，輸出腳本幾乎可以與包含它的交易一樣大，而交易幾乎可以與包含它的區塊一樣大。
 
 [[anyone-can-spend]]
 [TIP]
 ====
-長度為零的輸出腳本可以由包含 ++OP_TRUE++ 的輸入腳本花費。任何人都可以建立該輸入腳本，這意味著任何人都可以花費空的輸出腳本。本質上有無限數量的任何人都可以花費的腳本，Bitcoin 協議開發人員稱它們為_任何人都可以花費_。對 Bitcoin 腳本語言的升級通常採用現有的任何人都可以花費的腳本並向其添加新的約束，使其僅在新條件下可花費。應用程式開發人員永遠不需要使用任何人都可以花費的腳本，但如果您這樣做，我們強烈建議您向 Bitcoin 使用者和開發人員大聲宣布您的計畫，以便未來的升級不會意外干擾您的系統。
+長度為零的輸出腳本可以由包含 ++OP_TRUE++ 的輸入腳本花費。任何人都可以建立該輸入腳本，這意味著任何人都可以花費空的輸出腳本。本質上有無限數量的任何人都可以花費的腳本，Bitcoin 協議開發人員稱它們為__任何人都可以花費__。對 Bitcoin 腳本語言的升級通常採用現有的任何人都可以花費的腳本並向其添加新的約束，使其僅在新條件下可花費。應用程式開發人員永遠不需要使用任何人都可以花費的腳本，但如果您這樣做，我們強烈建議您向 Bitcoin 使用者和開發人員大聲宣布您的計畫，以便未來的升級不會意外干擾您的系統。
 ====
 
-Bitcoin Core 的中繼和挖掘交易策略有效地將輸出腳本限制為僅幾個範本，((("standard transaction outputs")))稱為_標準交易輸出_。這最初是在發現與 Script 語言相關的幾個早期 Bitcoin 錯誤後實作的，並在現代 Bitcoin Core 中保留以支援任何人都可以花費的升級，並鼓勵將腳本條件放置在 P2SH 贖回腳本、segwit v0 見證腳本和 segwit v1（taproot）葉腳本中的最佳實踐。
+Bitcoin Core 的中繼和挖掘交易策略有效地將輸出腳本限制為僅幾個範本，((("standard transaction outputs")))稱為__標準交易輸出__。這最初是在發現與 Script 語言相關的幾個早期 Bitcoin 錯誤後實作的，並在現代 Bitcoin Core 中保留以支援任何人都可以花費的升級，並鼓勵將腳本條件放置在 P2SH 贖回腳本、segwit v0 見證腳本和 segwit v1（taproot）葉腳本中的最佳實踐。
 
 我們將查看每個當前標準交易範本，並在 <<c_authorization_authentication>> 中學習如何((("transactions", "outputs", startref="transaction-output")))((("outputs", startref="output-transaction")))((("transactions", "outputs", "output scripts", startref="transaction-output-script")))((("outputs", "output scripts", startref="output-transaction-script")))((("output scripts", startref="output-script2")))解析腳本。
 
@@ -341,15 +341,15 @@ Bitcoin Core 的中繼和挖掘交易策略有效地將輸出腳本限制為僅�
 
 在法庭上，((("transactions", "witnesses", id="transaction-witness")))((("witnesses", id="witness")))見證人是證明他們看到重要事情發生的人。人類見證人並不總是可靠的，因此法庭有各種程序來訊問見證人，以（理想情況下）只接受來自可靠者的證據。
 
-想像一下數學問題的見證人會是什麼樣子。例如，如果重要的問題是 _x + 2 == 4_ 並且有人聲稱他們見證了解決方案，我們會問他們什麼？我們想要一個數學證明，顯示一個可以與 2 相加等於 4 的值。我們甚至可以省略對人的需求，只使用建議的 _x_ 值作為我們的見證人。如果我們被告知見證人是 _two_，那麼我們可以填入方程式，檢查它是否正確，並決定重要的問題已經解決。
+想像一下數學問題的見證人會是什麼樣子。例如，如果重要的問題是 _x + 2 == 4_ 並且有人聲稱他們見證了解決方案，我們會問他們什麼？我們想要一個數學證明，顯示一個可以與 2 相加等於 4 的值。我們甚至可以省略對人的需求，只使用建議的 _x_ 值作為我們的見證人。如果我們被告知見證人是 __two__，那麼我們可以填入方程式，檢查它是否正確，並決定重要的問題已經解決。
 
-在花費 bitcoin 時，我們想要解決的重要問題是確定花費是否得到控制這些 bitcoin 的人或人們的授權。執行 Bitcoin 共識規則的數千個完整節點無法訊問人類見證人，但它們可以接受完全由用於解決數學問題的資料組成的_見證_。例如，_2_ 的見證將允許花費由以下腳本保護的 bitcoin：
+在花費 bitcoin 時，我們想要解決的重要問題是確定花費是否得到控制這些 bitcoin 的人或人們的授權。執行 Bitcoin 共識規則的數千個完整節點無法訊問人類見證人，但它們可以接受完全由用於解決數學問題的資料組成的__見證__。例如，__2__ 的見證將允許花費由以下腳本保護的 bitcoin：
 
 ----
 2 OP_ADD 4 OP_EQUAL
 ----
 
-顯然，允許任何能解決簡單方程式的人花費您的 bitcoin 是不安全的。正如我們將在 <<c_signatures>> 中看到的，不可偽造的數位簽章方案使用一個方程式，該方程式只能由擁有他們能夠保密的某些資料的人來解決。他們能夠使用公開識別符號引用該秘密資料。該公開識別符號((("public keys")))((("digital signatures")))((("signatures", see="digital signatures")))稱為_公鑰_，方程式的解稱為_簽章_。
+顯然，允許任何能解決簡單方程式的人花費您的 bitcoin 是不安全的。正如我們將在 <<c_signatures>> 中看到的，不可偽造的數位簽章方案使用一個方程式，該方程式只能由擁有他們能夠保密的某些資料的人來解決。他們能夠使用公開識別符號引用該秘密資料。該公開識別符號((("public keys")))((("digital signatures")))((("signatures", see="digital signatures")))稱為__公鑰__，方程式的解稱為__簽章__。
 
 以下腳本包含一個公鑰和一個操作碼，該操作碼要求相應的簽章承諾花費交易中的資料。就像我們簡單範例中的數字 _2_ 一樣，簽章是我們的見證：
 
@@ -367,9 +367,9 @@ Bitcoin Core 的中繼和挖掘交易策略有效地將輸出腳本限制為僅�
 
 - Tx~1~ 將先前的輸出花費到兩個輸出，一個退款給 Alice 她的錢，一個退款給 Bob 他的錢（減去少量交易手續費）。
 
-- 如果 Alice 和 Bob 在簽署 Tx~0~ 之前簽署 Tx~1~，那麼他們都保證可以隨時獲得退款。該協議不需要他們中的任何一個信任另一個，使((("trustless protocols")))其成為_無信任協議_。
+- 如果 Alice 和 Bob 在簽署 Tx~0~ 之前簽署 Tx~1~，那麼他們都保證可以隨時獲得退款。該協議不需要他們中的任何一個信任另一個，使((("trustless protocols")))其成為__無信任協議__。
 
-在傳統交易格式中，這種結構的問題是每個欄位，包括包含簽章的輸入腳本欄位，都用於衍生[.keep-together]#交易的#識別符號（txid）。Tx~0~ 的 txid 是 Tx~1~ 中輸入的輸出點的一部分。這意味著在知道 Tx~0~ 的兩個簽章之前，Alice 和 Bob 無法建立 Tx~1~——但如果他們知道 Tx~0~ 的簽章，他們中的一個可以在簽署退款交易之前廣播該交易，從而消除退款的保證。這是一個_循環依賴_。
+在傳統交易格式中，這種結構的問題是每個欄位，包括包含簽章的輸入腳本欄位，都用於衍生[.keep-together]#交易的#識別符號（txid）。Tx~0~ 的 txid 是 Tx~1~ 中輸入的輸出點的一部分。這意味著在知道 Tx~0~ 的兩個簽章之前，Alice 和 Bob 無法建立 Tx~1~——但如果他們知道 Tx~0~ 的簽章，他們中的一個可以在簽署退款交易之前廣播該交易，從而消除退款的保證。這是一個__循環依賴__。
 
 ==== 第三方交易可塑性
 
@@ -398,13 +398,13 @@ OP_PUSHDATA4 0x000000020002
 ...
 ----
 
-輸入腳本中數字 _2_ 的每種替代編碼都將產生一個略有不同的交易，具有完全不同的 txid。交易的每個不同版本都花費與交易的每個其他版本相同的輸入（輸出點），使它們彼此_衝突_。一組衝突交易中只有一個版本可以包含在有效的區塊鏈中。
+輸入腳本中數字 _2_ 的每種替代編碼都將產生一個略有不同的交易，具有完全不同的 txid。交易的每個不同版本都花費與交易的每個其他版本相同的輸入（輸出點），使它們彼此__衝突__。一組衝突交易中只有一個版本可以包含在有效的區塊鏈中。
 
-想像 Alice 建立了一個在輸入腳本中包含 +OP_2+ 的交易版本，並且有一個輸出支付給 Bob。Bob 然後立即將該輸出花費給 Carol。網路上的任何人都可以用 +OP_PUSH1 0x02+ 替換 +OP_2+，建立與 Alice 原始版本的衝突。如果該衝突交易得到確認，那麼就沒有辦法在同一區塊鏈中包含 Alice 的原始版本，這意味著 Bob 的交易沒有辦法花費其輸出。即使 Alice、Bob 或 Carol 都沒有做錯任何事，Bob 支付給 Carol 的交易也已經無效。未參與交易的某人（第三方）能夠改變（變異）Alice 的交易，這個問題稱為_不需要的第三方交易可塑性_。
+想像 Alice 建立了一個在輸入腳本中包含 +OP_2+ 的交易版本，並且有一個輸出支付給 Bob。Bob 然後立即將該輸出花費給 Carol。網路上的任何人都可以用 +OP_PUSH1 0x02+ 替換 +OP_2+，建立與 Alice 原始版本的衝突。如果該衝突交易得到確認，那麼就沒有辦法在同一區塊鏈中包含 Alice 的原始版本，這意味著 Bob 的交易沒有辦法花費其輸出。即使 Alice、Bob 或 Carol 都沒有做錯任何事，Bob 支付給 Carol 的交易也已經無效。未參與交易的某人（第三方）能夠改變（變異）Alice 的交易，這個問題稱為__不需要的第三方交易可塑性__。
 
 [TIP]
 ====
-在某些情況下，人們希望他們的交易是可塑的，Bitcoin 提供了幾個功能來支援這一點，最著名的是我們將在 <<sighash_types>> 中了解的簽章雜湊（sighash）。例如，Alice 可以使用 sighash 允許 Bob 幫助她支付一些交易手續費。這會變異 Alice 的交易，但只是以 Alice 想要的方式。因此，我們有時會在_交易可塑性_一詞前加上_不需要的_前綴。即使我們和其他 Bitcoin 技術作家使用較短的術語，我們幾乎肯定是在談論可塑性的不需要((("transactions", "witnesses", "third-party transaction malleability", startref="transaction-witness-third-party")))((("witnesses", "third-party transaction malleability", startref="witness-circular-third-party")))((("third-party transaction malleability", startref="third-party")))變體。
+在某些情況下，人們希望他們的交易是可塑的，Bitcoin 提供了幾個功能來支援這一點，最著名的是我們將在 <<sighash_types>> 中了解的簽章雜湊（sighash）。例如，Alice 可以使用 sighash 允許 Bob 幫助她支付一些交易手續費。這會變異 Alice 的交易，但只是以 Alice 想要的方式。因此，我們有時會在__交易可塑性__一詞前加上__不需要的__前綴。即使我們和其他 Bitcoin 技術作家使用較短的術語，我們幾乎肯定是在談論可塑性的不需要((("transactions", "witnesses", "third-party transaction malleability", startref="transaction-witness-third-party")))((("witnesses", "third-party transaction malleability", startref="witness-circular-third-party")))((("third-party transaction malleability", startref="third-party")))變體。
 ====
 
 ==== 第二方交易可塑性
@@ -419,25 +419,25 @@ OP_PUSHDATA4 0x000000020002
 
 這裡沒有循環依賴，如果我們忽略第三方交易可塑性，這看起來應該為我們提供一個無信任協議。然而，Bitcoin 簽章的一個屬性是簽署者在建立簽章時必須選擇一個大的隨機數。選擇不同的隨機數將產生不同的簽章，即使被簽署的所有內容保持不變。這有點像，如果您為同一合約的兩份副本提供手寫簽章，每個物理簽章看起來都會略有不同。
 
-簽章的這種可變性意味著，如果 Alice 嘗試廣播 Tx~0~（其中包含 Bob 的簽章），Bob 可以生成替代簽章以建立具有不同 txid 的衝突交易。如果 Bob 的 Tx~0~ 替代版本得到確認，那麼 Alice 無法使用預簽版本的 Tx~1~ 來索取她的退款。這種類型的變異((("transactions", "witnesses", "second-party transaction malleability", startref="transaction-witness-second-party")))((("witnesses", "second-party transaction malleability", startref="witness-circular-second-party")))((("second-party transaction malleability", startref="second-party")))稱為_不需要的第二方交易可塑性_。
+簽章的這種可變性意味著，如果 Alice 嘗試廣播 Tx~0~（其中包含 Bob 的簽章），Bob 可以生成替代簽章以建立具有不同 txid 的衝突交易。如果 Bob 的 Tx~0~ 替代版本得到確認，那麼 Alice 無法使用預簽版本的 Tx~1~ 來索取她的退款。這種類型的變異((("transactions", "witnesses", "second-party transaction malleability", startref="transaction-witness-second-party")))((("witnesses", "second-party transaction malleability", startref="witness-circular-second-party")))((("second-party transaction malleability", startref="second-party")))稱為__不需要的第二方交易可塑性__。
 
 [[segwit]]
 ==== 隔離見證
 
-早在 https://oreil.ly/---bp[2011]((("transactions", "witnesses", "segregated witness", id="transaction-witness-segwit")))((("witnesses", "segregated witness", id="witness-segwit")))((("segregated witness (segwit)", id="segregated-witness-segwit")))年，協議開發人員就知道如何解決循環依賴、第三方可塑性和第二方可塑性的問題。這個想法是避免在產生交易 txid 的計算中包含輸入腳本。回想一下，輸入腳本持有的資料的抽象名稱是_見證_。出於生成 txid 的目的，將交易中的其餘資料與其見證分離的想法稱為_隔離見證_（segwit）。
+早在 https://oreil.ly/---bp[2011]((("transactions", "witnesses", "segregated witness", id="transaction-witness-segwit")))((("witnesses", "segregated witness", id="witness-segwit")))((("segregated witness (segwit)", id="segregated-witness-segwit")))年，協議開發人員就知道如何解決循環依賴、第三方可塑性和第二方可塑性的問題。這個想法是避免在產生交易 txid 的計算中包含輸入腳本。回想一下，輸入腳本持有的資料的抽象名稱是__見證__。出於生成 txid 的目的，將交易中的其餘資料與其見證分離的想法稱為__隔離見證__（segwit）。
 
-實作 segwit 的明顯方法需要對 Bitcoin 的共識規則進行更改，這與較舊的完整節點不相容，也((("hard forks")))((("forks", "hard forks")))稱為_硬分叉_。硬分叉帶來了很多挑戰，我們將在 <<hard_forks>> 中進一步討論。
+實作 segwit 的明顯方法需要對 Bitcoin 的共識規則進行更改，這與較舊的完整節點不相容，也((("hard forks")))((("forks", "hard forks")))稱為__硬分叉__。硬分叉帶來了很多挑戰，我們將在 <<hard_forks>> 中進一步討論。
 
-2015 年末描述了一種 segwit 的替代方法。這將使用對共識規則的向後相容更改，((("soft forks")))((("forks", "soft forks")))稱為_軟分叉_。向後相容意味著實作更改的完整節點不得接受未實作更改的完整節點認為無效的任何區塊。只要他們遵守該規則，較新的完整節點可以拒絕較舊的完整節點會接受的區塊，使它們能夠執行新的共識規則（但只有當較新的完整節點代表 Bitcoin 使用者之間的經濟共識時——我們將在 <<mining>> 中探討升級 Bitcoin 共識規則的細節）。
+2015 年末描述了一種 segwit 的替代方法。這將使用對共識規則的向後相容更改，((("soft forks")))((("forks", "soft forks")))稱為__軟分叉__。向後相容意味著實作更改的完整節點不得接受未實作更改的完整節點認為無效的任何區塊。只要他們遵守該規則，較新的完整節點可以拒絕較舊的完整節點會接受的區塊，使它們能夠執行新的共識規則（但只有當較新的完整節點代表 Bitcoin 使用者之間的經濟共識時——我們將在 <<mining>> 中探討升級 Bitcoin 共識規則的細節）。
 
-軟分叉 segwit 方法基於任何人都可以花費的輸出腳本。以數字 0 到 16 中的任何一個開頭並後跟 2 到 40 位元組資料的腳本被定義為 segwit 輸出腳本範本。該數字指示其版本（例如，0 是 segwit 版本 0，或 _segwit v0_）。資料稱為_見證程式_。也可以在 P2SH 承諾中包裝 segwit 範本，但我們不會在本章中處理這個問題。
+軟分叉 segwit 方法基於任何人都可以花費的輸出腳本。以數字 0 到 16 中的任何一個開頭並後跟 2 到 40 位元組資料的腳本被定義為 segwit 輸出腳本範本。該數字指示其版本（例如，0 是 segwit 版本 0，或 __segwit v0__）。資料稱為__見證程式__。也可以在 P2SH 承諾中包裝 segwit 範本，但我們不會在本章中處理這個問題。
 
-從舊節點的角度來看，這些輸出腳本範本可以用空的輸入腳本花費。從知道新 segwit 規則的新節點的角度來看，對 segwit 輸出腳本範本的任何支付都必須僅用空的輸入腳本花費。注意這裡的區別：舊節點_允許_空的輸入腳本；新節點_要求_空的輸入腳本。
+從舊節點的角度來看，這些輸出腳本範本可以用空的輸入腳本花費。從知道新 segwit 規則的新節點的角度來看，對 segwit 輸出腳本範本的任何支付都必須僅用空的輸入腳本花費。注意這裡的區別：舊節點__允許__空的輸入腳本；新節點__要求__空的輸入腳本。
 
 [role="less_space pagebreak-before"]
-空的輸入腳本使見證不影響 txid，從而消除循環依賴、第三方交易可塑性和第二方交易可塑性。但是，由於無法在輸入腳本中放置資料，segwit 輸出腳本範本的使用者需要一個新欄位。該欄位稱為_見證結構_。
+空的輸入腳本使見證不影響 txid，從而消除循環依賴、第三方交易可塑性和第二方交易可塑性。但是，由於無法在輸入腳本中放置資料，segwit 輸出腳本範本的使用者需要一個新欄位。該欄位稱為__見證結構__。
 
-見證程式和見證結構的引入使 Bitcoin 變得複雜，但它遵循了增加抽象的現有趨勢。回想 <<ch04_keys_addresses>> 中原始的 Bitcoin 白皮書描述了一個系統，其中 bitcoin 被接收到公鑰（pubkeys）並用簽章（sigs）花費。公鑰定義了誰被_授權_花費 bitcoin（無論誰控制相應的私鑰），簽章提供了_認證_，證明花費交易來自控制私鑰的某人。為了使該系統更靈活，Bitcoin 的初始版本引入了允許 bitcoin 被接收到輸出腳本並用輸入腳本花費的腳本。後來對合約協議的經驗啟發了允許 bitcoin 被接收到見證程式並用見證結構花費。Bitcoin((("transactions", "witnesses", "segregated witness", startref="transaction-witness-segwit")))((("witnesses", "segregated witness", startref="witness-segwit")))((("segregated witness (segwit)", startref="segregated-witness-segwit")))不同版本中使用的術語和欄位顯示在 <<terms_used_authorization_authentication>> 中。
+見證程式和見證結構的引入使 Bitcoin 變得複雜，但它遵循了增加抽象的現有趨勢。回想 <<ch04_keys_addresses>> 中原始的 Bitcoin 白皮書描述了一個系統，其中 bitcoin 被接收到公鑰（pubkeys）並用簽章（sigs）花費。公鑰定義了誰被__授權__花費 bitcoin（無論誰控制相應的私鑰），簽章提供了__認證__，證明花費交易來自控制私鑰的某人。為了使該系統更靈活，Bitcoin 的初始版本引入了允許 bitcoin 被接收到輸出腳本並用輸入腳本花費的腳本。後來對合約協議的經驗啟發了允許 bitcoin 被接收到見證程式並用見證結構花費。Bitcoin((("transactions", "witnesses", "segregated witness", startref="transaction-witness-segwit")))((("witnesses", "segregated witness", startref="witness-segwit")))((("segregated witness (segwit)", startref="segregated-witness-segwit")))不同版本中使用的術語和欄位顯示在 <<terms_used_authorization_authentication>> 中。
 
 ++++
 <table id="terms_used_authorization_authentication">
@@ -478,7 +478,7 @@ image::images/mbc3_0605.png["Alice 交易中見證的位元組映射"]
 
 與輸入和輸出欄位不同，整體見證結構不以它包含的見證堆疊總數的任何指示開始。相反，這是由輸入欄位隱含的——交易中的每個輸入都有一個見證堆疊。
 
-特定輸入的見證結構確實以它們包含的元素數量的計數開始。這些元素((("witness items")))稱為_見證項目_。我們將在 <<c_authorization_authentication>> 中詳細探討它們，但現在我們需要知道每個見證項目都以一個 compactSize 整數為前綴，指示其大小。
+特定輸入的見證結構確實以它們包含的元素數量的計數開始。這些元素((("witness items")))稱為__見證項目__。我們將在 <<c_authorization_authentication>> 中詳細探討它們，但現在我們需要知道每個見證項目都以一個 compactSize 整數為前綴，指示其大小。
 
 傳統輸入不包含任何見證項目，因此它們的見證堆疊完全由零計數（0x00）組成。
 
@@ -493,14 +493,14 @@ Alice 的交易包含一個輸入和一個((("transactions", "witnesses", startr
 
 - 交易通過將其鎖定時間設置為小於 500,000,000 的值來指示它想要限制可以包含在哪些區塊中。在這種情況下，交易只能包含在高度等於或高於鎖定時間的區塊中。例如，鎖定時間為 123,456 的交易可以包含在區塊 123,456 或任何後續區塊中。
 
-- 交易通過將其鎖定時間設置為 500,000,000 或更大的值來指示它想要限制何時可以包含在區塊鏈中。在這種情況下，該欄位被解析為紀元時間（自 1970-01-01T00:00 UTC 以來的秒數），並且交易只能包含在((("median time past (MTP)")))((("MTP (median time past)"))_過去中位時間_（MTP）大於鎖定時間的區塊中。MTP 通常比當前時間晚大約一兩個小時。MTP 的規則在 <<mtp>> 中描述。
+- 交易通過將其鎖定時間設置為 500,000,000 或更大的值來指示它想要限制何時可以包含在區塊鏈中。在這種情況下，該欄位被解析為紀元時間（自 1970-01-01T00:00 UTC 以來的秒數），並且交易只能包含在((("median time past (MTP)")))((("MTP (median time past)"))__過去中位時間__（MTP）大於鎖定時間的區塊中。MTP 通常比當前時間晚大約一兩個小時。MTP 的規則在 <<mtp>> 中描述。
 
 [[coinbase_transactions]]
 === Coinbase 交易
 
-每個((("transactions", "coinbase", id="transaction-coinbase2")))((("coinbase transactions", id="coinbase-transaction")))((("generation transactions")))區塊中的第一筆交易是一個特殊情況。大多數較舊的文件稱這為_生成交易_，但大多數較新的文件稱其為 _coinbase 交易_（不要與名為「Coinbase」的公司建立的交易混淆）。
+每個((("transactions", "coinbase", id="transaction-coinbase2")))((("coinbase transactions", id="coinbase-transaction")))((("generation transactions")))區塊中的第一筆交易是一個特殊情況。大多數較舊的文件稱這為__生成交易__，但大多數較新的文件稱其為 __coinbase 交易__（不要與名為「Coinbase」的公司建立的交易混淆）。
 
-Coinbase 交易由包含它們的區塊的礦工建立，並賦予礦工選擇索取該區塊中交易支付的任何手續費的選項。此外，直到區塊 6,720,000，礦工被允許索取由以前從未流通過的 bitcoin 組成的補貼，稱為((("block subsidy")))((("block reward")))_區塊補貼_。礦工可以為一個區塊索取的總金額——手續費和補貼的組合——稱為_區塊獎勵_。
+Coinbase 交易由包含它們的區塊的礦工建立，並賦予礦工選擇索取該區塊中交易支付的任何手續費的選項。此外，直到區塊 6,720,000，礦工被允許索取由以前從未流通過的 bitcoin 組成的補貼，稱為((("block subsidy")))((("block reward")))__區塊補貼__。礦工可以為一個區塊索取的總金額——手續費和補貼的組合——稱為__區塊獎勵__。
 
 coinbase 交易的一些特殊規則包括：
 
@@ -508,13 +508,13 @@ coinbase 交易的一些特殊規則包括：
 
 - 單個輸入必須具有一個空 txid（完全由零組成）和最大輸出索引（0xffffffff）的輸出點。這防止 coinbase 交易引用先前的交易輸出，這（至少）會令人困惑，因為 coinbase 交易支付手續費和補貼。
 
-- 在正常交易中包含輸入腳本的欄位稱為 _coinbase_。正是這個欄位賦予 coinbase 交易其名稱。coinbase 欄位必須至少為 2 個位元組且不超過 100 個位元組。此腳本不執行，但對簽章檢查操作（sigops）數量的傳統交易限制確實適用於它，因此放置在其中的任何任意資料都應以資料推送操作碼為前綴。自 BIP34 中定義的 2013 軟分叉以來，此欄位的前幾個位元組必須遵循我們將在 <<duplicate_transactions>> 中描述的其他規則。
+- 在正常交易中包含輸入腳本的欄位稱為 __coinbase__。正是這個欄位賦予 coinbase 交易其名稱。coinbase 欄位必須至少為 2 個位元組且不超過 100 個位元組。此腳本不執行，但對簽章檢查操作（sigops）數量的傳統交易限制確實適用於它，因此放置在其中的任何任意資料都應以資料推送操作碼為前綴。自 BIP34 中定義的 2013 軟分叉以來，此欄位的前幾個位元組必須遵循我們將在 <<duplicate_transactions>> 中描述的其他規則。
 
 - 輸出的總和不得超過從該區塊中所有交易收集的手續費的值加上補貼。補貼從每個區塊 50 BTC 開始，每 210,000 個區塊減半（大約每四年）。補貼值向下舍入到最接近的聰。
 
 - 自 BIP141 中記錄的 2017 segwit 軟分叉以來，任何包含花費 segwit 輸出的交易的區塊都必須包含對 coinbase 交易的輸出，該輸出承諾區塊中的所有交易（包括它們的見證）。我們將在 <<mining>> 中探討這一承諾。
 
-coinbase 交易可以具有在正常交易中有效的任何其他輸出。然而，花費其中一個輸出的交易在 coinbase 交易收到 100 次確認之前不能包含在任何區塊中。這稱為_成熟規則_，並且((("maturity rule")))還沒有 100 次確認的 coinbase 交易輸出稱為_未成熟_。
+coinbase 交易可以具有在正常交易中有效的任何其他輸出。然而，花費其中一個輸出的交易在 coinbase 交易收到 100 次確認之前不能包含在任何區塊中。這稱為__成熟規則__，並且((("maturity rule")))還沒有 100 次確認的 coinbase 交易輸出稱為__未成熟__。
 
 //TODO:stretch goal to describe the reason for the maturity rule and,
 //by extension the reason for no expiring timelocks
@@ -531,7 +531,7 @@ coinbase 交易可以具有在正常交易中有效的任何其他輸出。然�
 
 === 權重和 Vbytes
 
-每個((("transactions", "weights", id="transactions-weight")))((("weights (of transactions)", id="weights")))((("vbytes", id="vbytes"))) Bitcoin 區塊在可以包含的交易資料量上受到限制，因此大多數 Bitcoin 軟體需要能夠測量它建立或處理的交易。Bitcoin 的現代測量單位稱為_權重_。權重的替代版本是 _vbytes_，其中四個權重單位等於一個 vbyte，提供與傳統 Bitcoin 區塊中使用的原始_位元組_測量單位的簡單比較。
+每個((("transactions", "weights", id="transactions-weight")))((("weights (of transactions)", id="weights")))((("vbytes", id="vbytes"))) Bitcoin 區塊在可以包含的交易資料量上受到限制，因此大多數 Bitcoin 軟體需要能夠測量它建立或處理的交易。Bitcoin 的現代測量單位稱為__權重__。權重的替代版本是 __vbytes__，其中四個權重單位等於一個 vbyte，提供與傳統 Bitcoin 區塊中使用的原始__位元組__測量單位的簡單比較。
 
 區塊限制為 400 萬權重。區塊頭佔用 240 權重。一個額外的欄位，交易計數，使用 4 或 12 權重。所有剩餘的權重可用於交易資料。
 
@@ -636,7 +636,7 @@ image::images/mbc3_0606.png["Alice 交易的權重映射"]
 [[legacy_serialization]]
 === 傳統序列化
 
-在((("transactions", "legacy serialization")))((("legacy serialization")))撰寫本書時，本章中描述的序列化格式用於大多數新的 Bitcoin 交易，但較舊的序列化格式仍用於許多交易。該較舊的格式稱為_傳統序列化_，必須在 Bitcoin P2P 網路上用於任何具有空見證結構的交易（這僅在交易不花費任何見證程式時有效）。
+在((("transactions", "legacy serialization")))((("legacy serialization")))撰寫本書時，本章中描述的序列化格式用於大多數新的 Bitcoin 交易，但較舊的序列化格式仍用於許多交易。該較舊的格式稱為__傳統序列化__，必須在 Bitcoin P2P 網路上用於任何具有空見證結構的交易（這僅在交易不花費任何見證程式時有效）。
 
 傳統序列化不包括標記、標誌和見證結構欄位。
 

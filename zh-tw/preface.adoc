@@ -25,7 +25,7 @@
 
 本書使用以下排版慣例：
 
-_斜體（Italic）_:: 表示新術語、URL、電子郵件地址、檔案名稱和副檔名。
+__斜體（Italic）__:: 表示新術語、URL、電子郵件地址、檔案名稱和副檔名。
 
 +等寬字體（Constant width）+:: 用於程式清單，以及在段落中引用程式元素，例如變數或函數名稱、資料庫、資料類型、環境變數、陳述式和關鍵字。
 
@@ -61,7 +61,7 @@ _++等寬斜體（Constant width italic）++_:: 顯示應該用使用者提供�
 
 這本書是為了幫助你完成工作。一般來說，如果本書提供了範例程式碼，你可以在你的程式和文件中使用它。除非你重現了程式碼的重要部分，否則你不需要聯絡我們以獲得許可。例如，編寫一個使用本書中幾個程式碼塊的程式不需要許可。銷售或分發 O'Reilly 書籍中的範例需要許可。透過引用本書和引用範例程式碼來回答問題不需要許可。將本書中大量範例程式碼合併到你的產品文件中確實需要許可。
 
-我們感謝但不要求署名。署名通常包括 [.keep-together]#標題、#作者、出版商和 ISBN。例如：「_Mastering Bitcoin_，第 3 版，作者 [.keep-together]#Andreas M.# Antonopoulos 和 David A. Harding（O'Reilly）。Copyright 2024 David Harding，ISBN 978-1-098-15009-9。」
+我們感謝但不要求署名。署名通常包括 [.keep-together]#標題、#作者、出版商和 ISBN。例如：「__Mastering Bitcoin__，第 3 版，作者 [.keep-together]#Andreas M.# Antonopoulos 和 David A. Harding（O'Reilly）。Copyright 2024 David Harding，ISBN 978-1-098-15009-9。」
 
 本書的某些版本以開源授權提供，例如 https://oreil.ly/RzUHE[CC-BY-NC]，在這種情況下，該授權的條款適用。
 
@@ -181,7 +181,7 @@ link:$$https://dtrt.org$$[]。
 
 === 第一版和第二版致謝
 
-_作者：Andreas M. Antonopoulos_
+__作者：Andreas M. Antonopoulos__
 
 這本書代表了許多人的努力和貢獻。我感謝朋友、同事，甚至完全陌生人提供的所有幫助，他們與我一起努力撰寫這本關於加密貨幣和比特幣的權威技術書籍。
 
@@ -207,7 +207,7 @@ _作者：Andreas M. Antonopoulos_
 
 === 第三版致謝
 
-_作者：David A. Harding_
+__作者：David A. Harding__
 
 <<schnorr_signatures>> 中對非互動式 schnorr 簽章協議的介紹，首先描述了互動式 schnorr 身份協議，這受到 Gregory Maxwell 和 Andrew Poelstra 的「Borrommean Ring Signatures」（2015）中對該主題的介紹的重大影響。我對他們每個人在過去十年中免費提供的所有協助深表感激。
 

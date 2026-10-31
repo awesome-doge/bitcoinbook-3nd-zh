@@ -1,7 +1,7 @@
 [[ch12]]
 == 第二層應用
 
-現在讓我們透過將比特幣視為其他應用程式或_第二層_的平台，在對主要比特幣系統（_第一層_）的理解基礎上進一步發展。在本章中，我們將研究比特幣作為應用平台提供的功能。我們將考慮應用建構_原語_，它們構成任何區塊鏈應用的構建塊。我們將研究幾個使用這些原語的重要應用，例如客戶端驗證、支付通道和路由支付通道（閃電網路）。
+現在讓我們透過將比特幣視為其他應用程式或__第二層__的平台，在對主要比特幣系統（__第一層__）的理解基礎上進一步發展。在本章中，我們將研究比特幣作為應用平台提供的功能。我們將考慮應用建構__原語__，它們構成任何區塊鏈應用的構建塊。我們將研究幾個使用這些原語的重要應用，例如客戶端驗證、支付通道和路由支付通道（閃電網路）。
 
 === 構建塊（原語）
 
@@ -59,13 +59,13 @@ Kickstarter（Lighthouse）:: 一致性 + 原子性 + 完整性。如果您簽�
 
 === 彩色幣
 
-我們將討論的第一個區塊鏈 ((("Bitcoin", "as application platform", "colored coins application", secondary-sortas="application platform", id="bitcoin-app-platform-color")))((("application platform, Bitcoin as", "colored coins application", id="app-platform-color")))((("colored coins application", id="color-coin")))應用是_彩色幣_。
+我們將討論的第一個區塊鏈 ((("Bitcoin", "as application platform", "colored coins application", secondary-sortas="application platform", id="bitcoin-app-platform-color")))((("application platform, Bitcoin as", "colored coins application", id="app-platform-color")))((("colored coins application", id="color-coin")))應用是__彩色幣__。
 
 彩色幣是指一組類似的技術，它們使用比特幣交易來記錄除比特幣之外的外部資產的創建、所有權和轉移。透過「外部」，我們指的是不直接儲存在比特幣區塊鏈上的資產，而不是比特幣本身，比特幣是區塊鏈固有的資產。
 
 彩色幣用於追蹤數位資產以及由第三方持有並透過與彩色幣相關聯的所有權憑證進行交易的實物資產。數位資產彩色幣可以代表無形資產，例如股票憑證、許可證、虛擬財產（遊戲物品）或大多數任何形式的授權智慧財產權（商標、版權等）。有形資產彩色幣可以代表商品（黃金、白銀、石油）、土地所有權、汽車、船隻、飛機等的所有權憑證。
 
-該術語源自「著色」或標記名義數量的比特幣的想法，例如單個聰，以代表比特幣數量本身以外的東西。作為類比，考慮在 1 美元紙幣上蓋章說「這是 ACME 的股票憑證」或「此紙幣可兌換 1 盎司白銀」，然後將 1 美元紙幣作為此其他資產的所有權憑證進行交易。彩色幣的第一個實作，名為_Enhanced Padded-Order-Based Coloring_或 _EPOBC_，將外部資產分配給 1 聰的輸出。這樣，它是一個真正的「彩色幣」，因為每個資產都被添加為單個聰的屬性（顏色）。
+該術語源自「著色」或標記名義數量的比特幣的想法，例如單個聰，以代表比特幣數量本身以外的東西。作為類比，考慮在 1 美元紙幣上蓋章說「這是 ACME 的股票憑證」或「此紙幣可兌換 1 盎司白銀」，然後將 1 美元紙幣作為此其他資產的所有權憑證進行交易。彩色幣的第一個實作，名為__Enhanced Padded-Order-Based Coloring__或 __EPOBC__，將外部資產分配給 1 聰的輸出。這樣，它是一個真正的「彩色幣」，因為每個資產都被添加為單個聰的屬性（顏色）。
 
 彩色幣的更新實作使用其他機制將元資料附加到交易，結合外部資料儲存，將元資料與特定資產相關聯。截至撰寫本文時使用的三種主要機制是單次使用密封、合約支付和客戶端驗證。
 
@@ -89,7 +89,7 @@ P2C 合約可以任意長且詳細，條款可以用任何語言編寫，並且�
 
 在彩色幣的背景下，Bob 可以透過花費相關的 UTXO 來打開包含其彩色幣的單次使用密封。在花費該 UTXO 的交易中，他可以承諾一個合約，指出彩色幣的下一個所有者（或所有者）必須滿足的條件才能進一步花費這些幣。新所有者不需要是 Alice，即使 Alice 是接收 Bob 花費的 UTXO 的人，並且 Alice 已透過合約條款調整了她的公鑰。
 
-因為完整節點不（也不能）驗證合約是否正確遵循，我們需要弄清楚誰負責驗證。這就引出 ((("colored coins application", "P2C (pay to contract)", startref="color-coin-p2c")))((("P2C (pay to contract)", startref="p2c-color-coin")))_客戶端驗證_。
+因為完整節點不（也不能）驗證合約是否正確遵循，我們需要弄清楚誰負責驗證。這就引出 ((("colored coins application", "P2C (pay to contract)", startref="color-coin-p2c")))((("P2C (pay to contract)", startref="p2c-color-coin")))__客戶端驗證__。
 
 ==== 客戶端驗證
 
@@ -99,7 +99,7 @@ Bob 有 ((("colored coins application", "client-side validation")))((("client-si
 
 當 Alice 稍後想將她的彩色幣花費給 Dan 時，她首先需要向 Dan 證明她控制彩色幣。Alice 可以透過向 Dan 揭示她的底層 P2C 公鑰和 Bob 選擇的 P2C 合約條款來做到這一點。Alice 還向 Dan 揭示 Bob 用作單次使用密封的 UTXO 以及 Bob 給她的關於彩色幣先前所有者的任何資訊。簡而言之，Alice 給 Dan 一套關於彩色幣每次先前轉移的完整歷史，每一步都錨定在比特幣區塊鏈中（但不在鏈中儲存任何特殊資料——只是常規公鑰）。該歷史非常像我們稱為區塊鏈的常規比特幣交易歷史，但彩色歷史對區塊鏈的其他用戶完全不可見。
 
-Dan 使用他的軟體驗證此歷史，稱為_客戶端驗證_。值得注意的是，Dan 只需要接收和驗證與他想要接收的彩色幣相關的歷史部分。他不需要關於其他人的彩色幣發生了什麼的資訊——例如，他永遠不需要知道 Bob 的另一半幣（Bob 沒有轉移給 Alice 的那些）發生了什麼。這有助於增強彩色幣協議的隱私性。
+Dan 使用他的軟體驗證此歷史，稱為__客戶端驗證__。值得注意的是，Dan 只需要接收和驗證與他想要接收的彩色幣相關的歷史部分。他不需要關於其他人的彩色幣發生了什麼的資訊——例如，他永遠不需要知道 Bob 的另一半幣（Bob 沒有轉移給 Alice 的那些）發生了什麼。這有助於增強彩色幣協議的隱私性。
 
 現在我們已經了解了單次使用密封、合約支付和客戶端驗證，我們可以查看截至撰寫本文時使用它們的兩個主要協議，RGB 和 Taproot Assets。
 
@@ -126,7 +126,7 @@ RGB 的開發人員描述了其協議的其他用途，例如創建可以定期�
 
 [NOTE]
 ====
-_Taproot_ 是比特幣協議的一部分。_Taproot Assets_ 不是，儘管名稱相似。RGB 和 Taproot Assets 都是建立在比特幣協議之上的協議。比特幣原生支援的唯一資產是比特幣。
+_Taproot_ 是比特幣協議的一部分。__Taproot Assets__ 不是，儘管名稱相似。RGB 和 Taproot Assets 都是建立在比特幣協議之上的協議。比特幣原生支援的唯一資產是比特幣。
 ====
 
 比 RGB 更甚，Taproot Assets 被設計為與 LN 相容。在 LN 上轉發非比特幣資產的一個挑戰是有兩種方法可以完成發送，每種方法都有不同的權衡集：
@@ -137,7 +137,7 @@ _Taproot_ 是比特幣協議的一部分。_Taproot Assets_ 不是，儘管名�
 翻譯轉發::
 花費者旁邊的跳躍和 ((("translated forwarding")))接收者旁邊的跳躍必須了解特定資產並具有足夠的餘額來支援轉發支付，但其他每個跳躍只需要支援轉發比特幣 [.keep-together]#支付。#
 
-原生轉發在概念上更簡單，但實質上需要為每個資產建立一個單獨的類閃電網路。翻譯轉發允許建立在比特幣 LN 的規模經濟之上，但它可能容易受到一個稱為 ((("free American call option")))_免費美式看漲期權_的問題的影響，接收者可能會根據匯率的最近變化選擇性地接受或拒絕某些支付，以從他們旁邊的跳躍中抽取資金。儘管沒有已知的免費美式看漲期權的完美解決方案，但可能存在限制其危害的實用解決方案。
+原生轉發在概念上更簡單，但實質上需要為每個資產建立一個單獨的類閃電網路。翻譯轉發允許建立在比特幣 LN 的規模經濟之上，但它可能容易受到一個稱為 ((("free American call option")))__免費美式看漲期權__的問題的影響，接收者可能會根據匯率的最近變化選擇性地接受或拒絕某些支付，以從他們旁邊的跳躍中抽取資金。儘管沒有已知的免費美式看漲期權的完美解決方案，但可能存在限制其危害的實用解決方案。
 
 Taproot Assets 和 RGB 在技術上都可以支援原生和翻譯轉發。Taproot Assets 專門圍繞翻譯轉發設計，而 RGB 已經看到實施兩者的提案。
 
@@ -146,25 +146,25 @@ Taproot Assets 和 RGB 在技術上都可以支援原生和翻譯轉發。Taproo
 [[state_channels]]
 === 支付通道和狀態通道
 
-_支付通道_是 ((("Bitcoin", "as application platform", "payment channels", secondary-sortas="application platform", id="bitcoin-app-platform-payment")))((("application platform, Bitcoin as", "payment channels", id="app-platform-payment")))((("payment channels", id="payment-channel")))在比特幣區塊鏈之外在兩方之間交換比特幣交易的無信任機制。這些交易如果在比特幣區塊鏈上結算將是有效的，但它們被保留在鏈下，等待最終批次結算。因為交易沒有結算，所以它們可以在沒有通常結算延遲的情況下交換，允許極高的交易吞吐量、低延遲和細粒度。
+__支付通道__是 ((("Bitcoin", "as application platform", "payment channels", secondary-sortas="application platform", id="bitcoin-app-platform-payment")))((("application platform, Bitcoin as", "payment channels", id="app-platform-payment")))((("payment channels", id="payment-channel")))在比特幣區塊鏈之外在兩方之間交換比特幣交易的無信任機制。這些交易如果在比特幣區塊鏈上結算將是有效的，但它們被保留在鏈下，等待最終批次結算。因為交易沒有結算，所以它們可以在沒有通常結算延遲的情況下交換，允許極高的交易吞吐量、低延遲和細粒度。
 
-實際上，術語_通道_是一個隱喻。狀態通道是由區塊鏈之外兩方之間的狀態交換表示的虛擬構造。本身沒有「通道」，底層資料傳輸機制也不是通道。我們使用術語_通道_來表示區塊鏈之外兩方之間的關係和共享狀態。
+實際上，術語__通道__是一個隱喻。狀態通道是由區塊鏈之外兩方之間的狀態交換表示的虛擬構造。本身沒有「通道」，底層資料傳輸機制也不是通道。我們使用術語__通道__來表示區塊鏈之外兩方之間的關係和共享狀態。
 
 為了進一步解釋這個概念，想想 TCP 流。從更高層協議的角度來看，它是連接跨網際網路的兩個應用的「套接字」。但是，如果您查看網路流量，TCP 流只是通過 IP 封包的虛擬通道。TCP 流的每個端點對 IP 封包進行排序和組裝，以創建位元組流的錯覺。在底層，它都是斷開連接的封包。同樣，支付通道只是一系列交易。如果正確排序和連接，它們會創建可贖回的義務，即使您不信任通道的另一方，您也可以信任。
 
-在本節中，我們將研究各種形式的支付通道。首先，我們將檢查用於構建計量微支付服務的單向（單向）支付通道的機制，例如流媒體影片。然後，我們將擴展這種機制並引入雙向支付通道。最後，我們將看看雙向通道如何端到端連接以在路由網路中形成多跳通道，首先在_閃電網路_的名稱下提出。
+在本節中，我們將研究各種形式的支付通道。首先，我們將檢查用於構建計量微支付服務的單向（單向）支付通道的機制，例如流媒體影片。然後，我們將擴展這種機制並引入雙向支付通道。最後，我們將看看雙向通道如何端到端連接以在路由網路中形成多跳通道，首先在__閃電網路__的名稱下提出。
 
-支付通道是_狀態通道_這一更廣泛概念的一部分，狀態通道代表狀態的鏈下更改，透過區塊鏈中的最終結算來保護。支付通道是一種狀態通道，其中正在更改的狀態是虛擬貨幣的餘額。
+支付通道是__狀態通道__這一更廣泛概念的一部分，狀態通道代表狀態的鏈下更改，透過區塊鏈中的最終結算來保護。支付通道是一種狀態通道，其中正在更改的狀態是虛擬貨幣的餘額。
 
 ==== 狀態通道——基本概念和術語
 
-狀態通道 ((("payment channels", "state channels", id="payment-channel-state")))((("state channels", id="state-channel-terminology")))((("transactions", "state channels", id="transaction-state")))是透過將共享狀態鎖定在區塊鏈上的交易在兩方之間建立的。這稱為 ((("funding transactions")))_資金交易_。這個單一交易必須傳輸到網路並挖掘以建立通道。在支付通道的示例中，鎖定的狀態是通道的初始餘額（以貨幣計）。
+狀態通道 ((("payment channels", "state channels", id="payment-channel-state")))((("state channels", id="state-channel-terminology")))((("transactions", "state channels", id="transaction-state")))是透過將共享狀態鎖定在區塊鏈上的交易在兩方之間建立的。這稱為 ((("funding transactions")))__資金交易__。這個單一交易必須傳輸到網路並挖掘以建立通道。在支付通道的示例中，鎖定的狀態是通道的初始餘額（以貨幣計）。
 
-然後，雙方交換簽署的交易，((("commitment transactions")))稱為_承諾交易_，這些交易更改初始狀態。這些交易是有效交易，因為它們_可以_由任一方提交以進行結算，但相反，它們由每一方保留在鏈下，等待通道關閉。狀態更新可以像每一方創建、簽署交易並將其傳輸給另一方一樣快地創建。實際上，這意味著每秒可以交換數十筆交易。
+然後，雙方交換簽署的交易，((("commitment transactions")))稱為__承諾交易__，這些交易更改初始狀態。這些交易是有效交易，因為它們__可以__由任一方提交以進行結算，但相反，它們由每一方保留在鏈下，等待通道關閉。狀態更新可以像每一方創建、簽署交易並將其傳輸給另一方一樣快地創建。實際上，這意味著每秒可以交換數十筆交易。
 
 在交換承諾交易時，雙方也阻止使用先前的狀態，以便最新的承諾交易始終是最好的可贖回的。這阻止任一方透過單方面關閉通道並使用對他們更有利於當前狀態的先前狀態來作弊。我們將在本章的其餘部分檢查可用於阻止發佈先前狀態的各種機制。
 
-最後，通道可以透過提交最終的 ((("settlement transactions")))_結算交易_到區塊鏈來協作關閉，或者由任一方提交最後的承諾交易到區塊鏈來單方面關閉。如果其中一方意外斷開連接，則需要單方面關閉選項。結算交易代表通道的最終狀態，並在區塊鏈上結算。
+最後，通道可以透過提交最終的 ((("settlement transactions")))__結算交易__到區塊鏈來協作關閉，或者由任一方提交最後的承諾交易到區塊鏈來單方面關閉。如果其中一方意外斷開連接，則需要單方面關閉選項。結算交易代表通道的最終狀態，並在區塊鏈上結算。
 
 在通道的整個生命週期中，只有兩筆交易需要提交到區塊鏈上進行挖掘：資金交易和結算交易。在這兩個狀態之間，雙方可以交換任意數量的承諾交易，這些交易永遠不會被其他人看到或提交到區塊鏈。
 
@@ -176,7 +176,7 @@ image::images/mbc3_1401.png["A payment channel between Bob and Alice, showing th
 
 ==== 簡單的支付通道示例
 
-為了解釋 ((("payment channels", "example of", id="payment-channel-example")))狀態通道，我們從一個非常簡單的示例開始。我們演示單向通道，這意味著價值只在一個方向流動。我們還將從天真的假設開始，即沒有人試圖作弊以保持事情簡單。一旦我們解釋了基本的通道想法，我們將查看使其無信任所需的條件，以便任何一方_都無法_作弊，即使他們試圖作弊。
+為了解釋 ((("payment channels", "example of", id="payment-channel-example")))狀態通道，我們從一個非常簡單的示例開始。我們演示單向通道，這意味著價值只在一個方向流動。我們還將從天真的假設開始，即沒有人試圖作弊以保持事情簡單。一旦我們解釋了基本的通道想法，我們將查看使其無信任所需的條件，以便任何一方__都無法__作弊，即使他們試圖作弊。
 
 //TODO:change to using sats rather than millibits.  Or maybe drop
 //specific amounts so that the example doesn't become outdated as price
@@ -192,17 +192,17 @@ image::images/mbc3_1402.png["Emma purchases streaming video from Fabian with a p
 
 要設定支付通道，Emma 和 Fabian 建立一個 2-of-2 多重簽章地址，每個人持有一個金鑰。從 Emma 的角度來看，她瀏覽器中的軟體顯示一個帶有地址的 QR 碼，並要求她提交「存款」，最多可觀看 1 小時的影片。然後，Emma 為該地址提供資金。Emma 的交易，支付給多重簽章地址，是支付通道的資金或錨定交易。
 
-對於這個示例，假設 Emma 用 36 millibits（0.036 BTC）為通道提供資金。這將允許 Emma 消費_最多_ 1 小時的串流影片。在這種情況下，資金交易設定了可以在此通道中傳輸的最大金額，設定_通道容量_。
+對於這個示例，假設 Emma 用 36 millibits（0.036 BTC）為通道提供資金。這將允許 Emma 消費__最多__ 1 小時的串流影片。在這種情況下，資金交易設定了可以在此通道中傳輸的最大金額，設定__通道容量__。
 
 資金交易消耗來自 Emma 錢包的一個或多個輸入，提供資金來源。它創建一個輸出，金額為 36 millibits，支付給 Emma 和 Fabian 之間共同控制的多重簽章 2-of-2 地址。它可能有額外的輸出用於找零回 Emma 的錢包。
 
 在資金交易確認到足夠的深度後，Emma 可以開始串流影片。Emma 的軟體創建並簽署一個承諾交易，該交易更改通道餘額，將 0.01 millibit 記入 Fabian 的地址，並退還 35.99 millibits 給 Emma。Emma 簽署的交易消耗資金交易創建的 36 millibits 輸出，並創建兩個輸出：一個用於她的退款，另一個用於 Fabian 的支付。該交易只是部分簽署的——它需要兩個簽章（2-of-2），但只有 Emma 的簽章。當 Fabian 的伺服器接收到此交易時，它添加第二個簽章（用於 2-of-2 輸入）並將其與 1 秒的影片一起返回給 Emma。現在雙方都有一個完全簽署的承諾交易，任一方都可以贖回，代表通道的正確最新餘額。任何一方都不會將此交易廣播到網路。
 
-在下一輪中，Emma 的軟體創建並簽署另一個承諾交易（承諾 #2），該交易消耗資金交易的_相同_ 2-of-2 輸出。第二個承諾交易將一個輸出 0.02 millibits 分配給 Fabian 的地址，將一個輸出 35.98 millibits 返回給 Emma 的地址。這個新交易是累計兩秒影片的付款。Fabian 的軟體簽署並返回第二個承諾交易，以及另一秒的影片。
+在下一輪中，Emma 的軟體創建並簽署另一個承諾交易（承諾 #2），該交易消耗資金交易的__相同__ 2-of-2 輸出。第二個承諾交易將一個輸出 0.02 millibits 分配給 Fabian 的地址，將一個輸出 35.98 millibits 返回給 Emma 的地址。這個新交易是累計兩秒影片的付款。Fabian 的軟體簽署並返回第二個承諾交易，以及另一秒的影片。
 
 以這種方式，Emma 的軟體繼續向 Fabian 的伺服器發送承諾交易以交換串流影片。通道的餘額逐漸累積，有利於 Fabian，因為 Emma 消費了更多秒的影片。假設 Emma 觀看了 600 秒（10 分鐘）的影片，創建並簽署了 600 個承諾交易。最後一個承諾交易（#600）將有兩個輸出，分配通道的餘額，6 millibits 給 Fabian，30 millibits 給 Emma。
 
-最後，Emma 點擊「停止」以停止串流影片。現在 Fabian 或 Emma 都可以傳輸最終狀態交易以進行結算。最後一個交易是_結算交易_，為 Emma 消費的所有影片支付 Fabian 費用，退還資金交易的餘額給 Emma。
+最後，Emma 點擊「停止」以停止串流影片。現在 Fabian 或 Emma 都可以傳輸最終狀態交易以進行結算。最後一個交易是__結算交易__，為 Emma 消費的所有影片支付 Fabian 費用，退還資金交易的餘額給 Emma。
 
 <<video_payment_channel>> 顯示了 Emma 和 Fabian 之間的通道以及更新通道餘額的承諾交易。
 
@@ -256,18 +256,18 @@ image::images/mbc3_1404.png["每個承諾設定較短的時間鎖，允許它在
 
 另一種 ((("payment channels", "asymmetric revocable commitments", id="payment-channel-revoke")))((("asymmetric revocable commitments", id="asymmetric-revoke-commit")))((("commitment transactions", "asymmetric revocable commitments", id="commit-revoke")))((("revocable commitments", id="revoke-commit"))) 處理先前承諾狀態的方法是明確撤銷它們。然而，這並不容易實現。比特幣的一個關鍵特性是，一旦交易有效，它就保持有效並且不會過期。取消交易的唯一方法是讓衝突的交易得到確認。這就是為什麼我們在簡單支付通道例子中使用時間鎖來確保更近期的承諾可以在較舊的承諾有效之前被花費。然而，按時間排序承諾會產生許多限制，使支付通道難以使用。
 
-即使交易無法被取消，它也可以以使其不希望使用的方式構建。我們這樣做的方法是給每一方一個_撤銷金鑰_，如果他們試圖作弊，可以用來懲罰另一方。這種撤銷先前承諾交易的機制首先作為 LN 的一部分被提出。
+即使交易無法被取消，它也可以以使其不希望使用的方式構建。我們這樣做的方法是給每一方一個__撤銷金鑰__，如果他們試圖作弊，可以用來懲罰另一方。這種撤銷先前承諾交易的機制首先作為 LN 的一部分被提出。
 
 為了解釋撤銷金鑰，我們將在 Hitesh 和 Irene 經營的兩個交易所之間構建一個更複雜的支付通道。Hitesh 和 Irene 分別在印度和美國經營比特幣交易所。Hitesh 的印度交易所的客戶經常向 Irene 的美國交易所的客戶發送付款，反之亦然。目前，這些交易發生在比特幣區塊鏈上，但這意味著支付費用並等待幾個區塊進行確認。在交易所之間建立支付通道將顯著降低成本並加速交易流程。
 
-Hitesh 和 Irene 透過協作構建資金交易來開始通道，每個人用 5 個比特幣資助通道。在他們簽署資金交易之前，他們必須簽署第一組承諾（稱為_退款_），為 Hitesh 分配 5 個比特幣的初始餘額，為 Irene 分配 5 個比特幣。資金交易將通道狀態鎖定在 2-of-2 多重簽章中，就像簡單通道的例子一樣。
+Hitesh 和 Irene 透過協作構建資金交易來開始通道，每個人用 5 個比特幣資助通道。在他們簽署資金交易之前，他們必須簽署第一組承諾（稱為__退款__），為 Hitesh 分配 5 個比特幣的初始餘額，為 Irene 分配 5 個比特幣。資金交易將通道狀態鎖定在 2-of-2 多重簽章中，就像簡單通道的例子一樣。
 
 資金交易可能有一個或多個來自 Hitesh 的輸入（加起來 5 個比特幣或更多），以及一個或多個來自 Irene 的輸入（加起來 5 個比特幣或更多）。輸入必須稍微超過通道容量才能支付交易費用。該交易有一個輸出，將總共 10 個比特幣鎖定到由 Hitesh 和 Irene 控制的 2-of-2 多重簽章地址。如果他們的輸入超過了他們預期的通道貢獻，資金交易也可能有一個或多個輸出將找零返還給 Hitesh 和 Irene。這是一個由兩方提供和簽署輸入的單個交易。它必須協作構建並在傳輸之前由每一方簽署。
 
-現在，Hitesh 和 Irene 不是創建雙方都簽署的單個承諾交易，而是創建兩個不同的_非對稱_承諾交易。
+現在，Hitesh 和 Irene 不是創建雙方都簽署的單個承諾交易，而是創建兩個不同的__非對稱__承諾交易。
 
 [role="less_space pagebreak-before"]
-Hitesh 有一個帶有兩個輸出的承諾交易。第一個輸出_立即_支付 Irene 她應得的 5 個比特幣。第二個輸出支付 Hitesh 他應得的 5 個比特幣，但只有在 1,000 個區塊的時間鎖之後。交易輸出看起來像這樣：
+Hitesh 有一個帶有兩個輸出的承諾交易。第一個輸出__立即__支付 Irene 她應得的 5 個比特幣。第二個輸出支付 Hitesh 他應得的 5 個比特幣，但只有在 1,000 個區塊的時間鎖之後。交易輸出看起來像這樣：
 
 ----
 輸入：2-of-2 資金輸出，由 Irene 簽署
@@ -297,7 +297,7 @@ Irene 有一個不同的帶有兩個輸出的承諾交易。第一個輸出立�
     <Irene 的公鑰> CHECKSIG
 ----
 
-這樣，每一方都有一個承諾交易，花費 2-of-2 資金輸出。這個輸入由_另一方_簽署。任何時候，持有交易的一方也可以簽署（完成 2-of-2）並廣播。然而，如果他們廣播承諾交易，它會立即支付另一方，而他們必須等待時間鎖到期。透過對其中一個輸出的贖回施加延遲，當他們選擇單方面廣播承諾交易時，我們讓每一方處於輕微的劣勢。但僅靠時間延遲不足以鼓勵公平行為。
+這樣，每一方都有一個承諾交易，花費 2-of-2 資金輸出。這個輸入由__另一方__簽署。任何時候，持有交易的一方也可以簽署（完成 2-of-2）並廣播。然而，如果他們廣播承諾交易，它會立即支付另一方，而他們必須等待時間鎖到期。透過對其中一個輸出的贖回施加延遲，當他們選擇單方面廣播承諾交易時，我們讓每一方處於輕微的劣勢。但僅靠時間延遲不足以鼓勵公平行為。
 
 <<asymmetric_commitments>> 顯示兩個非對稱承諾交易，其中支付承諾持有者的輸出被延遲。
 
@@ -311,7 +311,7 @@ image::images/mbc3_1405.png["兩個非對稱承諾交易，持有交易的一方
 
 在每一輪中，雙方都向另一方透露其撤銷秘密的一半，從而給另一方（現在擁有兩半）提供了在這個被撤銷的交易被廣播時索取懲罰輸出的手段。
 
-每個承諾交易都有一個「延遲」輸出。該輸出的贖回腳本允許一方在 1,000 個區塊後贖回它，_或者_如果另一方有撤銷金鑰，則可以贖回它，懲罰傳輸被撤銷的承諾。
+每個承諾交易都有一個「延遲」輸出。該輸出的贖回腳本允許一方在 1,000 個區塊後贖回它，__或者__如果另一方有撤銷金鑰，則可以贖回它，懲罰傳輸被撤銷的承諾。
 
 因此，當 Hitesh 為 Irene 創建一個承諾交易以供簽署時，他使第二個輸出在 1,000 個區塊後支付給自己，或者支付給撤銷公鑰（他只知道一半的秘密）。Hitesh 構建這個交易。只有當他準備好轉移到新的通道狀態並想撤銷這個承諾時，他才會向 Irene 透露他的撤銷秘密的一半。
 
@@ -337,7 +337,7 @@ CHECKSIG
 
 Irene 可以自信地簽署這筆交易，因為如果傳輸，它將立即支付她應得的。Hitesh 持有交易，但知道如果他在單方面通道關閉中傳輸它，他必須等待 1,000 個區塊才能得到支付。
 
-在通道進入下一個狀態後，Hitesh 必須_撤銷_這個承諾交易，然後 Irene 才會同意簽署任何進一步的承諾交易。為此，他所要做的就是將他的_撤銷金鑰_的一半發送給 Irene。一旦 Irene 擁有這個承諾的撤銷私鑰的兩半，她就可以自信地簽署未來的承諾。她知道如果 Hitesh 試圖透過發布先前的承諾來作弊，她可以使用撤銷金鑰來贖回 Hitesh 的延遲輸出。_如果 Hitesh 作弊，Irene 得到兩個輸出_。同時，Hitesh 只有該撤銷公鑰的撤銷秘密的一半，無法在 1,000 個區塊之前贖回輸出。Irene 將能夠在 1,000 個區塊過去之前贖回輸出並懲罰 Hitesh。
+在通道進入下一個狀態後，Hitesh 必須__撤銷__這個承諾交易，然後 Irene 才會同意簽署任何進一步的承諾交易。為此，他所要做的就是將他的__撤銷金鑰__的一半發送給 Irene。一旦 Irene 擁有這個承諾的撤銷私鑰的兩半，她就可以自信地簽署未來的承諾。她知道如果 Hitesh 試圖透過發布先前的承諾來作弊，她可以使用撤銷金鑰來贖回 Hitesh 的延遲輸出。__如果 Hitesh 作弊，Irene 得到兩個輸出__。同時，Hitesh 只有該撤銷公鑰的撤銷秘密的一半，無法在 1,000 個區塊之前贖回輸出。Irene 將能夠在 1,000 個區塊過去之前贖回輸出並懲罰 Hitesh。
 
 撤銷協定是雙邊的，這意味著在每一輪中，隨著通道狀態的推進，雙方交換新的承諾，交換先前承諾的撤銷秘密，並簽署彼此的新承諾交易。在他們接受新狀態後，他們透過向彼此提供必要的撤銷秘密來懲罰任何作弊行為，使先前的狀態無法使用。
 
@@ -352,9 +352,9 @@ Irene 可以自信地簽署這筆交易，因為如果傳輸，它將立即支�
 
 ==== 雜湊時間鎖定合約（HTLC）
 
-支付通道 ((("payment channels", "HTLC (Hash Time Lock Contract)", id="payment-channel-htlc")))((("HTLC (Hash Time Lock Contract)", id="htlc")))((("Hash Time Lock Contract (HTLC)", id="hash-time-lock-contract")))可以透過一種特殊類型的智慧合約進一步擴展，該合約允許參與者將資金承諾給可贖回的秘密，並有到期時間。這個功能稱為_雜湊時間鎖定合約_，或 _HTLC_，並用於雙向和路由支付通道。
+支付通道 ((("payment channels", "HTLC (Hash Time Lock Contract)", id="payment-channel-htlc")))((("HTLC (Hash Time Lock Contract)", id="htlc")))((("Hash Time Lock Contract (HTLC)", id="hash-time-lock-contract")))可以透過一種特殊類型的智慧合約進一步擴展，該合約允許參與者將資金承諾給可贖回的秘密，並有到期時間。這個功能稱為__雜湊時間鎖定合約__，或 __HTLC__，並用於雙向和路由支付通道。
 
-讓我們首先解釋 HTLC 的「雜湊」部分。為了創建 HTLC，付款的預期接收者將首先創建一個秘密 _R_。然後他們計算這個秘密的雜湊 _H_：
+讓我們首先解釋 HTLC 的「雜湊」部分。為了創建 HTLC，付款的預期接收者將首先創建一個秘密 __R__。然後他們計算這個秘密的雜湊 __H__：
 
 [latexmath]
 ++++
@@ -363,7 +363,7 @@ H = Hash(R)
 \end{equation}
 ++++
 
-這產生一個雜湊 _H_，可以包含在輸出的腳本中。知道秘密的人可以使用它來贖回輸出。秘密 _R_ 也被稱為雜湊函數的_原像_。原像只是用作雜湊函數輸入的資料。
+這產生一個雜湊 __H__，可以包含在輸出的腳本中。知道秘密的人可以使用它來贖回輸出。秘密 _R_ 也被稱為雜湊函數的__原像__。原像只是用作雜湊函數輸入的資料。
 
 [role="less_space pagebreak-before"]
 HTLC 的第二部分是「時間鎖」組件。如果秘密沒有被揭示，HTLC 的支付者可以在一段時間後獲得「退款」。這是使用 +CHECKLOCKTIMEVERIFY+ 的絕對時間鎖實現的。
@@ -382,18 +382,18 @@ ELSE
 ENDIF
 ----
 
-任何知道秘密 _R_（當雜湊時等於 _H_）的人都可以透過執行 +IF+ 流程的第一個子句來贖回這個輸出。
+任何知道秘密 __R__（當雜湊時等於 __H__）的人都可以透過執行 +IF+ 流程的第一個子句來贖回這個輸出。
 
 如果秘密沒有被揭示並且 HTLC 在一定數量的區塊後被索取，支付者可以使用 +IF+ 流程中的第二個子句索取退款。
 
-這是 HTLC 的基本實作。這種類型的 HTLC 可以被_任何_擁有秘密 _R_ 的人贖回。HTLC 可以有許多不同的形式，腳本略有變化。例如，在第一個子句中添加 +CHECKSIG+ 運算子和公鑰將雜湊的贖回限制為特定接收者，該接收者還必須知道 ((("Bitcoin", "as application platform", "payment channels", secondary-sortas="application platform", startref="bitcoin-app-platform-payment")))((("application platform, Bitcoin as", "payment channels", startref="app-platform-payment")))((("payment channels", startref="payment-channel")))((("payment channels", "HTLC (Hash Time Lock Contract)", startref="payment-channel-htlc")))((("HTLC (Hash Time Lock Contract)", startref="htlc")))((("Hash Time Lock Contract (HTLC)", startref="hash-time-lock-contract"))) 秘密 _R_。
+這是 HTLC 的基本實作。這種類型的 HTLC 可以被__任何__擁有秘密 _R_ 的人贖回。HTLC 可以有許多不同的形式，腳本略有變化。例如，在第一個子句中添加 +CHECKSIG+ 運算子和公鑰將雜湊的贖回限制為特定接收者，該接收者還必須知道 ((("Bitcoin", "as application platform", "payment channels", secondary-sortas="application platform", startref="bitcoin-app-platform-payment")))((("application platform, Bitcoin as", "payment channels", startref="app-platform-payment")))((("payment channels", startref="payment-channel")))((("payment channels", "HTLC (Hash Time Lock Contract)", startref="payment-channel-htlc")))((("HTLC (Hash Time Lock Contract)", startref="htlc")))((("Hash Time Lock Contract (HTLC)", startref="hash-time-lock-contract"))) 秘密 __R__。
 
 [[lightning_network]]
 === 路由支付通道（閃電網路）
 
 ((("LN", see="Lightning Network")))((("Bitcoin", "as application platform", "routed payment channels (Lightning Network)", secondary-sortas="application platform", id="bitcoin-app-platform-ln")))((("application platform, Bitcoin as", "routed payment channels (Lightning Network)", id="app-platform-ln")))((("payment channels", "Lightning Network", id="payment-channel-ln")))((("Lightning Network (LN)", id="lightning")))((("routed payment channels", see="Lightning Network"))) 閃電網路（LN）是一個提議的端到端連接的雙向支付通道的路由網路。像這樣的網路可以允許任何參與者將付款從通道路由到通道，而無需信任任何中介。LN 最初由 Joseph Poon 和 Thadeus Dryja 於 2015 年 2 月 https://oreil.ly/NM8LC[描述]，建立在由許多其他人提出和詳細闡述的支付通道概念之上。
 
-「閃電網路」是指路由支付通道網路的特定設計，現在已由至少五個不同的開源團隊實作。這些獨立實作透過 https://oreil.ly/lIGIA[_閃電技術基礎（BOLT）_儲存庫]中描述的一組互通性標準進行協調。
+「閃電網路」是指路由支付通道網路的特定設計，現在已由至少五個不同的開源團隊實作。這些獨立實作透過 https://oreil.ly/lIGIA[__閃電技術基礎（BOLT）__儲存庫]中描述的一組互通性標準進行協調。
 
 [role="less_space pagebreak-before"]
 ==== 基本閃電網路範例
@@ -420,7 +420,7 @@ Alice 正在執行一個 LN 節點，該節點正在追蹤她與 Bob 的支付�
 
 現在 Alice 的 LN 節點在 Alice 的 LN 節點和 Eric 的 LN 節點之間構建路由。使用的路徑查找演算法將在稍後更詳細地檢查，但現在讓我們假設 Alice 的節點可以找到有效的路由。
 
-然後 Alice 的節點構建一個 HTLC，支付給雜湊 +H+，有 10 個區塊的退款超時（當前區塊 + 10），金額為 1.003 個比特幣（見 <<ln_payment_process>>，步驟 2）。額外的 0.003 將用於補償中間節點參與這個支付路由。Alice 向 Bob 提供這個 HTLC，從她與 Bob 的通道餘額中扣除 1.003 個比特幣並將其承諾給 HTLC。HTLC 具有以下含義：_「如果 Bob 知道秘密，Alice 承諾將她的通道餘額的 1.003 個比特幣支付給 Bob，或者如果 10 個區塊過去，則退還給 Alice 的餘額。」_ Alice 和 Bob 之間的通道餘額現在由具有三個輸出的承諾交易表示：Bob 的 2 個比特幣餘額，Alice 的 0.997 個比特幣餘額，Alice 的 HTLC 中承諾的 1.003 個比特幣。Alice 的餘額減少了承諾給 HTLC 的金額。
+然後 Alice 的節點構建一個 HTLC，支付給雜湊 +H+，有 10 個區塊的退款超時（當前區塊 + 10），金額為 1.003 個比特幣（見 <<ln_payment_process>>，步驟 2）。額外的 0.003 將用於補償中間節點參與這個支付路由。Alice 向 Bob 提供這個 HTLC，從她與 Bob 的通道餘額中扣除 1.003 個比特幣並將其承諾給 HTLC。HTLC 具有以下含義：__「如果 Bob 知道秘密，Alice 承諾將她的通道餘額的 1.003 個比特幣支付給 Bob，或者如果 10 個區塊過去，則退還給 Alice 的餘額。」__ Alice 和 Bob 之間的通道餘額現在由具有三個輸出的承諾交易表示：Bob 的 2 個比特幣餘額，Alice 的 0.997 個比特幣餘額，Alice 的 HTLC 中承諾的 1.003 個比特幣。Alice 的餘額減少了承諾給 HTLC 的金額。
 
 Bob 現在有一個承諾，如果他能夠在接下來的 10 個區塊內獲得秘密 +R+，他可以索取 Alice 鎖定的 1.003 個比特幣。有了這個承諾，Bob 的節點在他與 Carol 的支付通道上構建一個 HTLC。Bob 的 HTLC 為雜湊 +H+ 承諾 1.002 個比特幣，持續 9 個區塊，Carol 可以贖回，如果她有秘密 +R+（見 <<ln_payment_process>> 步驟 3）。Bob 知道如果 Carol 可以索取他的 HTLC，她必須產生 +R+。如果 Bob 在九個區塊內有 +R+，他可以使用它來索取 Alice 給他的 HTLC。他還透過承諾他的通道餘額九個區塊來賺取 0.001 個比特幣。如果 Carol 無法索取他的 HTLC，而他無法索取 Alice 的 HTLC，一切都會恢復到先前的通道餘額，沒有人損失。Bob 和 Carol 之間的通道餘額現在是：Carol 2，Bob 0.998，Bob 承諾給 HTLC 的 1.002。
 
@@ -428,7 +428,7 @@ Carol 現在有一個承諾，如果她在接下來的九個區塊內獲得 +R+�
 
 最後，Diana 可以向 Eric 提供 HTLC，為雜湊 +H+ 承諾 1 個比特幣，持續七個區塊（見 <<ln_payment_process>>，步驟 5）。Diana 和 Eric 之間的通道餘額現在是：Eric 2，Diana 1，Diana 承諾給 HTLC 的 1。
 
-然而，在路由的這一跳，Eric _有_秘密 +R+。因此，他可以索取 Diana 提供的 HTLC。他將 +R+ 發送給 Diana 並索取 1 個比特幣，將其添加到他的通道餘額中（見 <<ln_payment_process>>，步驟 6）。通道餘額現在是：Diana 1，Eric 3。
+然而，在路由的這一跳，Eric __有__秘密 +R+。因此，他可以索取 Diana 提供的 HTLC。他將 +R+ 發送給 Diana 並索取 1 個比特幣，將其添加到他的通道餘額中（見 <<ln_payment_process>>，步驟 6）。通道餘額現在是：Diana 1，Eric 3。
 
 現在，Diana 有秘密 +R+。因此，她現在可以從 Carol 那裡索取 HTLC。Diana 將 +R+ 傳輸給 Carol 並將 1.001 個比特幣添加到她的通道餘額中（見 <<ln_payment_process>>，步驟 7）。現在 Carol 和 Diana 之間的通道餘額是：Carol 0.999，Diana 3.001。Diana 透過參與這個支付路由「賺取」了 0.001。
 
@@ -440,7 +440,7 @@ Alice 已經支付 Eric 1 個比特幣，而無需開啟到 Eric 的通道。支
 
 所有 ((("payment channels", "Lightning Network", "pathfinding", id="payment-channel-ln-path")))((("Lightning Network (LN)", "pathfinding", id="lightning-path")))((("pathfinding in Lightning Network", id="path-lightning")))LN 節點之間的通訊都是點對點加密的。此外，節點有一個長期公鑰，他們用它作為識別符並相互認證。
 
-每當節點希望向另一個節點發送付款時，它必須首先透過連接具有足夠容量的支付通道來構建透過網路的_路徑_。節點廣告路由資訊，包括他們開啟的通道，每個通道有多少容量，以及他們收取什麼費用來路由付款。路由資訊可以以多種方式共享，並且隨著 LN 技術的進步，出現了不同的路徑查找協定。路由發現的當前實作使用 P2P 模型，其中節點以「洪泛」模型將通道公告傳播到其對等節點，類似於比特幣傳播交易的方式。
+每當節點希望向另一個節點發送付款時，它必須首先透過連接具有足夠容量的支付通道來構建透過網路的__路徑__。節點廣告路由資訊，包括他們開啟的通道，每個通道有多少容量，以及他們收取什麼費用來路由付款。路由資訊可以以多種方式共享，並且隨著 LN 技術的進步，出現了不同的路徑查找協定。路由發現的當前實作使用 P2P 模型，其中節點以「洪泛」模型將通道公告傳播到其對等節點，類似於比特幣傳播交易的方式。
 
 ++++
 <p class="fix_tracking3">
@@ -501,4 +501,4 @@ LN 分層在比特幣網路之上，為比特幣提供了容量、隱私、粒�
 
 如果您還沒有開始這樣做，請考慮以某種方式為比特幣做出貢獻。您可以執行全節點來驗證您收到的比特幣付款，構建使其他人更容易使用比特幣的應用程式，或幫助教育其他人關於比特幣及其潛力。您甚至可以採取罕見的步驟，為開源比特幣基礎設施軟體做出貢獻，例如 Bitcoin Core，與少數極其聰明的人仔細合作，構建沒有人會為之付費但數十億人可能有一天會依賴的工具。
 
-無論您的比特幣之旅如何，我們都感謝您讓_精通比特幣_成為其中 [.keep-together]#的一部分。#
+無論您的比特幣之旅如何，我們都感謝您讓__精通比特幣__成為其中 [.keep-together]#的一部分。#
