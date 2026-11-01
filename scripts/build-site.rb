@@ -224,6 +224,11 @@ pages.each do |page|
   frag.css('table').each do |table|
     next if table.parent['class'].to_s.include?('admonitionblock')
 
+    # 含長串英數字（十六進位、地址、金鑰）的儲存格在手機上可任意斷行，其餘照單字換行
+    table.css('td').each do |td|
+      td['class'] = [td['class'], 'long-token'].compact.join(' ') if td.text =~ /[\x21-\x7e]{20,}/
+    end
+
     wrap = Nokogiri::XML::Node.new('div', frag.document)
     wrap['class'] = 'table-wrap'
     wrap['tabindex'] = '0'

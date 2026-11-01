@@ -475,7 +475,13 @@ kbd {
   transition: opacity 0.15s;
 }
 .listingblock:hover .copy-btn, .copy-btn:focus-visible { opacity: 1; }
-@media (hover: none) { .copy-btn { opacity: 0.85; } }
+/* 觸控或窄螢幕：複製鈕移到程式碼上方（有標題時與標題同一列），不再蓋住第一行 */
+@media (hover: none), (max-width: 640px) {
+  .listingblock { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+  .listingblock > .title { grid-column: 1; grid-row: 1; }
+  .listingblock > .content { grid-column: 1 / -1; grid-row: 2; }
+  .copy-btn { position: static; grid-column: 2; grid-row: 1; margin: 0 0 6px 8px; opacity: 1; }
+}
 
 /* 圖片 */
 .imageblock { margin: 2em 0; text-align: center; }
@@ -512,6 +518,14 @@ kbd {
 .table-wrap tbody tr:last-child td { border-bottom: 0; }
 .table-wrap td > p, .table-wrap td .paragraph p { margin: 0; }
 .table-wrap td code { white-space: nowrap; }
+/* 手機：表格改為可換行（長的十六進位字串可在任意處斷開），盡量不必左右滑 */
+@media (max-width: 640px) {
+  .table-wrap > table { font-size: 0.82rem; }
+  .table-wrap th, .table-wrap td { padding: 8px 10px; }
+  .table-wrap th, .table-wrap td code { white-space: normal; }
+  .table-wrap td { overflow-wrap: break-word; }
+  .table-wrap td.long-token { overflow-wrap: anywhere; }
+}
 
 /* 提示、注意、警告 */
 .admonitionblock { margin: 1.6em 0; }
@@ -546,9 +560,10 @@ kbd {
 .quoteblock a.bare { overflow-wrap: anywhere; }
 
 .stemblock { margin: 1.6em 0; text-align: center; }
-.stemblock .katex-display { margin: 0; padding: 0.3em 0; overflow-x: auto; overflow-y: hidden; }
+/* 左右留 4px：KaTeX 公式編號區塊的 .vlist-s 會凸出 2px，沒留空間就會在每條公式下出現捲軸 */
+.stemblock .katex-display { margin: 0; padding: 0.3em 4px; overflow-x: auto; overflow-y: hidden; }
 .katex { font-size: 1.08em; }
-.math-wrap { margin: 1.4em 0; overflow-x: auto; overflow-y: hidden; }
+.math-wrap { margin: 1.4em 0; padding: 0.5em 2px; overflow-x: auto; overflow-y: hidden; }
 
 /* 註腳 */
 .prose sup.footnote a, .prose sup.footnoteref a { text-decoration: none; font-weight: 600; padding: 0 1px; }
@@ -698,13 +713,58 @@ kbd {
 .lightbox { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; padding: 0; border: 0; background: rgba(10, 8, 4, 0.88); cursor: zoom-out; }
 .lightbox[open] { display: grid; place-items: center; }
 .lightbox::backdrop { background: transparent; }
-.lightbox img { max-width: 96vw; max-height: 92dvh; width: auto; height: auto; background: #fff; border-radius: 6px; }
+.lightbox img { max-width: 96vw; max-height: 92dvh; width: auto; height: auto; background: #fff; border-radius: 6px; cursor: zoom-in; }
+.lightbox.is-zoomed[open] { display: block; overflow: auto; }
+.lightbox.is-zoomed img { max-width: none; max-height: none; height: auto; border-radius: 0; cursor: zoom-out; }
+.lightbox-close {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top));
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* 「回到上次位置」提示 */
+.resume-toast {
+  position: fixed;
+  z-index: 40;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  width: min(560px, calc(100vw - 24px));
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-raised);
+  box-shadow: var(--shadow);
+  font-size: 0.9rem;
+}
+.resume-text { flex: 1 1 220px; margin: 0; color: var(--text-2); line-height: 1.5; }
+.resume-toast button { padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-soft); color: var(--text); font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+.resume-toast .resume-go { background: var(--accent); border-color: var(--accent); color: #1c1307; }
+
+/* 首頁目錄卡片的閱讀進度 */
+.card-progress { display: flex; align-items: center; gap: 8px; margin-top: 8px; color: var(--text-3); font-size: 0.78rem; }
+.card-bar { flex: 1; height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; }
+.card-bar > span { display: block; height: 100%; background: var(--accent); }
+.card-progress.is-done { color: var(--tip); }
+.card-progress.is-done .card-bar > span { background: var(--tip); }
 
 /* ---------- 列印 ---------- */
 
 @media print {
   :root { --fs: 11pt; --bg: #fff; --text: #000; --link: #000; }
-  .topbar, .sidebar, .rail, .pager, .edit-link, .breadcrumb, .site-footer, .copy-btn, .scrim, .settings { display: none !important; }
+  .topbar, .sidebar, .rail, .pager, .edit-link, .breadcrumb, .site-footer, .copy-btn, .scrim, .settings, .resume-toast { display: none !important; }
   .shell { display: block; }
   .main { padding: 0; }
   .prose pre { white-space: pre-wrap; border-color: #ccc; }

@@ -101,6 +101,7 @@
 
   if (chapter) {
     var ticking = false;
+    var scrolled = false;   // 載入時那一次計算不存進度，否則一打開章節就把上次的位置蓋成 0
     var onScroll = function () {
       if (ticking) return;
       ticking = true;
@@ -111,10 +112,10 @@
         var ratio = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 1;
         bar.style.transform = 'scaleX(' + ratio + ')';
         if (topTitle) topTitle.classList.toggle('is-visible', head.getBoundingClientRect().bottom < 0);
-        saveProgress(ratio);
+        if (scrolled || total <= 0) saveProgress(ratio);   // 一個畫面就放得下的頁面直接算讀完
       });
     };
-    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', function () { scrolled = true; onScroll(); }, { passive: true });
     onScroll();
 
     // 目前閱讀的小節（右側欄與側欄同步高亮）
@@ -146,41 +147,145 @@
   }
 
   // ---------- 閱讀進度記憶 ----------
+  // mb-progress 以章節路徑為鍵：r 上次位置、m 讀到最遠處（皆為 0–1 的比例）、s 當時所在小節、t 章名、at 時間
+  var DONE = 0.97;
+  var pathKey = function (p) { return p.replace(/\.html$/, ''); };
+
+  function loadProgress() {
+    var p = null;
+    try { p = JSON.parse(store.get('mb-progress') || 'null'); } catch (e) { p = null; }
+    if (p && typeof p === 'object') return p;
+    p = {};
+    try {
+      var old = JSON.parse(store.get('mb-last') || 'null');   // 舊版只記最後一章
+      if (old && old.path) p[pathKey(old.path)] = { r: old.ratio, m: old.ratio, t: old.title, at: old.at || 0 };
+    } catch (e) { /* 忽略 */ }
+    return p;
+  }
+
+  function currentSection() {
+    var hs = $$('.prose .sect2 > h2');
+    var cur = null;
+    for (var i = 0; i < hs.length; i++) {
+      if (hs[i].getBoundingClientRect().top < window.innerHeight * 0.3) cur = hs[i];
+      else break;
+    }
+    return cur ? cur.textContent.trim() : '';
+  }
+
+  var progress = loadProgress();
+  var here = chapter ? progress[pathKey(location.pathname)] : null;   // 打開本頁之前的紀錄
+  var holdSave = false;   // 「回到上次位置」提示還在時先不存，免得還沒決定就蓋掉上次的位置
   var saveTimer = null;
+
   function saveProgress(ratio) {
-    if (!chapter) return;
+    if (!chapter || holdSave) return;
     clearTimeout(saveTimer);
     saveTimer = setTimeout(function () {
       var label = $('.chapter-label');
-      store.set('mb-last', JSON.stringify({
-        path: location.pathname,
-        title: (label ? label.textContent + '　' : '') + $('.chapter-head h1').textContent.trim(),
-        ratio: ratio,
+      var key = pathKey(location.pathname);
+      progress = loadProgress();   // 其他分頁可能也寫過
+      var prev = progress[key] || {};
+      progress[key] = {
+        r: ratio,
+        m: Math.max(prev.m || 0, ratio),
+        s: currentSection(),
+        t: (label ? label.textContent + '　' : '') + $('.chapter-head h1').textContent.trim(),
         at: Date.now()
-      }));
+      };
+      store.set('mb-progress', JSON.stringify(progress));
     }, 400);
   }
 
-  var last = null;
-  try { last = JSON.parse(store.get('mb-last') || 'null'); } catch (e) { last = null; }
-
-  var resume = $('[data-resume]');
-  if (resume && last && last.path && last.ratio > 0.01) {
-    resume.hidden = false;
-    resume.href = last.path;
-    resume.textContent = '繼續閱讀：' + last.title.replace(/\s+/g, ' ');
-    resume.addEventListener('click', function () {
-      try { sessionStorage.setItem('mb-resume', '1'); } catch (e) { /* 忽略 */ }
-    });
-  }
-  if (chapter && !location.hash && last && last.path === location.pathname) {
-    var wantResume = false;
-    try { wantResume = sessionStorage.getItem('mb-resume') === '1'; sessionStorage.removeItem('mb-resume'); } catch (e) { /* 忽略 */ }
-    if (wantResume) {
-      window.addEventListener('load', function () {
+  // 等公式排版完（KaTeX 在 load 時渲染，setTimeout 讓它排在所有 load 處理之後）再依比例捲動
+  function resumeTo(ratio) {
+    var go = function () {
+      setTimeout(function () {
         var rect = chapter.getBoundingClientRect();
-        window.scrollTo(0, (rect.height - window.innerHeight) * last.ratio + window.scrollY + rect.top);
-      });
+        window.scrollTo(0, (rect.height - window.innerHeight) * ratio + window.scrollY + rect.top);
+      }, 0);
+    };
+    if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
+  }
+
+  // 首頁：「繼續閱讀」指向最近讀的一章；那章已讀完就改指下一章
+  var resume = $('[data-resume]');
+  var cards = $$('.toc-cards a');
+  if (resume) {
+    var lastKey = null;
+    Object.keys(progress).forEach(function (k) {
+      if (progress[k].r > 0.01 && (!lastKey || progress[k].at > progress[lastKey].at)) lastKey = k;
+    });
+    if (lastKey) {
+      var last = progress[lastKey];
+      var href = lastKey + '.html';
+      var title = last.t;
+      var finished = last.r >= DONE;
+      if (finished) {
+        var idx = cards.map(function (a) { return pathKey(a.getAttribute('href')); }).indexOf(lastKey);
+        var next = cards[idx + 1];
+        if (idx < 0 || !next) href = null;
+        else {
+          href = next.getAttribute('href');
+          title = $('.card-label', next).textContent + '　' + $('.card-title', next).textContent;
+        }
+      }
+      if (href) {
+        resume.hidden = false;
+        resume.href = href;
+        resume.textContent = '繼續閱讀：' + String(title || '').replace(/\s+/g, ' ');
+        if (!finished) {
+          resume.addEventListener('click', function () {
+            try { sessionStorage.setItem('mb-resume', '1'); } catch (e) { /* 忽略 */ }
+          });
+        }
+      }
+    }
+  }
+
+  // 首頁目錄卡片：顯示各章讀到哪裡
+  cards.forEach(function (a) {
+    var p = progress[pathKey(a.getAttribute('href'))];
+    if (!p || !(p.m > 0.01)) return;
+    var pct = Math.round(p.m * 100);
+    var done = p.m >= DONE;
+    var el = document.createElement('span');
+    el.className = 'card-progress' + (done ? ' is-done' : '');
+    el.innerHTML = '<span class="card-bar"><span style="width:' + (done ? 100 : pct) + '%"></span></span>' +
+      '<span class="card-pct">' + (done ? '已讀完' : '已讀 ' + pct + '%') + '</span>';
+    a.appendChild(el);
+  });
+
+  // 章節頁：讀過但沒讀完時，提供「回到上次位置」；首頁按鈕的旗標每次都要用掉，免得留到下一章
+  var wantResume = false;
+  if (chapter) {
+    try { wantResume = sessionStorage.getItem('mb-resume') === '1'; sessionStorage.removeItem('mb-resume'); } catch (e) { /* 忽略 */ }
+  }
+  if (chapter && !location.hash && here && here.r > 0.03 && here.r < DONE) {
+    if (wantResume) {
+      resumeTo(here.r);
+    } else {
+      holdSave = true;
+      var toast = document.createElement('div');
+      toast.className = 'resume-toast';
+      toast.setAttribute('role', 'status');
+      toast.innerHTML = '<p class="resume-text"></p>' +
+        '<button type="button" class="resume-go">回到上次位置</button>' +
+        '<button type="button" class="resume-close" aria-label="從頭閱讀">從頭讀</button>';
+      $('.resume-text', toast).textContent = here.s ?
+        '上次讀到「' + here.s + '」（約 ' + Math.round(here.r * 100) + '%）' :
+        '上次讀到本章約 ' + Math.round(here.r * 100) + '% 處';
+      body.appendChild(toast);
+      var closeToast = function () {
+        holdSave = false;
+        window.removeEventListener('scroll', onFarScroll);
+        toast.remove();
+      };
+      // 往下讀超過一個半畫面，就當作選擇從頭讀
+      var onFarScroll = function () { if (window.scrollY > window.innerHeight * 1.5) closeToast(); };
+      window.addEventListener('scroll', onFarScroll, { passive: true });
+      $('.resume-go', toast).addEventListener('click', function () { closeToast(); resumeTo(here.r); });
+      $('.resume-close', toast).addEventListener('click', closeToast);
     }
   }
 
@@ -199,11 +304,28 @@
       };
       if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, function () {});
     });
-    pre.parentNode.appendChild(btn);
+    pre.closest('.listingblock').appendChild(btn);
   });
 
   // ---------- 圖片放大 ----------
+  // 點圖片在「符合畫面」與「放大」之間切換（放大後可捲動），點圖片以外或關閉鈕離開
   var lightbox = null;
+  function setZoom(big, zoom, e) {
+    if (!zoom) {
+      lightbox.classList.remove('is-zoomed');
+      big.style.width = '';
+      return;
+    }
+    var fit = big.getBoundingClientRect();
+    var fx = e ? (e.clientX - fit.left) / fit.width : 0.5;
+    var fy = e ? (e.clientY - fit.top) / fit.height : 0.5;
+    var w = Math.max(big.naturalWidth, fit.width * 2);
+    lightbox.classList.add('is-zoomed');
+    big.style.width = w + 'px';
+    // 讓點下去的位置維持在畫面中央附近
+    lightbox.scrollLeft = w * fx - lightbox.clientWidth / 2;
+    lightbox.scrollTop = big.offsetHeight * fy - lightbox.clientHeight / 2;
+  }
   document.addEventListener('click', function (e) {
     var img = e.target.closest('.imageblock img');
     if (!img || !window.HTMLDialogElement) return;
@@ -211,11 +333,16 @@
       lightbox = document.createElement('dialog');
       lightbox.className = 'lightbox';
       lightbox.setAttribute('aria-label', '放大檢視圖片');
-      lightbox.appendChild(document.createElement('img'));
-      lightbox.addEventListener('click', function () { lightbox.close(); });
+      lightbox.innerHTML = '<img alt=""><button type="button" class="lightbox-close" aria-label="關閉">✕</button>';
+      lightbox.addEventListener('click', function (ev) {
+        var big = $('img', lightbox);
+        if (ev.target === big) setZoom(big, !lightbox.classList.contains('is-zoomed'), ev);
+        else lightbox.close();
+      });
+      lightbox.addEventListener('close', function () { setZoom($('img', lightbox), false); });
       body.appendChild(lightbox);
     }
-    var big = lightbox.querySelector('img');
+    var big = $('img', lightbox);
     big.src = img.currentSrc || img.src;
     big.alt = img.alt;
     lightbox.showModal();
