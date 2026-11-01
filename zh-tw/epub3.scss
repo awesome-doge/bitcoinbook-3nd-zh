@@ -1273,11 +1273,46 @@ pre, code {
   font-family: "Noto Sans Mono CJK TC", "SF Mono", monospace !important;
 }
 
+/* 程式碼區塊：四邊完整的框（預設主題只畫上、右兩邊）。
+   閱讀器無法左右捲動，長行只能換行；scripts/fix-epub-math.py 把每一行包成 span.line，
+   換行後接續的部分凸排縮進，才分得出是同一行。 */
 pre {
-  font-size: 0.85em;
+  font-size: 0.78em;
   line-height: 1.5;
   white-space: pre-wrap;
   word-wrap: break-word;
+  padding: 0.6em 0.8em;
+  border: 1px solid #c8c8c8;
+  border-radius: 4px;
+}
+
+pre span.line {
+  display: block;
+  min-height: 1.5em; /* 空行也要佔一行高 */
+  padding-left: 1.5em;
+  text-indent: -1.5em;
+}
+
+/* 側欄：標題放在框內左上，不再像預設主題那樣跨在邊框上並靠右 */
+aside.sidebar {
+  text-align: left;
+  padding: 0.8em 1.2em;
+  border: 1px solid #c8c8c8;
+  border-radius: 4px;
+}
+
+aside.sidebar.titled { margin-top: 1.5em; }
+
+aside.sidebar > h2 {
+  display: block;
+  white-space: normal;
+  text-transform: none;
+  margin: 0 0 0.6em 0;
+  padding: 0 0 0.3em 0;
+  border: 0;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: transparent;
+  font-weight: 600;
 }
 
 a { color: #2156a5; text-decoration: none; }

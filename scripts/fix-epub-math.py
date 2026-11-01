@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""將 EPUB 中的 LaTeX 數學公式轉換為 Unicode 數學文字"""
+"""EPUB 後處理：LaTeX 數學公式轉為 Unicode 文字，程式碼區塊逐行包裝以便換行時凸排"""
 
 import re
 import sys
@@ -71,6 +71,35 @@ def fix_math_in_xhtml(content):
 
     return content
 
+def wrap_code_lines(content):
+    """把 <pre> 的每一行包成 <span class="line">，閱讀器自動換行時能凸排顯示接續的部分"""
+    def wrap(match):
+        attrs, body = match.group(1), match.group(2)
+        if 'class="line"' in body:
+            return match.group(0)
+        if body.endswith('\n'):
+            body = body[:-1]
+        lines, cur, stack = [], '', []
+        for tok in re.split(r'(<[^>]+>)', body):
+            if tok.startswith('<'):
+                if tok.startswith('</'):
+                    stack.pop()
+                elif not tok.endswith('/>'):
+                    stack.append(tok)
+                cur += tok
+                continue
+            for i, part in enumerate(tok.split('\n')):
+                if i:
+                    # 行尾先關掉還開著的標籤，下一行再重新打開，維持合法的巢狀結構
+                    cur += ''.join('</%s>' % re.match(r'<(\w+)', t).group(1) for t in reversed(stack))
+                    lines.append(cur)
+                    cur = ''.join(stack)
+                cur += part
+        lines.append(cur)
+        return '<pre%s>%s</pre>' % (attrs, ''.join('<span class="line">%s</span>' % l for l in lines))
+
+    return re.sub(r'<pre([^>]*)>(.*?)</pre>', wrap, content, flags=re.DOTALL)
+
 def fix_epub(epub_path):
     """修復 EPUB 中的數學公式"""
     temp_dir = tempfile.mkdtemp()
@@ -89,7 +118,8 @@ def fix_epub(epub_path):
                             if content != original:
                                 count = original.count('\\begin{equation}')
                                 print(f'  Fixed {count} formulas in {item.filename}')
-                            data = content.encode('utf-8')
+                        content = wrap_code_lines(content)
+                        data = content.encode('utf-8')
                     zout.writestr(item, data)
 
         shutil.move(temp_epub, epub_path)
