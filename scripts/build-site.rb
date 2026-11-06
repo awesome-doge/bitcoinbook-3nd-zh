@@ -425,7 +425,7 @@ home_ld = {
   ]
 }
 File.write(File.join(OUT, 'index.html'), render_page(
-  content: HOME.result(binding), title: "#{BOOK_TITLE}繁體中文版｜免費線上閱讀", description: home_description,
+  content: HOME.result(binding), title: "精通比特幣（Mastering Bitcoin）第三版繁體中文版｜免費線上閱讀", description: home_description,
   canonical: "#{SITE_URL}/", og_type: 'book', jsonld: home_ld, pages: pages, body_class: 'is-home'
 ))
 

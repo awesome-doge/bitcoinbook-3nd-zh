@@ -649,6 +649,9 @@ kbd {
 .card-meta { margin-top: 10px; color: var(--text-3); font-size: 0.78rem; }
 .home-about { margin-top: 56px; padding-top: 40px; border-top: 1px solid var(--border); max-width: var(--measure); }
 .home-about p { color: var(--text-2); }
+.home-faq h3 { margin: 1.8em 0 0.4em; font-size: 1.05rem; line-height: 1.5; }
+.home-faq ul { color: var(--text-2); padding-left: 1.3em; }
+.home-faq li { margin: 0.35em 0; }
 
 @media (max-width: 720px) {
   .hero { grid-template-columns: 1fr; text-align: center; padding-bottom: 40px; }

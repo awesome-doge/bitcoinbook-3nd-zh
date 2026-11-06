@@ -36,4 +36,27 @@
     <p>《精通比特幣》（<i lang="en">Mastering Bitcoin: Programming the Open Blockchain</i>）第三版於 2023 年 12 月由 O'Reilly Media 出版，原著以 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh_TW" rel="license noopener">CC BY-SA 4.0</a> 授權公開。本站為其繁體中文（臺灣）譯本，同樣以 CC BY-SA 4.0 釋出，可自由分享與改作，惟須註明出處並以相同方式分享。</p>
     <p>本書主要寫給程式設計師，但前幾章也適合想深入了解比特幣運作原理的一般讀者。若發現翻譯錯誤或技術問題，歡迎到 <a href="<%= REPO_URL %>/issues" rel="noopener">GitHub</a> 回報或提交修正。</p>
   </section>
+
+  <%- ch = ->(id) { pages.find { |p| p.id == id } } -%>
+  <section class="home-about home-faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">常見問題</h2>
+
+    <h3>《精通比特幣》第三版有中文版嗎？可以免費看嗎？</h3>
+    <p>有。本站就是第三版的繁體中文全文譯本，<%= pages.count { |p| p.label.start_with?('第') } %> 章與 <%= pages.count { |p| p.label.start_with?('附錄') } %> 篇附錄全部免費線上閱讀，不需註冊。原著與譯本都以 CC BY-SA 4.0 授權公開。</p>
+
+    <h3>有 EPUB 或 PDF 可以下載嗎？</h3>
+    <p>EPUB 電子書與 HTML 離線版可以在 <a href="<%= EPUB_URL %>" rel="noopener">GitHub Releases</a> 免費下載，EPUB 適用 Apple Books、Kobo 等閱讀器。由於中英文混排的排版限制，本專案不提供 PDF；如需 PDF，可用瀏覽器開啟 HTML 版後「列印為 PDF」。</p>
+
+    <h3>第三版和第二版有什麼不同？</h3>
+    <p>第二版出版於 2017 年；第三版將全書更新到 2023 年的比特幣，並新增許多內容：</p>
+    <ul>
+      <li><a href="<%= ch.('ch04_keys_addresses').path %>">金鑰與地址</a>：依時間順序介紹各種地址，新增 P2PK、隔離見證與 Bech32、Taproot 與 Bech32m。</li>
+      <li>第二版的「交易」與「進階交易」兩章，擴寫為<a href="<%= ch.('c_transactions').path %>">交易</a>、<a href="<%= ch.('c_authorization_authentication').path %>">授權與認證</a>、<a href="<%= ch.('c_signatures').path %>">數位簽章</a>、<a href="<%= ch.('tx_fees').path %>">交易手續費</a>四章，涵蓋 MAST、Tapscript、Schnorr 簽章、門檻簽章、RBF 與 CPFP 手續費追加。</li>
+      <li><a href="<%= ch.('bitcoin_network_ch08').path %>">比特幣網路</a>新增緊湊區塊中繼與緊湊區塊過濾器；<a href="<%= ch.('blockchain').path %>">區塊鏈</a>新增 signet；<a href="<%= ch.('mining').path %>">挖礦與共識</a>新增 BIP8 與快速試行。</li>
+      <li>在<a href="<%= ch.('satoshi_whitepaper').path %>">比特幣白皮書</a>之後新增<a href="<%= ch.('比特幣白皮書勘誤表').path %>">勘誤附錄</a>，說明比特幣實際的實作與白皮書原本的設計有哪些不同。</li>
+    </ul>
+
+    <h3>不會寫程式也能讀嗎？</h3>
+    <p>可以。原書前言提到，本書主要寫給程式設計師，但前幾章也適合想了解比特幣內部運作的非程式設計師。建議從<a href="<%= ch.('ch01_intro_what_is_bitcoin').path %>">第 1 章</a>和<a href="<%= ch.('ch02_bitcoin_overview').path %>">第 2 章</a>讀起，書中以 Alice 在線上商店用比特幣付款為例，說明比特幣怎麼運作；之後的章節會用到命令列、程式碼與密碼學。</p>
+  </section>
 </div>
