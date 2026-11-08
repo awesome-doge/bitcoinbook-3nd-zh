@@ -3,11 +3,11 @@
 
 人們只有在相信他們以後能夠花費這些錢時，才會接受金錢來換取他們有價值的商品和服務。偽造或意外貶值的錢可能以後無法花費，因此每個接受比特幣的人都有強烈的動機去驗證他們收到的比特幣的完整性。比特幣系統的設計使得完全在你本地電腦上執行的軟體可以完美地防止偽造、貶值和其他幾個關鍵問題成為可能。提供該功能的軟體稱為 __完全驗證節點（full verification node）__，因為它根據系統中的每條規則驗證每筆已確認的比特幣交易。完全((("full nodes")))驗證節點，簡稱 __完整節點（full nodes）__，還可以提供用於理解比特幣如何運作以及網路中當前正在發生什麼的工具和資料。
 
-在本章中，我們將安裝 Bitcoin Core，這是自比特幣網路開始以來大多數完整節點運營者一直使用的實作。然後，我們將從你的節點檢查區塊、交易和其他資料，這些資料具有權威性——不是因為某些強大的實體將其指定為這樣，而是因為你的節點獨立驗證了它。在本書的其餘部分，我們將繼續使用 Bitcoin Core 來建立和檢查與區塊鏈和網路相關的資料。
+在本章中，我們將安裝 Bitcoin Core，這是自比特幣網路開始以來大多數完整節點運營者一直使用的實作。然後，我們將從你的節點檢查區塊、交易和其他資料，這些資料具有權威性，不是因為某些強大的實體將其指定為這樣，而是因為你的節點獨立驗證了它。在本書的其餘部分，我們將繼續使用 Bitcoin Core 來建立和檢查與區塊鏈和網路相關的資料。
 
 === 從比特幣到 Bitcoin Core
 
-Bitcoin ((("Bitcoin Core", "explained", id="bitcoin-core-explain")))是一個 __開源__ 專案，原始碼在開放（MIT）授權下可用，可免費下載並用於任何目的。不僅僅是開源，比特幣是由一個開放的志願者社群開發的。起初，該社群僅由((("Nakamoto, Satoshi")))中本聰（Satoshi Nakamoto）組成。到 2023 年，比特幣的原始碼已有 1,000 多位貢獻者，其中約有十幾位開發者幾乎全職從事程式碼工作，還有幾十位兼職開發者。任何人都可以為程式碼做出貢獻&#x2014;包括你！
+Bitcoin ((("Bitcoin Core", "explained", id="bitcoin-core-explain")))是一個 __開源__ 專案，原始碼在開放（MIT）授權下可用，可免費下載並用於任何目的。不僅僅是開源，比特幣是由一個開放的志願者社群開發的。起初，該社群僅由((("Nakamoto, Satoshi")))中本聰（Satoshi Nakamoto）組成。到 2023 年，比特幣的原始碼已有 1,000 多位貢獻者，其中約有十幾位開發者幾乎全職從事程式碼工作，還有幾十位兼職開發者。任何人都可以為程式碼做出貢獻，包括你！
 
 當中本聰創建比特幣時，軟體在白皮書發表之前大部分已經完成（在 <<satoshi_whitepaper>> 中複製）。中本聰想確保實作在發表論文之前有效。第一個實作，當時簡稱為「Bitcoin」，已經過大量修改和改進。它已經演變成所謂的 __Bitcoin Core__，以區別於其他實作。Bitcoin Core 是比特幣系統的 __參考實作__，這意味著它為技術的每個部分應該如何實作提供參考。Bitcoin Core 實作了比特幣的所有方面，包括錢包、交易和區塊驗證引擎、區塊構建工具，以及比特幣點對點通訊的所有現代部分。
 
@@ -210,7 +210,7 @@ $ which bitcoin-cli
 
 但是，執行節點需要最初下載和處理超過 500 GB 的資料，以及每天約 400 MB 的比特幣交易。這些數字是 2023 年的，並且可能會隨著時間的推移而增加。如果你關閉節點或與網際網路斷開連接幾天，你的節點將需要下載它錯過的資料。例如，如果你關閉 Bitcoin Core 10 天，下次啟動時你將需要下載約 4 GB。
 
-根據你選擇是否索引所有交易並保留區塊鏈的完整副本，你可能還需要大量磁碟空間——如果你計劃執行 Bitcoin Core 幾年，至少需要 1 TB。預設情況下，比特幣節點還會將交易和區塊傳輸到其他節點（稱為「對等點（peers）」），消耗上傳網際網路頻寬。如果你的網際網路連接受限、具有低資料上限或按流量計費（按 GB 計費），你可能不應該在其上執行比特幣節點，或以限制其頻寬的方式執行它（請參閱 <<bitcoincorenode_config>>）。你可以將節點連接到替代網路，例如像 https://oreil.ly/cIwf3[Blockstream Satellite] 這樣的免費衛星資料提供商。
+根據你選擇是否索引所有交易並保留區塊鏈的完整副本，你可能還需要大量磁碟空間：如果你計劃執行 Bitcoin Core 幾年，至少需要 1 TB。預設情況下，比特幣節點還會將交易和區塊傳輸到其他節點（稱為「對等點（peers）」），消耗上傳網際網路頻寬。如果你的網際網路連接受限、具有低資料上限或按流量計費（按 GB 計費），你可能不應該在其上執行比特幣節點，或以限制其頻寬的方式執行它（請參閱 <<bitcoincorenode_config>>）。你可以將節點連接到替代網路，例如像 https://oreil.ly/cIwf3[Blockstream Satellite] 這樣的免費衛星資料提供商。
 
 [TIP]
 ====
@@ -485,7 +485,7 @@ $ bitcoin-cli getnetworkinfo
 
 [TIP]
 ====
-+bitcoind+ 需要一些時間（可能超過一天）才能趕上目前的區塊鏈高度，因為它從其他比特幣節點下載區塊並驗證這些區塊中的每筆交易——在撰寫本文時幾乎有 10 億筆交易。你可以使用 +getblockchaininfo+ 檢查其進度以查看已知區塊的數量。以下範例假設你至少在區塊 775,072。由於比特幣交易的安全性取決於區塊，以下範例中的一些資訊將根據你的節點擁有多少區塊而略有((("Bitcoin Core", "command-line interface", "status information", startref="bitcoin-core-command-status")))((("command-line interface (Bitcoin Core)", "status information", startref="command-status")))((("status information (Bitcoin Core)", startref="status-bitcoin-core")))變化。
++bitcoind+ 需要一些時間（可能超過一天）才能趕上目前的區塊鏈高度，因為它從其他比特幣節點下載區塊並驗證這些區塊中的每筆交易，而在撰寫本文時，交易已接近 10 億筆。你可以使用 +getblockchaininfo+ 檢查其進度以查看已知區塊的數量。以下範例假設你至少在區塊 775,072。由於比特幣交易的安全性取決於區塊，以下範例中的一些資訊將根據你的節點擁有多少區塊而略有((("Bitcoin Core", "command-line interface", "status information", startref="bitcoin-core-command-status")))((("command-line interface (Bitcoin Core)", "status information", startref="command-status")))((("status information (Bitcoin Core)", startref="status-bitcoin-core")))變化。
 ====
 
 [[exploring_and_decoding_transactions]]
@@ -642,7 +642,7 @@ f6cd83c3ca
 </pre>
 ++++
 
-+confirmations+ 條目告訴我們此區塊的 __depth（深度）__——在它之上建構了多少區塊，表明更改此區塊中任何交易的難度。+height+ 告訴我們此區塊之前有多少區塊。我們看到區塊的版本、建立時間（根據其礦工）、前 11 個區塊的中位時間（礦工更難操縱的時間測量），以及三種不同測量的區塊大小（其舊版剝離大小、其完整大小以及其權重單位大小）。我們還看到一些用於安全和工作量證明的欄位（默克爾根、nonce、bits、difficulty 和 chainwork）；我們將在 <<mining>> 中詳細檢查((("Bitcoin Core", "command-line interface", "exploring blocks", startref="bitcoin-core-command-blocks")))((("command-line interface (Bitcoin Core)", "exploring blocks", startref="command-blocks")))((("blocks", "exploring", startref="blocks-explore")))((("exploring", "blocks", startref="explore-blocks")))那些。
++confirmations+ 條目告訴我們此區塊的 __depth（深度）__，也就是在它之上建構了多少區塊，這表明更改此區塊中任何交易的難度。+height+ 告訴我們此區塊之前有多少區塊。我們看到區塊的版本、建立時間（根據其礦工）、前 11 個區塊的中位時間（礦工更難操縱的時間測量），以及三種不同測量的區塊大小（其舊版剝離大小、其完整大小以及其權重單位大小）。我們還看到一些用於安全和工作量證明的欄位（默克爾根、nonce、bits、difficulty 和 chainwork）；我們將在 <<mining>> 中詳細檢查((("Bitcoin Core", "command-line interface", "exploring blocks", startref="bitcoin-core-command-blocks")))((("command-line interface (Bitcoin Core)", "exploring blocks", startref="command-blocks")))((("blocks", "exploring", startref="blocks-explore")))((("exploring", "blocks", startref="explore-blocks")))那些。
 
 ==== 使用 Bitcoin Core 的程式設計介面
 
@@ -789,4 +789,4 @@ https://oreil.ly/Qfjgq[NBitcoin]:: .NET ((("C# toolkits")))((("NBitcoin")))frame
 
 還有許多其他程式語言的更多函式庫，並且一直在建立更多。
 
-如果你按照本章的說明操作，你現在已經執行 Bitcoin Core 並開始使用你自己的完整節點探索網路和區塊鏈。從現在開始，你可以獨立使用你控制的軟體——在你控制的電腦上——來驗證你收到的任何比特幣是否遵循比特幣系統中的每條規則，而無需信任任何外部權威機構。在接下來的章節中，我們將更多地了解系統的規則以及你的節點和錢包如何使用它們來保護你的錢、保護你的隱私，並使支出和接收[.keep-together]##方便。##
+如果你按照本章的說明操作，你現在已經執行 Bitcoin Core 並開始使用你自己的完整節點探索網路和區塊鏈。從現在開始，你可以在你控制的電腦上，獨立使用你控制的軟體來驗證你收到的任何比特幣是否遵循比特幣系統中的每條規則，而無需信任任何外部權威機構。在接下來的章節中，我們將更多地了解系統的規則以及你的節點和錢包如何使用它們來保護你的錢、保護你的隱私，並使支出和接收[.keep-together]##方便。##

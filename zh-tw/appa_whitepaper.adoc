@@ -8,7 +8,7 @@
 這是 ((("Bitcoin whitepaper", "original version", id="bitcoin-whitepaper-original")))((("whitepaper (Bitcoin)", "original version", id="whitepaper-original")))((("Nakamoto, Satoshi")))原始白皮書，完全按照中本聰於 2008 年 10 月發布的原樣全文轉載。
 ====
 
-=== 比特幣 - 點對點電子現金系統
+=== 比特幣：點對點電子現金系統
 
 中本聰
 

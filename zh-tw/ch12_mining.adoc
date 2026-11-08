@@ -86,7 +86,7 @@ Total BTC to ever be created: 2099999997690000 Satoshis
 
 但是，網路中的每個人如何在不必信任任何人的情況下就誰擁有什麼的單一普遍「真相」達成一致？所有傳統支付系統都依賴於信任模型，該模型具有提供清算所服務的中央權威機構，基本上驗證和清算所有交易。比特幣沒有中央權威機構，但不知何故，每個完整節點都有一個可以信任為權威記錄的公共區塊鏈的完整副本。區塊鏈不是由中央權威機構創建的，而是由網路中的每個節點獨立組裝的。不知何故，網路中的每個節點，根據透過不安全網路連接傳輸的資訊採取行動，可以得出相同的結論，並組裝與其他人相同的區塊鏈副本。本章探討了比特幣網路在沒有中央權威的情況下實現全球共識的過程。
 
-中本聰的發明之一是__湧現共識__的去中心化機制。湧現是因為共識不是明確實現的——沒有選舉或固定的共識發生時刻。相反地，共識是數千個獨立節點的異步互動的湧現產物，所有節點都遵循簡單的規則。比特幣的所有屬性，包括貨幣、交易、支付以及不依賴於中央權威或信任的安全模型，都源自這一發明。
+中本聰的發明之一是__湧現共識__的去中心化機制。湧現是因為共識不是明確實現的：沒有選舉或固定的共識發生時刻。相反地，共識是數千個獨立節點的異步互動的湧現產物，所有節點都遵循簡單的規則。比特幣的所有屬性，包括貨幣、交易、支付以及不依賴於中央權威或信任的安全模型，都源自這一發明。
 
 比特幣的去中心化共識來自在網路節點上獨立發生的四個過程的相互作用：
 
@@ -172,7 +172,7 @@ Total\:Fees = Sum(Inputs) - Sum(Outputs)
 可以在 Bitcoin Core 客戶端中的函數 +GetBlockSubsidy+ 中看到計算，如 <<getblocksubsidy_source>> 所示。
 
 [[getblocksubsidy_source]]
-.計算區塊獎勵——函數 [.plain]#+GetBlockSubsidy+,# Bitcoin Core 客戶端，[.plain]#main.cpp#
+.計算區塊獎勵：函數 [.plain]#+GetBlockSubsidy+,# Bitcoin Core 客戶端，[.plain]#main.cpp#
 ====
 [role="c_less_space"]
 [source, cpp]
@@ -233,7 +233,7 @@ coinbase 交易具有特殊格式。它沒有指定要花費的先前 UTXO 的�
 <td><p>要花費的 UTXO 的索引號，第一個為 0</p></td>
 </tr>
 <tr>
-<td><p>1–9 位元組（compactSize）</p></td>
+<td><p>1 至 9 位元組（compactSize）</p></td>
 <td><p>腳本大小</p></td>
 <td><p>腳本長度（以位元組為單位），後續</p></td>
 </tr>
@@ -371,7 +371,7 @@ BIP 34、66 和 65 中定義的協議升級按該順序發生，BIP66（嚴格 D
 
 然後，Jing 的挖礦節點將添加一個 4 位元組的時間戳，編碼為 Unix「紀元」時間戳，該時間戳基於從 1970 年 1 月 1 日午夜 UTC/GMT 經過的秒數。
 
-然後，Jing 的節點填寫 nBits 目標，該目標必須設定為所需 PoW 的緊湊表示，以使其成為有效區塊。目標儲存在區塊中作為「目標位元」度量，這是目標的尾數-指數編碼。編碼具有 1 位元組指數，後跟 3 位元組尾數（係數）。例如，在區塊 277,316 中，目標位元值為 +0x1903a30c+。第一部分 +0x19+ 是十六進位指數，而下一部分 +0x03a30c+ 是係數。目標的概念在 <<target>> 中解釋，「目標位元」表示在 <<target_bits>> 中解釋。
+然後，Jing 的節點填寫 nBits 目標，該目標必須設定為所需 PoW 的緊湊表示，以使其成為有效區塊。目標儲存在區塊中作為「目標位元」度量，這是以尾數和指數表示目標的編碼。編碼具有 1 位元組指數，後跟 3 位元組尾數（係數）。例如，在區塊 277,316 中，目標位元值為 +0x1903a30c+。第一部分 +0x19+ 是十六進位指數，而下一部分 +0x03a30c+ 是係數。目標的概念在 <<target>> 中解釋，「目標位元」表示在 <<target_bits>> 中解釋。
 
 最後一個欄位是 nonce，它被初始化為零。
 
@@ -462,7 +462,7 @@ $ echo "Hello, world! 32" | sha256sum
 
 ++++
 <ul class="simplelist">
-  <li>target = coefficient × 2<sup>(8 × (exponent – 3))</sup></li>
+  <li>target = coefficient × 2<sup>(8 × (exponent − 3))</sup></li>
 </ul>
 ++++
 
@@ -470,7 +470,7 @@ $ echo "Hello, world! 32" | sha256sum
 
 ++++
 <ul class="simplelist">
-  <li>target = 0x03a30c × 2<sup>0x08 × (0x19 – 0x03)</sup></li>
+  <li>target = 0x03a30c × 2<sup>0x08 × (0x19 − 0x03)</sup></li>
 </ul>
 ++++
 
@@ -796,7 +796,7 @@ image::images/mbc3_1202.png[A blockchain with forks]
 
 軟分叉的一個不太明顯的方面是，軟分叉升級只能用於約束共識規則，而不能擴展它們。為了向前相容，根據新規則創建的交易和區塊在舊規則下也必須是有效的，但反之則不然。新規則只能限制有效的內容；否則，當根據舊規則被拒絕時，它們將觸發硬分叉。
 
-軟分叉可以用多種方式實現——該術語不指定特定的方法，而是指定所有具有一個共同點的一組方法：它們不需要所有節點升級或強制未升級的節點退出共識。
+軟分叉可以用多種方式實現。該術語不指定特定的方法，而是指定所有具有一個共同點的一組方法：它們不需要所有節點升級或強制未升級的節點退出共識。
 
 兩個軟分叉已在比特幣中實作，基於對 ((("NOP opcodes")))((("OP_NOP opcodes")))NOP 操作碼的重新解釋。比特幣腳本有 10 個保留供將來使用的操作碼，NOP1 到 NOP10。根據共識規則，這些操作碼在腳本中的存在被解釋為無效運算子，這意味著它們沒有效果。執行在 NOP 操作碼之後繼續，就好像它不在那裡一樣。
 
@@ -896,7 +896,7 @@ BIP9 首次實施是為了啟動 +CHECKSEQUENCEVERIFY+ 和相關的 BIP（68、1
 
 在 ((("consensus rules", "soft forks", "BIP8 mandatory lock-in", tertiary-sortas="BIP008", id="consensus-soft-bip8")))((("forks", "soft forks", "BIP8 mandatory lock-in", tertiary-sortas="BIP008", id="fork-soft-bip8")))((("soft forks", "BIP8 mandatory lock-in", secondary-sortas="BIP008", id="soft-fork-bip8")))((("activation (soft forks)", "BIP8", secondary-sortas="BIP008", id="activate-soft-fork-bip8")))((("BIP8 mandatory lock-in", primary-sortas="BIP008", id="bip8")))((("mandatory lock-in", id="mandatory-lockin")))((("lock-in, mandatory", id="lockin-mandatory")))((("segregated witness (segwit)", id="segwit-bip8")))BIP9 成功用於 CSV 相關軟分叉後，下一次軟分叉共識更改的實施也嘗試使用它進行礦工強制啟動。然而，一些人反對該軟分叉提案，稱為 __segwit__，幾個月來很少有礦工表示準備好執行 segwit。
 
-後來發現，一些礦工，特別是與反對者相關的礦工，可能一直在使用一種稱為__隱蔽 ASICBoost__ 的功能的硬體，這給了他們相對於使用它的其他礦工的隱藏優勢。無意中，segwit 干擾了使用隱蔽 ASICBoost 的能力——如果 segwit 被啟動，使用它的礦工將失去他們的隱藏優勢。
+後來發現，一些礦工，特別是與反對者相關的礦工，可能一直在使用一種稱為__隱蔽 ASICBoost__ 的功能的硬體，這給了他們相對於使用它的其他礦工的隱藏優勢。無意中，segwit 干擾了使用隱蔽 ASICBoost 的能力：如果 segwit 被啟動，使用它的礦工將失去他們的隱藏優勢。
 
 在社群發現這種利益衝突後，一些用戶決定他們想要行使他們的權力，不接受礦工的區塊，除非這些區塊遵循某些規則。用戶最終想要的規則是 segwit 添加的新規則，但用戶想要透過利用計劃在礦工發出足夠準備就緒信號時執行 segwit 規則的大量節點來增加他們的努力。一位匿名開發人員提出了 BIP148，((("BIP148 activation of segwit")))該提案要求任何實現它的節點從某個日期開始拒絕所有不為 segwit 發出信號的區塊，並持續到 segwit 啟動。
 

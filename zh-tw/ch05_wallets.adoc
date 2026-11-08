@@ -10,7 +10,7 @@
 
 ++++
 <p class="fix_tracking2">
-實體現金錢包持有現金，因此許多人錯誤地認為比特幣錢包包含比特幣也就不足為奇了。實際上，許多人稱之為比特幣錢包的東西——我們稱之為<em>錢包資料庫</em>以將其與錢包應用程式區分開來——僅包含金鑰。這些金鑰與記錄在區塊鏈上的比特幣相關聯。透過向比特幣完整節點證明您控制這些金鑰，您可以花費相關的比特幣。
+實體現金錢包持有現金，因此許多人錯誤地認為比特幣錢包包含比特幣也就不足為奇了。實際上，許多人稱之為比特幣錢包的東西僅包含金鑰。為了和錢包應用程式區分，我們稱之為<em>錢包資料庫</em>。這些金鑰與記錄在區塊鏈上的比特幣相關聯。透過向比特幣完整節點證明您控制這些金鑰，您可以花費相關的比特幣。
 </p>
 ++++
 
@@ -29,7 +29,7 @@ image::images/mbc3_0501.png["非確定性錢包"]
 
 ==== 確定性金鑰生成
 
-雜湊函數在給定相同輸入時將始終產生相同的輸出，但如果輸入即使發生輕微變化，輸出也會不同。如果該函數是密碼學安全的，沒有人應該能夠預測新輸出——即使他們知道新輸入也是如此。
+雜湊函數在給定相同輸入時將始終產生相同的輸出，但如果輸入即使發生輕微變化，輸出也會不同。如果該函數是密碼學安全的，沒有人應該能夠預測新輸出，即使他們知道新輸入也是如此。
 
 這允許我們取一個隨機值並將其轉換為幾乎無限數量的看似隨機的值。更有用的是，稍後使用相同的雜湊函數與相同的輸入（稱為種子（seed））將產生相同的看似隨機的值：
 
@@ -178,7 +178,7 @@ Electrum v2::
   在 Electrum 錢包（2.0 版及以上）中使用，這種基於單詞的恢復碼比 BIP39 有幾個優勢。它不依賴於必須由每個相容程式的每個版本實作的全域單詞清單，此外，其恢復碼包含版本號，可提高可靠性和效率。像 BIP39 一樣，它支援可選的密碼短語（Electrum 稱之為種子擴展（seed extension））並使用相同的金鑰延展函數。
 
 Aezeed::
-  在 LND 錢包中使用，這是另一種基於單詞的恢復碼，提供了對 BIP39 的改進。它包含兩個版本號：一個是內部的，消除了升級錢包應用程式的幾個問題（如 Electrum v2 的版本號）；另一個版本號是外部的，可以遞增以更改恢復碼的底層密碼學屬性。它還在恢復碼中包含錢包生日（wallet birthday），即使用者創建錢包資料庫日期的參考。這允許恢復過程找到與錢包關聯的所有資金，而無需掃描整個區塊鏈，這對注重隱私的輕量級客戶端特別有用。它支援更改密碼短語或更改恢復碼的其他方面，而無需將資金轉移到新種子——使用者只需備份新的恢復碼。與 Electrum v2 相比的一個缺點是，像 BIP39 一樣，它依賴於備份和恢復軟體支援相同的單詞清單。
+  在 LND 錢包中使用，這是另一種基於單詞的恢復碼，提供了對 BIP39 的改進。它包含兩個版本號：一個是內部的，消除了升級錢包應用程式的幾個問題（如 Electrum v2 的版本號）；另一個版本號是外部的，可以遞增以更改恢復碼的底層密碼學屬性。它還在恢復碼中包含錢包生日（wallet birthday），即使用者創建錢包資料庫日期的參考。這允許恢復過程找到與錢包關聯的所有資金，而無需掃描整個區塊鏈，這對注重隱私的輕量級客戶端特別有用。它支援更改密碼短語或更改恢復碼的其他方面，而無需將資金轉移到新種子，使用者只需備份新的恢復碼。與 Electrum v2 相比的一個缺點是，像 BIP39 一樣，它依賴於備份和恢復軟體支援相同的單詞清單。
 
 [role="less_space pagebreak-before"]
 Muun::
@@ -189,7 +189,7 @@ SLIP39::
 
 [NOTE]
 ====
-在撰寫本書期間，提出了一個與 SLIP39 具有相似性的分發恢復碼的新系統。Codex32 允許僅使用列印的說明、剪刀、精密刀、黃銅緊固件和筆來創建和驗證恢復碼——加上隱私和幾個小時的空閒時間。或者，那些信任電腦的人可以使用數位設備上的軟體即時創建恢復碼。您可以創建最多 31 個恢復碼以儲存在不同的地方，指定需要多少個才能恢復種子。作為一個新提案，關於 Codex32 的細節可能會在本書出版前發生重大變化，因此我們鼓勵任何對分散式恢復碼感興趣的讀者調查其 https://oreil.ly/Xx_Zq[當前狀態]。
+在撰寫本書期間，提出了一個與 SLIP39 具有相似性的分發恢復碼的新系統。Codex32 允許僅使用列印的說明、剪刀、精密刀、黃銅緊固件和筆來創建和驗證恢復碼，另外只需要一個不受打擾的地方和幾個小時的空閒時間。或者，那些信任電腦的人可以使用數位設備上的軟體即時創建恢復碼。您可以創建最多 31 個恢復碼以儲存在不同的地方，指定需要多少個才能恢復種子。作為一個新提案，關於 Codex32 的細節可能會在本書出版前發生重大變化，因此我們鼓勵任何對分散式恢復碼感興趣的讀者調查其 https://oreil.ly/Xx_Zq[當前狀態]。
 ====
 
 .恢復碼密碼短語
@@ -211,9 +211,9 @@ BIP39、Electrum v2、Aezeed 和 SLIP39 方案都可以與可選的密碼短語�
 
 ==== 備份非金鑰資料
 
-錢包資料庫中最重要的((("wallets", "nonkey data, backing up", id="wallet-nonkey-backups")))((("nonkey data, backing up", id="nonkey-backups")))((("backing up", "nonkey data", id="backup-nonkey")))資料是其私鑰。如果您失去對私鑰的存取，您將失去花費比特幣的能力。確定性金鑰衍生和恢復碼為備份和恢復您的金鑰及其控制的比特幣提供了一個相當穩健的解決方案。然而，重要的是要考慮到許多錢包資料庫儲存的不僅僅是金鑰——它們還儲存使用者提供的關於他們發送或接收的每筆交易的資訊。
+錢包資料庫中最重要的((("wallets", "nonkey data, backing up", id="wallet-nonkey-backups")))((("nonkey data, backing up", id="nonkey-backups")))((("backing up", "nonkey data", id="backup-nonkey")))資料是其私鑰。如果您失去對私鑰的存取，您將失去花費比特幣的能力。確定性金鑰衍生和恢復碼為備份和恢復您的金鑰及其控制的比特幣提供了一個相當穩健的解決方案。然而，重要的是要考慮到許多錢包資料庫儲存的不僅僅是金鑰，它們還儲存使用者提供的關於他們發送或接收的每筆交易的資訊。
 
-例如，當 Bob 創建一個新地址作為向 Alice 發送發票的一部分時，他向他生成的地址((("labels, backing up", id="label-backup")))新增一個__標籤（label）__，以便他可以將她的付款與他收到的其他付款區分開來。當 Alice 支付 Bob 的地址時，她出於同樣的原因將交易標記為支付給 Bob。一些錢包還向交易新增其他有用的資訊，例如當前匯率，這在某些司法管轄區計算稅款時可能很有用。這些標籤完全儲存在他們自己的錢包中——不與網路共享——保護他們的隱私並將不必要的個人資料排除在區塊鏈之外。例如，請參見 <<alice_tx_labels,Alice 的交易歷史，每筆交易都有標籤>>。
+例如，當 Bob 創建一個新地址作為向 Alice 發送發票的一部分時，他向他生成的地址((("labels, backing up", id="label-backup")))新增一個__標籤（label）__，以便他可以將她的付款與他收到的其他付款區分開來。當 Alice 支付 Bob 的地址時，她出於同樣的原因將交易標記為支付給 Bob。一些錢包還向交易新增其他有用的資訊，例如當前匯率，這在某些司法管轄區計算稅款時可能很有用。這些標籤完全儲存在他們自己的錢包中，不與網路共享，既保護了他們的隱私，也讓不必要的個人資料不會進入區塊鏈。例如，請參見 <<alice_tx_labels,Alice 的交易歷史，每筆交易都有標籤>>。
 
 ++++
 <table id="alice_tx_labels">
@@ -256,7 +256,7 @@ BIP39、Electrum v2、Aezeed 和 SLIP39 方案都可以與可選的密碼短語�
 
 ==== 備份金鑰衍生路徑
 
-在((("wallets", "key generation", "backing up derivation paths", id="wallet-keygen-backups")))((("key generation", "backing up derivation paths", id="keygen-backups")))((("backing up", "key derivation paths", id="backup-key-derive")))BIP32 金鑰樹中，大約有 40 億個第一層金鑰；這些金鑰中的每一個都可以有自己的 40 億個子金鑰，這些子金鑰中的每一個都可能有 40 億個自己的子金鑰，依此類推。錢包應用程式不可能生成 BIP32 樹中每個可能金鑰的哪怕一小部分，這意味著從資料丟失中恢復需要的不僅僅是恢復碼、獲取種子的演算法（例如，BIP39）和確定性金鑰衍生演算法（例如，BIP32）——它還需要知道您的錢包應用程式在金鑰樹中使用的路徑來生成它分發的特定金鑰。
+在((("wallets", "key generation", "backing up derivation paths", id="wallet-keygen-backups")))((("key generation", "backing up derivation paths", id="keygen-backups")))((("backing up", "key derivation paths", id="backup-key-derive")))BIP32 金鑰樹中，大約有 40 億個第一層金鑰；這些金鑰中的每一個都可以有自己的 40 億個子金鑰，這些子金鑰中的每一個都可能有 40 億個自己的子金鑰，依此類推。錢包應用程式不可能生成 BIP32 樹中每個可能金鑰的哪怕一小部分，這意味著從資料丟失中恢復需要的不僅僅是恢復碼、獲取種子的演算法（例如，BIP39）和確定性金鑰衍生演算法（例如，BIP32），還需要知道您的錢包應用程式在金鑰樹中使用的路徑來生成它分發的特定金鑰。
 
 已經採用了兩種解決方案來解決此問題。第一種是使用標準路徑。每次與錢包應用程式可能想要生成的地址相關的變化時，有人創建一個 BIP 來定義要使用的金鑰衍生路徑。例如，BIP44 將 `m/44'/0'/0'` 定義為用於 P2PKH 腳本（傳統地址）中金鑰的路徑。實作此標準的錢包應用程式在首次啟動時和從恢復碼恢復後都使用該路徑中的金鑰。我們稱((("implicit paths", id="implicit-path")))此解決方案為__隱式路徑（implicit paths）__。BIP 定義的幾個流行的隱式路徑如 <<bip_implicit_paths,由各種 BIP 定義的隱式腳本路徑>> 所示。footnote:[譯註：英文原書此表把 BIP49 的路徑誤植為 `m/49'/1'/0'`，其中 `1'` 是測試網使用的幣別；本譯本依 BIP49 改為主網的 `m/49'/0'/0'`，與表中其他路徑一致。參見 link:https://github.com/bitcoinbook/bitcoinbook/pull/1130[英文原書的勘誤 PR #1130]。]
 
@@ -342,7 +342,7 @@ BIP39、Electrum v2、Aezeed 和 SLIP39 方案都可以與可選的密碼短語�
 
 === 詳細介紹錢包技術堆疊
 
-現代錢包的開發者可以從各種不同的技術中進行選擇，以幫助使用者創建和使用備份——並且每年都會出現新的解決方案。我們不會詳細介紹本章前面描述的每個選項，而是將本章的其餘部分集中在我們認為截至 2023 年初在錢包中最廣泛使用的技術堆疊上：
+現代錢包的開發者可以從各種不同的技術中進行選擇，以幫助使用者創建和使用備份，而且每年都會出現新的解決方案。我們不會詳細介紹本章前面描述的每個選項，而是將本章的其餘部分集中在我們認為截至 2023 年初在錢包中最廣泛使用的技術堆疊上：
 
 - BIP39 恢復碼
 - BIP32 HD 金鑰衍生
@@ -441,7 +441,7 @@ image::images/mbc3_0504.png["生成熵並編碼為恢復碼"]
 
 恢復碼((("wallets", "recovery codes", "seed generation", id="wallet-recovery-bip39-seed")))((("recovery codes", "seed generation", id="recovery-code-bip39-seed")))((("BIP39 recovery codes", "seed generation", primary-sortas="BIP039", id="bip39-recovery-seed")))((("entropy", "seed generation", id="entropy-seed-generate")))((("seeds", "generating", id="seed-generate")))((("key-stretching functions", id="key-stretch")))代表長度為 128 到 256 位元的熵。然後，透過使用 https://oreil.ly/6lwbd[金鑰延展函數 PBKDF2]，將熵用於衍生更長的（512 位元）種子。然後，產生的種子用於構建確定性錢包並衍生其金鑰。
 
-金鑰延展函數接受兩個參數：熵和((("salt")))__鹽（salt）__。鹽在金鑰延展函數中的目的是使構建查找表以進行暴力攻擊變得困難。在 BIP39 標準中，鹽還有另一個目的——它允許引入密碼短語，作為保護種子的額外安全因素，我們將在 <<recovery_passphrase>> 中更詳細地描述。
+金鑰延展函數接受兩個參數：熵和((("salt")))__鹽（salt）__。鹽在金鑰延展函數中的目的是使構建查找表以進行暴力攻擊變得困難。在 BIP39 標準中，鹽還有另一個目的：它允許引入密碼短語，作為保護種子的額外安全因素，我們將在 <<recovery_passphrase>> 中更詳細地描述。
 
 [TIP]
 ====
@@ -545,13 +545,13 @@ luggage oxygen faint major edit measure invite love trap field dilemma oblige</c
 ****
 BIP32 允許種子從 128 到 512 位元。BIP39 接受 128 到 256 位元的熵；Electrum v2 接受 132 位元的熵；Aezeed 接受 128 位元的熵；SLIP39 接受 128 或 256 位元。這些數字的變化使安全性所需的熵量不清楚。我們將嘗試揭開這個謎團。
 
-BIP32 擴展私鑰由 256 位元金鑰和 256 位元鏈碼組成，總共 512 位元。這意味著最多有 2^512^ 個不同的可能擴展私鑰。如果您從超過 512 位元的熵開始，您仍然會得到包含 512 位元熵的擴展私鑰——因此即使我們提到的任何標準允許，使用超過 512 位元也沒有意義。
+BIP32 擴展私鑰由 256 位元金鑰和 256 位元鏈碼組成，總共 512 位元。這意味著最多有 2^512^ 個不同的可能擴展私鑰。如果您從超過 512 位元的熵開始，您仍然會得到包含 512 位元熵的擴展私鑰。因此，即使我們提到的任何標準允許，使用超過 512 位元也沒有意義。
 
-然而，儘管有 2^512^ 個不同的擴展私鑰，但只有（略少於）2^256^ 個常規私鑰——實際保護您比特幣的是這些私鑰。這意味著，如果您為種子使用超過 256 位元的熵，您獲得的私鑰仍然只包含 256 位元的熵。可能會有未來的比特幣相關協定，其中擴展金鑰中的額外熵提供額外的安全性，但目前情況並非如此。
+然而，儘管有 2^512^ 個不同的擴展私鑰，但只有（略少於）2^256^ 個常規私鑰，而實際保護您比特幣的正是這些私鑰。這意味著，如果您為種子使用超過 256 位元的熵，您獲得的私鑰仍然只包含 256 位元的熵。可能會有未來的比特幣相關協定，其中擴展金鑰中的額外熵提供額外的安全性，但目前情況並非如此。
 
 比特幣公鑰的安全強度為 128 位元。使用古典電腦（截至撰寫本文時唯一可用於實際攻擊的類型）的攻擊者需要在比特幣的橢圓曲線上執行大約 2^128^ 次操作才能找到另一個使用者公鑰的私鑰。128 位元安全強度的含義是使用超過 128 位元的熵沒有明顯的好處（儘管您需要確保生成的私鑰從整個 2^256^ 私鑰範圍內均勻選擇）。
 
-更大熵有一個額外的好處：如果攻擊者看到您恢復碼的固定百分比（但不是整個碼），熵越大，他們就越難弄清楚他們沒有看到的部分碼。例如，如果攻擊者看到 128 位元碼的一半（64 位元），他們有可能暴力破解剩餘的 64 位元。如果他們看到 256 位元碼的一半（128 位元），他們暴力破解另一半是不可行的。我們不建議依賴這種防禦——要麼非常安全地保存您的恢復碼，要麼使用 SLIP39 之類的方法，該方法允許您將恢復碼分散到多個位置，而不依賴於任何單個碼的安全性。
+更大熵有一個額外的好處：如果攻擊者看到您恢復碼的固定百分比（但不是整個碼），熵越大，他們就越難弄清楚他們沒有看到的部分碼。例如，如果攻擊者看到 128 位元碼的一半（64 位元），他們有可能暴力破解剩餘的 64 位元。如果他們看到 256 位元碼的一半（128 位元），他們暴力破解另一半是不可行的。我們不建議依賴這種防禦，而是建議要麼非常安全地保存您的恢復碼，要麼使用 SLIP39 之類的方法，該方法允許您將恢復碼分散到多個位置，而不依賴於任何單個碼的安全性。
 
 截至 2023 年，大多數現代錢包為其恢復碼生成 128 位元熵（或接近 128 的值，例如((("wallets", "recovery codes", "seed generation", startref="wallet-recovery-bip39-seed")))((("recovery codes", "seed generation", startref="recovery-code-bip39-seed")))((("BIP39 recovery codes", "seed generation", primary-sortas="BIP039", startref="bip39-recovery-seed")))((("entropy", "seed generation", startref="entropy-seed-generate")))((("seeds", "generating", startref="seed-generate")))Electrum v2 的 132 位元）。
 ****
@@ -712,7 +712,7 @@ Gabriel 的 HD 錢包透過能夠在不知道私鑰的情況下衍生公共子�
 
 使用 HD 錢包允許 Gabriel 從他的個人錢包應用程式中花費資金，但網站上載入的 xpub 只能生成地址和接收資金。HD 錢包的這個功能是一個很棒的安全功能。Gabriel 的網站不包含任何私鑰，因此對它的任何駭客攻擊只能竊取 Gabriel 將來會收到的資金，而不是他過去收到的任何資金。
 
-要從他的 Trezor 硬體簽署設備匯出 xpub，Gabriel 使用基於 Web 的 Trezor 錢包應用程式。必須插入 Trezor 設備才能匯出公鑰。請注意，大多數硬體簽署設備永遠不會匯出私鑰——這些始終保留在設備上。
+要從他的 Trezor 硬體簽署設備匯出 xpub，Gabriel 使用基於 Web 的 Trezor 錢包應用程式。必須插入 Trezor 設備才能匯出公鑰。請注意，大多數硬體簽署設備永遠不會匯出私鑰，私鑰始終保留在設備上。
 
 Gabriel 將 xpub 複製到他的網路商店的比特幣支付處理軟體中，例如廣泛使用的開源 BTCPay Server。
 
@@ -733,7 +733,7 @@ image::images/mbc3_0509.png["ChildHardPrivateDerivation"]
 
 ===== 正常和強化衍生的索引號
 
-衍生函數中使用的((("index numbers for hardened derivation")))索引號是 32 位元整數。為了輕鬆區分透過正常衍生函數創建的金鑰與透過強化衍生衍生的金鑰，此索引號被分為兩個範圍。0 到 2^31^ &#x2013; 1（0x0 到 0x7FFFFFFF）之間的索引號__僅__用於正常衍生。2^31^ 到 2^32^ &#x2013; 1（0x80000000 到 0xFFFFFFFF）之間的索引號__僅__用於強化衍生。因此，如果索引號小於 2^31^，子金鑰是正常的，而如果索引號等於或大於 2^31^，子金鑰是強化的。
+衍生函數中使用的((("index numbers for hardened derivation")))索引號是 32 位元整數。為了輕鬆區分透過正常衍生函數創建的金鑰與透過強化衍生衍生的金鑰，此索引號被分為兩個範圍。0 到 2^31^ − 1（0x0 到 0x7FFFFFFF）之間的索引號__僅__用於正常衍生。2^31^ 到 2^32^ − 1（0x80000000 到 0xFFFFFFFF）之間的索引號__僅__用於強化衍生。因此，如果索引號小於 2^31^，子金鑰是正常的，而如果索引號等於或大於 2^31^，子金鑰是強化的。
 
 為了使索引號更易於閱讀和顯示，強化子金鑰的索引號從零開始顯示，但帶有一個撇號符號。因此，第一個正常子金鑰顯示為 0，而第一個強化子金鑰（索引 0x80000000）顯示為 0++&#x27;++。在一個序列中，第二個強化金鑰將具有索引 0x80000001，並將顯示為 1++&#x27;++，依此類推。當您看到 HD 錢包索引 i++&#x27;++ 時，這意味著 2^31^+i。在常規 ASCII 文字中，撇號符號被替換為單引號或字母 __h__。對於輸出腳本描述符等情況，其中文字可能用於 shell 或其他單引號具有特殊含義的上下文中，建議使用字母((("private child key derivation", "hardened derivation", startref="private-child-harden")))((("child key pair derivation", "hardened derivation", startref="child-key-pair-harden")))((("hardened child key derivation", startref="harden-child-key")))__h__。
 
@@ -824,4 +824,4 @@ m / purpose' / coin_type' / account' / change / address_index
 </table>
 ++++
 
-許多人((("BIP44 HD wallet tree structure", primary-sortas="BIP044", startref="bip44")))專注於保護他們的比特幣免受盜竊和其他攻擊，但丟失比特幣的主要原因之一——也許是__主要__原因——是資料丟失。如果花費比特幣所需的金鑰和其他基本資料丟失，這些比特幣將永遠無法花費。沒有人可以為您找回它們。在本章中，我們研究了現代錢包應用程式使用的系統，以幫助您防止丟失該資料。但是，請記住，實際使用可用的系統來製作良好的備份並((("key generation", "HD (hierarchical deterministic)", "extended keys", startref="keygen-hd-extend-webstore")))((("HD (hierarchical deterministic) key generation", "extended keys", "web store example", startref="hd-keygen-extend-webstore")))((("extended keys", "web store example", startref="extend-key-webstore")))((("web store example (extended keys)", startref="webstore-extend-key")))((("tree structure in HD wallets", startref="tree-hd-wallet")))((("key generation", "HD (hierarchical deterministic)", "tree structure", startref="keygen-hd-tree")))((("HD (hierarchical deterministic) key generation", "tree structure", startref="hd-keygen-tree")))定期測試它們取決於您。
+許多人((("BIP44 HD wallet tree structure", primary-sortas="BIP044", startref="bip44")))專注於保護他們的比特幣免受盜竊和其他攻擊，但丟失比特幣的主要原因之一（也許是__最主要__的原因）是資料丟失。如果花費比特幣所需的金鑰和其他基本資料丟失，這些比特幣將永遠無法花費。沒有人可以為您找回它們。在本章中，我們研究了現代錢包應用程式使用的系統，以幫助您防止丟失該資料。但是，請記住，實際使用可用的系統來製作良好的備份並((("key generation", "HD (hierarchical deterministic)", "extended keys", startref="keygen-hd-extend-webstore")))((("HD (hierarchical deterministic) key generation", "extended keys", "web store example", startref="hd-keygen-extend-webstore")))((("extended keys", "web store example", startref="extend-key-webstore")))((("web store example (extended keys)", startref="webstore-extend-key")))((("tree structure in HD wallets", startref="tree-hd-wallet")))((("key generation", "HD (hierarchical deterministic)", "tree structure", startref="keygen-hd-tree")))((("HD (hierarchical deterministic) key generation", "tree structure", startref="hd-keygen-tree")))定期測試它們取決於您。

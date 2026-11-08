@@ -68,6 +68,11 @@ indexable.each do |page, doc|
   canonical = doc.at_css('link[rel="canonical"]')&.[]('href')
   expected = SITE_URL + (page == '/index.html' ? '/' : page)
   errors << "#{page}: canonical 應為 #{expected}，實際為 #{canonical}" if canonical && canonical != expected
+  # 正文不用破折號（見 translation/style-guide.md）；程式碼與腳本不算
+  body = doc.at_css('main')&.dup
+  next unless body
+  body.css('pre, code, script, style').remove
+  body.text.scan(/.{0,15}[—–].{0,15}/).each { |m| errors << "#{page}: 正文有破折號：#{m.strip}" }
 end
 
 sitemap = Nokogiri::XML(File.read(File.join(DIR, 'sitemap.xml'))).remove_namespaces!
